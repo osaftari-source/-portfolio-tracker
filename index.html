@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff">
+<title>Portfolio Tracker</title>
+<link rel="manifest" href="manifest.json">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#f5f5f0;--surface:#fff;--border:#e0ddd4;--border2:#f1efe8;--text:#1a1a18;--text2:#5f5e5a;--text3:#888780;--blue:#185fa5;--blue-l:#e6f1fb;--blue-m:#b5d4f4;--green:#3b6d11;--green-l:#eaf3de;--amber:#854f0b;--amber-l:#faeeda;--red:#a32d2d;--red-l:#fcebeb;--radius:10px;--radius-sm:7px}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1a18;--surface:#2c2c2a;--border:#444441;--border2:#363634;--text:#f1efe8;--text2:#b4b2a9;--text3:#888780;--blue-l:#0c447c;--blue-m:#185fa5;--green-l:#173404;--amber-l:#412402;--red-l:#501313}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;min-height:100vh}
+.app{max-width:480px;margin:0 auto;padding-bottom:80px}
+.topbar{background:var(--surface);border-bottom:0.5px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar h1{font-size:16px;font-weight:500}
+.topbar .sync-btn{font-size:13px;color:var(--blue);background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:var(--radius-sm);display:flex;align-items:center;gap:4px}
+.topbar .sync-btn:active{background:var(--blue-l)}
+.month-scroll{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:var(--surface);border-bottom:0.5px solid var(--border)}
+.month-scroll::-webkit-scrollbar{display:none}
+.mo-chip{padding:6px 14px;border-radius:20px;border:0.5px solid var(--border);background:none;font-size:13px;color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0;position:relative}
+.mo-chip.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:500}
+.mo-chip.has-data::after{content:'';position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--green)}
+.mo-chip.active.has-data::after{background:#fff}
+.tab-row{display:flex;background:var(--surface);border-bottom:0.5px solid var(--border);padding:0 4px}
+.tab{flex:1;padding:10px 4px;border:none;background:none;font-size:12px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;font-weight:400}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.content{padding:12px 16px}
+.sec{display:none}.sec.active{display:block}
+.sl{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px}
+.sl:first-child{margin-top:0}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+.metric{background:var(--surface);border-radius:var(--radius);padding:12px;border:0.5px solid var(--border)}
+.metric .lbl{font-size:11px;color:var(--text3);margin-bottom:4px}
+.metric .val{font-size:19px;font-weight:500}
+.metric .sub{font-size:11px;color:var(--text3);margin-top:2px}
+.card{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);margin-bottom:10px;overflow:hidden}
+.card-head{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border2)}
+.card-head span{font-size:13px;font-weight:500}
+.inp-row{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center;padding:9px 14px;border-bottom:0.5px solid var(--border2)}
+.inp-row:last-child{border-bottom:none}
+.inp-row .cat-label{font-size:13px;color:var(--text2)}
+.inp-row .cat-sub{font-size:11px;color:var(--text3);margin-top:1px}
+input[type=number]{width:100%;padding:7px 10px;border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--surface);color:var(--text);outline:none;text-align:right;-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]:focus{border-color:var(--blue)}
+.var-row{display:grid;grid-template-columns:1fr 90px 80px;gap:6px;align-items:center;padding:8px 14px;border-bottom:0.5px solid var(--border2);font-size:13px}
+.var-row:last-child{border-bottom:none}
+.var-row .cat{color:var(--text2)}
+.var-row .plan{color:var(--text3);text-align:right;font-size:12px}
+.var-row .var{text-align:right;font-weight:500}
+.ok{color:var(--green)}.over{color:var(--red)}.warn-c{color:var(--amber)}.muted{color:var(--text3)}
+.save-bar{padding:10px 14px;border-top:0.5px solid var(--border2);display:flex;gap:8px}
+.btn{padding:9px 16px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;cursor:pointer;border:none;display:flex;align-items:center;gap:6px;justify-content:center}
+.btn-primary{background:var(--blue);color:#fff;flex:1}
+.btn-primary:active{opacity:.85}
+.btn-ghost{background:none;border:0.5px solid var(--border);color:var(--text2)}
+.btn-ghost:active{background:var(--border2)}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px}
+.b-ok{background:var(--green-l);color:var(--green)}
+.b-warn{background:var(--amber-l);color:var(--amber)}
+.b-danger{background:var(--red-l);color:var(--red)}
+.b-info{background:var(--blue-l);color:var(--blue)}
+.alert-item{display:flex;gap:10px;padding:10px 14px;border-bottom:0.5px solid var(--border2);align-items:flex-start}
+.alert-item:last-child{border-bottom:none}
+.alert-icon{font-size:16px;margin-top:1px;flex-shrink:0}
+.alert-text{font-size:13px;color:var(--text2);line-height:1.5}
+.alert-text strong{color:var(--text);font-weight:500}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:0.5px solid var(--border2);font-size:13px}
+.summary-row:last-child{border-bottom:none}
+.summary-row .label{color:var(--text2)}
+.summary-row .value{font-weight:500}
+.progress-bar{height:4px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.progress-fill{height:100%;border-radius:2px;transition:width .3s}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#2c2c2a;color:#f1efe8;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1}
+.bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:0.5px solid var(--border);display:flex;padding:6px 0 env(safe-area-inset-bottom)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border:none;background:none;cursor:pointer;color:var(--text3);font-size:10px}
+.nav-item.active{color:var(--blue)}
+.nav-item i{font-size:22px}
+.settings-field{padding:12px 14px;border-bottom:0.5px solid var(--border2)}
+.settings-field label{font-size:12px;color:var(--text3);display:block;margin-bottom:6px}
+.settings-field input{width:100%;padding:8px 10px;border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--surface);color:var(--text);outline:none}
+.settings-field input:focus{border-color:var(--blue)}
+.loading{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px}
+.spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:32px 20px;color:var(--text3);font-size:13px;line-height:1.7}
+.section-divider{height:0.5px;background:var(--border);margin:4px 0}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+</head>
+<body>
+
+<div class="app">
+  <div class="topbar">
+    <h1>💼 Portfolio Tracker</h1>
+    <button class="sync-btn" onclick="syncAll()" id="syncBtn">
+      <i class="ti ti-refresh" style="font-size:16px"></i> Sync
+    </button>
+  </div>
+
+  <div class="month-scroll" id="monthScroll"></div>
+
+  <div class="tab-row" id="tabRow">
+    <button class="tab active" onclick="setTab('income')">Income</button>
+    <button class="tab" onclick="setTab('expenses')">Expenses</button>
+    <button class="tab" onclick="setTab('investments')">Invest</button>
+    <button class="tab" onclick="setTab('summary')">Summary</button>
+  </div>
+
+  <div class="content" id="mainContent">
+    <div class="loading"><div class="spinner"></div>Loading from Google Sheets…</div>
+  </div>
+</div>
+
+<div class="bottomnav">
+  <button class="nav-item active" onclick="showPage('tracker')" id="nav-tracker">
+    <i class="ti ti-chart-bar"></i><span>Tracker</span>
+  </button>
+  <button class="nav-item" onclick="showPage('overview')" id="nav-overview">
+    <i class="ti ti-layout-dashboard"></i><span>Overview</span>
+  </button>
+  <button class="nav-item" onclick="showPage('settings')" id="nav-settings">
+    <i class="ti ti-settings"></i><span>Settings</span>
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MONTHS = ['May','Jun','Jul','Aug','Sep','Oct'];
+const MONTH_KEYS = ['may','jun','jul','aug','sep','oct'];
+
+const EXPENSE_CATS = [
+  {key:'admin',label:'Admin'},
+  {key:'food',label:'Food & Drinks'},
+  {key:'healthcare',label:'Healthcare'},
+  {key:'household',label:'Household'},
+  {key:'installment',label:'Installment'},
+  {key:'others',label:'Others'},
+  {key:'shopping',label:'Shopping'},
+  {key:'sport',label:'Sport & Ent'},
+  {key:'telecom',label:'Telecom'},
+  {key:'topup',label:'Top Up'},
+  {key:'transport',label:'Transportation'},
+  {key:'withdraw',label:'Withdraw'},
+  {key:'zakat',label:'Zakat'},
+  {key:'rizka',label:'Rizka'},
+  {key:'germany',label:'Germany Trip Fund'},
+];
+
+const INCOME_CATS = [
+  {key:'salary',label:'Salary (Gaji)'},
+  {key:'rd_return',label:'Reksa Dana return'},
+  {key:'deposito_return',label:'Deposito return'},
+  {key:'sr025_coupon',label:'SR025 coupon'},
+  {key:'other_income',label:'Other income'},
+];
+
+const INVEST_CATS = [
+  {key:'rd',label:'RD top-up'},
+  {key:'sr025',label:'SR025 purchase'},
+  {key:'germany_invest',label:'Germany fund (Life Goals)'},
+];
+
+let state = {
+  activeMonth: 'may',
+  activeTab: 'income',
+  activePage: 'tracker',
+  plan: {},
+  actuals: {},
+  settings: {scriptUrl:'', token:''}
+};
+
+function loadLocal(){
+  try{
+    const s=localStorage.getItem('portfolio_state');
+    if(s){const p=JSON.parse(s);state.actuals=p.actuals||{};state.settings=p.settings||{scriptUrl:'',token:''};}
+  }catch(e){}
+}
+
+function saveLocal(){
+  localStorage.setItem('portfolio_state',JSON.stringify({actuals:state.actuals,settings:state.settings}));
+}
+
+function fmt(n){
+  if(n===null||n===undefined||isNaN(n)||n===0&&n!==0)return'—';
+  const abs=Math.abs(Math.round(n));
+  let s;
+  if(abs>=1000000000)s=(abs/1000000000).toFixed(1)+'B';
+  else if(abs>=1000000)s=(abs/1000000).toFixed(1)+'M';
+  else if(abs>=1000)s=Math.round(abs/1000)+'K';
+  else s=abs.toLocaleString();
+  return(n<0?'−':'')+'Rp '+s;
+}
+
+function fmtFull(n){return'Rp '+Math.round(Math.abs(n||0)).toLocaleString('id-ID')}
+
+function toast(msg,duration=2500){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),duration);
+}
+
+function showPage(page){
+  state.activePage=page;
+  ['tracker','overview','settings'].forEach(p=>{
+    document.getElementById('nav-'+p).classList.toggle('active',p===page);
+  });
+  if(page==='tracker')renderTracker();
+  else if(page==='overview')renderOverview();
+  else renderSettings();
+}
+
+function setMonth(mk){
+  state.activeMonth=mk;
+  document.querySelectorAll('.mo-chip').forEach(b=>b.classList.toggle('active',b.dataset.mk===mk));
+  renderSection();
+}
+
+function setTab(tab){
+  state.activeTab=tab;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===tab||(tab==='investments'&&b.textContent==='Invest')));
+  renderSection();
+}
+
+function getActual(mk,section,key){return((state.actuals[mk]||{})[section]||{})[key]||0}
+function getPlan(section,key,mk){return((state.plan[section]||{})[key]||{})[mk]||0}
+
+function totalExpActual(mk){return EXPENSE_CATS.reduce((s,c)=>s+getActual(mk,'expenses',c.key),0)}
+function totalExpPlan(mk){return EXPENSE_CATS.reduce((s,c)=>s+getPlan('expenses',c.key,mk),0)}
+function totalIncActual(mk){return INCOME_CATS.reduce((s,c)=>s+getActual(mk,'income',c.key),0)}
+function totalIncPlan(mk){return INCOME_CATS.reduce((s,c)=>s+getPlan('income',c.key,mk),0)}
+
+function hasMonthData(mk){
+  const a=state.actuals[mk]||{};
+  return Object.values(a).some(sec=>Object.values(sec||{}).some(v=>v>0));
+}
+
+function renderMonthBar(){
+  document.getElementById('monthScroll').innerHTML=MONTHS.map((m,i)=>{
+    const mk=MONTH_KEYS[i];
+    const cls=['mo-chip',mk===state.activeMonth?'active':'',hasMonthData(mk)?'has-data':''].join(' ');
+    return`<button class="${cls}" data-mk="${mk}" onclick="setMonth('${mk}')">${m}</button>`;
+  }).join('');
+}
+
+function renderTracker(){
+  document.getElementById('monthScroll').style.display='flex';
+  document.getElementById('tabRow').style.display='flex';
+  renderMonthBar();
+  renderSection();
+}
+
+function renderSection(){
+  const mk=state.activeMonth;
+  document.querySelectorAll('.tab').forEach((b,i)=>{
+    const tabs=['income','expenses','investments','summary'];
+    b.classList.toggle('active',tabs[i]===state.activeTab);
+  });
+  if(state.activeTab==='income')renderIncome(mk);
+  else if(state.activeTab==='expenses')renderExpenses(mk);
+  else if(state.activeTab==='investments')renderInvestments(mk);
+  else renderSummary(mk);
+}
+
+function renderIncome(mk){
+  const el=document.getElementById('mainContent');
+  const totalPlan=totalIncPlan(mk);
+  const totalAct=totalIncActual(mk);
+  const diff=totalAct-totalPlan;
+
+  el.innerHTML=`
+<div class="sl">Income — ${MONTHS[MONTH_KEYS.indexOf(mk)]} 2026</div>
+<div class="metric-grid">
+  <div class="metric"><div class="lbl">Planned</div><div class="val">${fmt(totalPlan)||'—'}</div><div class="sub">from sheet</div></div>
+  <div class="metric"><div class="lbl">Actual</div><div class="val ${totalAct>0&&totalAct<totalPlan?'warn-c':''}">${totalAct>0?fmt(totalAct):'—'}</div><div class="sub">${totalAct>0?(diff>=0?'▲ +':'▼ ')+fmt(Math.abs(diff)):'not entered'}</div></div>
+</div>
+<div class="card">
+  <div class="card-head"><span>Enter actual income</span></div>
+  ${INCOME_CATS.map(c=>{
+    const plan=getPlan('income',c.key,mk);
+    const act=getActual(mk,'income',c.key);
+    return`<div class="inp-row">
+      <div><div class="cat-label">${c.label}</div><div class="cat-sub">Plan: ${plan>0?fmtFull(plan):'—'}</div></div>
+      <input type="number" id="inc_${mk}_${c.key}" value="${act||''}" placeholder="${plan||0}" min="0" step="1000" oninput="liveUpdateInc('${mk}')">
+    </div>`;
+  }).join('')}
+  <div class="save-bar">
+    <button class="btn btn-ghost" onclick="clearSection('${mk}','income')"><i class="ti ti-x" style="font-size:15px"></i></button>
+    <button class="btn btn-primary" onclick="saveSection('${mk}','income')"><i class="ti ti-device-floppy" style="font-size:15px"></i> Save income</button>
+  </div>
+</div>`;
+}
+
+function liveUpdateInc(mk){
+  const total=INCOME_CATS.reduce((s,c)=>{
+    const el=document.getElementById(`inc_${mk}_${c.key}`);
+    return s+(parseFloat(el?.value)||0);
+  },0);
+}
+
+function renderExpenses(mk){
+  const el=document.getElementById('mainContent');
+  const totalPlan=totalExpPlan(mk);
+  const totalAct=totalExpActual(mk);
+  const variance=totalPlan-totalAct;
+
+  el.innerHTML=`
+<div class="sl">Expenses — ${MONTHS[MONTH_KEYS.indexOf(mk)]} 2026</div>
+<div class="metric-grid">
+  <div class="metric"><div class="lbl">Budget</div><div class="val">${fmt(totalPlan)||'—'}</div><div class="sub">planned</div></div>
+  <div class="metric"><div class="lbl">Actual</div><div class="val ${totalAct>totalPlan?'over':''}">${totalAct>0?fmt(totalAct):'—'}</div><div class="sub">${totalAct>0?(variance>=0?'▼ under ':'▲ over ')+fmt(Math.abs(variance)):'not entered'}</div></div>
+</div>
+<div class="card">
+  <div class="card-head"><span>Enter actual expenses</span></div>
+  ${EXPENSE_CATS.map(c=>{
+    const plan=getPlan('expenses',c.key,mk);
+    const act=getActual(mk,'expenses',c.key);
+    const over=act>0&&plan>0&&act>plan;
+    return`<div class="inp-row">
+      <div><div class="cat-label" style="${over?'color:var(--red)':''}">${c.label}${over?' ▲':''}</div><div class="cat-sub">Plan: ${plan>0?fmtFull(plan):'—'}</div></div>
+      <input type="number" id="exp_${mk}_${c.key}" value="${act||''}" placeholder="${plan||0}" min="0" step="1000" style="${over?'border-color:var(--red)':''}">
+    </div>`;
+  }).join('')}
+  <div class="save-bar">
+    <button class="btn btn-ghost" onclick="clearSection('${mk}','expenses')"><i class="ti ti-x" style="font-size:15px"></i></button>
+    <button class="btn btn-primary" onclick="saveSection('${mk}','expenses')"><i class="ti ti-device-floppy" style="font-size:15px"></i> Save expenses</button>
+  </div>
+</div>`;
+}
+
+function renderInvestments(mk){
+  const el=document.getElementById('mainContent');
+  el.innerHTML=`
+<div class="sl">Investments — ${MONTHS[MONTH_KEYS.indexOf(mk)]} 2026</div>
+<div class="card">
+  <div class="card-head"><span>Deployment actuals</span></div>
+  ${INVEST_CATS.map(c=>{
+    const plan=getPlan('investments',c.key,mk);
+    const act=getActual(mk,'investments',c.key);
+    const pct=plan>0?Math.min(100,Math.round(act/plan*100)):0;
+    const color=pct>=100?'var(--green)':pct>0?'var(--amber)':'var(--border)';
+    return`<div class="inp-row" style="display:block;padding:10px 14px;border-bottom:0.5px solid var(--border2)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div><div class="cat-label">${c.label}</div><div class="cat-sub">Plan: ${plan>0?fmtFull(plan):'—'}</div></div>
+        <input type="number" id="inv_${mk}_${c.key}" value="${act||''}" placeholder="${plan||0}" min="0" step="1000000" style="width:130px">
+      </div>
+      ${plan>0?`<div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px">${pct}% of plan${act>=plan?' ✓':''}</div>`:''}
+    </div>`;
+  }).join('')}
+  <div class="save-bar">
+    <button class="btn btn-ghost" onclick="clearSection('${mk}','investments')"><i class="ti ti-x" style="font-size:15px"></i></button>
+    <button class="btn btn-primary" onclick="saveSection('${mk}','investments')"><i class="ti ti-device-floppy" style="font-size:15px"></i> Save investments</button>
+  </div>
+</div>`;
+}
+
+function renderSummary(mk){
+  const el=document.getElementById('mainContent');
+  const incPlan=totalIncPlan(mk);
+  const incAct=totalIncActual(mk)||incPlan;
+  const expPlan=totalExpPlan(mk);
+  const expAct=totalExpActual(mk);
+  const invested=INVEST_CATS.reduce((s,c)=>s+getActual(mk,'investments',c.key),0);
+  const netFlow=incAct-expAct-invested;
+  const alerts=buildAlerts(mk);
+
+  el.innerHTML=`
+<div class="sl">Summary — ${MONTHS[MONTH_KEYS.indexOf(mk)]} 2026</div>
+<div class="metric-grid">
+  <div class="metric"><div class="lbl">Net income</div><div class="val ${incAct<incPlan?'warn-c':''}">${fmt(incAct)}</div><div class="sub">plan: ${fmt(incPlan)}</div></div>
+  <div class="metric"><div class="lbl">Total expenses</div><div class="val ${expAct>expPlan?'over':''}">${expAct>0?fmt(expAct):'—'}</div><div class="sub">budget: ${fmt(expPlan)}</div></div>
+</div>
+<div class="metric-grid" style="margin-top:8px">
+  <div class="metric"><div class="lbl">Invested</div><div class="val ok">${invested>0?fmt(invested):'—'}</div><div class="sub">this month</div></div>
+  <div class="metric"><div class="lbl">Net flow</div><div class="val ${netFlow<0?'over':'ok'}">${expAct>0?fmt(netFlow):'—'}</div><div class="sub">${netFlow<0?'from savings':'surplus'}</div></div>
+</div>
+
+<div class="sl">Income breakdown</div>
+<div class="card">
+  ${INCOME_CATS.map(c=>{
+    const plan=getPlan('income',c.key,mk);
+    const act=getActual(mk,'income',c.key);
+    return`<div class="summary-row">
+      <span class="label">${c.label}</span>
+      <div style="text-align:right">
+        ${act>0?`<div class="value ok">${fmtFull(act)}</div>`:''} 
+        <div style="font-size:11px;color:var(--text3)">${plan>0?'Plan: '+fmtFull(plan):''}</div>
+      </div>
+    </div>`;
+  }).filter((_,i)=>getPlan('income',INCOME_CATS[i].key,mk)>0||getActual(mk,'income',INCOME_CATS[i].key)>0).join('')}
+  <div class="summary-row" style="border-top:0.5px solid var(--border);margin-top:2px">
+    <span style="font-weight:500">Total</span>
+    <span class="value ok">${fmt(incAct)}</span>
+  </div>
+</div>
+
+<div class="sl">Expense variance</div>
+<div class="card">
+  ${EXPENSE_CATS.map(c=>{
+    const plan=getPlan('expenses',c.key,mk);
+    const act=getActual(mk,'expenses',c.key);
+    if(plan===0&&act===0)return'';
+    const v=plan-act;
+    const vClass=act===0?'muted':v<0?'over':v<plan*0.1?'warn-c':'ok';
+    return`<div class="var-row">
+      <span class="cat">${c.label}</span>
+      <span class="plan">${fmt(plan)}</span>
+      <span class="var ${vClass}">${act===0?'—':(v>=0?'+':'')+fmt(v)}</span>
+    </div>`;
+  }).join('')}
+</div>
+
+<div class="sl">Alerts</div>
+<div class="card">
+  ${alerts.map(a=>`<div class="alert-item">
+    <i class="ti ${a.icon} alert-icon" style="color:${a.type==='danger'?'var(--red)':a.type==='warn'?'var(--amber)':a.type==='ok'?'var(--green)':'var(--blue)'}"></i>
+    <div class="alert-text">${a.msg}</div>
+  </div>`).join('')}
+</div>`;
+}
+
+function buildAlerts(mk){
+  const alerts=[];
+  const expAct=totalExpActual(mk);
+  const expPlan=totalExpPlan(mk);
+  if(expAct>0&&expAct>expPlan)alerts.push({type:'danger',icon:'ti-alert-circle',msg:`<strong>Over budget by ${fmtFull(expAct-expPlan)}</strong>. Actual ${fmtFull(expAct)} vs budget ${fmtFull(expPlan)}.`});
+  EXPENSE_CATS.forEach(c=>{
+    const plan=getPlan('expenses',c.key,mk);
+    const act=getActual(mk,'expenses',c.key);
+    if(plan>0&&act>plan*1.15)alerts.push({type:'warn',icon:'ti-alert-triangle',msg:`<strong>${c.label}</strong> over by ${fmtFull(act-plan)}.`});
+  });
+  if(mk==='sep'&&getActual(mk,'investments','sr025')===0)alerts.push({type:'warn',icon:'ti-calendar-event',msg:`<strong>SR025 not recorded.</strong> Window closes 16 Sep — confirm Rp 250M purchase.`});
+  if((mk==='aug'||mk==='sep'))alerts.push({type:'info',icon:'ti-calendar-event',msg:`SR025 window: <strong>21 Aug – 16 Sep 2026</strong>.`});
+  if(alerts.length===0)alerts.push({type:'ok',icon:'ti-circle-check',msg:`<strong>All clear.</strong> ${expAct===0?'Enter actuals to see variance.':'Expenses within budget.'}`});
+  return alerts;
+}
+
+function renderOverview(){
+  document.getElementById('monthScroll').style.display='none';
+  document.getElementById('tabRow').style.display='none';
+  const el=document.getElementById('mainContent');
+
+  const totalIncPlanAll=MONTH_KEYS.reduce((s,mk)=>s+totalIncPlan(mk),0);
+  const totalIncActAll=MONTH_KEYS.reduce((s,mk)=>s+totalIncActual(mk),0);
+  const totalExpPlanAll=MONTH_KEYS.reduce((s,mk)=>s+totalExpPlan(mk),0);
+  const totalExpActAll=MONTH_KEYS.reduce((s,mk)=>s+totalExpActual(mk),0);
+  const totalInvPlanAll=INVEST_CATS.reduce((s,c)=>s+MONTH_KEYS.reduce((s2,mk)=>s2+getPlan('investments',c.key,mk),0),0);
+  const totalInvActAll=INVEST_CATS.reduce((s,c)=>s+MONTH_KEYS.reduce((s2,mk)=>s2+getActual(mk,'investments',c.key),0),0);
+
+  el.innerHTML=`
+<div class="sl">6-month overview</div>
+<div class="metric-grid">
+  <div class="metric"><div class="lbl">Income plan</div><div class="val">${fmt(totalIncPlanAll)}</div><div class="sub">May–Oct total</div></div>
+  <div class="metric"><div class="lbl">Income actual</div><div class="val ok">${totalIncActAll>0?fmt(totalIncActAll):'—'}</div><div class="sub">${totalIncActAll>0?Math.round(totalIncActAll/totalIncPlanAll*100)+'% of plan':'not entered'}</div></div>
+</div>
+<div class="metric-grid" style="margin-top:8px">
+  <div class="metric"><div class="lbl">Expense budget</div><div class="val">${fmt(totalExpPlanAll)}</div><div class="sub">May–Oct total</div></div>
+  <div class="metric"><div class="lbl">Expense actual</div><div class="val ${totalExpActAll>totalExpPlanAll?'over':''}">${totalExpActAll>0?fmt(totalExpActAll):'—'}</div><div class="sub">${totalExpActAll>0?Math.round(totalExpActAll/totalExpPlanAll*100)+'% of budget':'not entered'}</div></div>
+</div>
+<div class="metric-grid" style="margin-top:8px">
+  <div class="metric"><div class="lbl">Investment plan</div><div class="val">${fmt(totalInvPlanAll)}</div><div class="sub">all instruments</div></div>
+  <div class="metric"><div class="lbl">Invested actual</div><div class="val ok">${totalInvActAll>0?fmt(totalInvActAll):'—'}</div><div class="sub">${totalInvActAll>0?Math.round(totalInvActAll/totalInvPlanAll*100)+'% deployed':'not deployed'}</div></div>
+</div>
+
+<div class="sl">By month</div>
+${MONTHS.map((m,i)=>{
+  const mk=MONTH_KEYS[i];
+  const incA=totalIncActual(mk);
+  const expA=totalExpActual(mk);
+  const expP=totalExpPlan(mk);
+  const invA=INVEST_CATS.reduce((s,c)=>s+getActual(mk,'investments',c.key),0);
+  const hasDat=hasMonthData(mk);
+  return`<div class="card" style="margin-bottom:8px">
+    <div class="card-head">
+      <span>${m} 2026</span>
+      <span class="badge ${hasDat?expA>expP?'b-danger':'b-ok':'b-info'}">${hasDat?expA>expP?'Over budget':'On track':'Pending'}</span>
+    </div>
+    ${hasDat?`
+    <div class="summary-row"><span class="label">Income actual</span><span class="value ok">${fmt(incA)||'—'}</span></div>
+    <div class="summary-row"><span class="label">Expenses</span><span class="value ${expA>expP?'over':''}">${fmt(expA)} <span style="font-size:11px;color:var(--text3)">/ ${fmt(expP)}</span></span></div>
+    <div class="summary-row"><span class="label">Invested</span><span class="value ok">${invA>0?fmt(invA):'—'}</span></div>
+    `:`<div style="padding:14px;font-size:13px;color:var(--text3)">No actuals entered yet.</div>`}
+  </div>`;
+}).join('')}`;
+}
+
+function renderSettings(){
+  document.getElementById('monthScroll').style.display='none';
+  document.getElementById('tabRow').style.display='none';
+  document.getElementById('mainContent').innerHTML=`
+<div class="sl">Google Sheets connection</div>
+<div class="card">
+  <div class="settings-field">
+    <label>Apps Script web app URL</label>
+    <input type="url" id="cfg_url" value="${state.settings.scriptUrl}" placeholder="https://script.google.com/macros/s/…/exec">
+  </div>
+  <div class="settings-field">
+    <label>Secret token (set this in your Apps Script)</label>
+    <input type="text" id="cfg_token" value="${state.settings.token}" placeholder="your-secret-token-here">
+  </div>
+  <div class="save-bar">
+    <button class="btn btn-primary" onclick="saveSettings()">Save settings</button>
+  </div>
+</div>
+<div class="sl">Data</div>
+<div class="card">
+  <div class="summary-row"><span class="label">Sync plan from sheet</span><button class="btn btn-ghost" onclick="fetchPlan()" style="padding:6px 12px;font-size:13px">Pull plan</button></div>
+  <div class="summary-row"><span class="label">Push all actuals to sheet</span><button class="btn btn-ghost" onclick="pushActuals()" style="padding:6px 12px;font-size:13px">Push actuals</button></div>
+  <div class="summary-row"><span class="label">Pull actuals from sheet</span><button class="btn btn-ghost" onclick="fetchActuals()" style="padding:6px 12px;font-size:13px">Pull actuals</button></div>
+</div>
+<div class="sl">About</div>
+<div class="card">
+  <div class="summary-row"><span class="label">Version</span><span class="value">1.0 — May 2026</span></div>
+  <div class="summary-row"><span class="label">Plan period</span><span class="value">May–Oct 2026</span></div>
+</div>`;
+}
+
+function saveSettings(){
+  state.settings.scriptUrl=document.getElementById('cfg_url').value.trim();
+  state.settings.token=document.getElementById('cfg_token').value.trim();
+  saveLocal();
+  toast('Settings saved ✓');
+}
+
+async function apiCall(action,payload={}){
+  const {scriptUrl,token}=state.settings;
+  if(!scriptUrl)throw new Error('No script URL configured');
+  const body=JSON.stringify({action,token,...payload});
+  const res=await fetch(scriptUrl,{method:'POST',body,headers:{'Content-Type':'text/plain'}});
+  const json=await res.json();
+  if(!json.ok)throw new Error(json.error||'Unknown error');
+  return json;
+}
+
+async function fetchPlan(){
+  if(!state.settings.scriptUrl){toast('⚠ Set your Script URL in Settings first');return;}
+  toast('Fetching plan…');
+  try{
+    const r=await apiCall('getPlan');
+    state.plan=r.plan||{};
+    saveLocal();
+    toast('Plan loaded ✓');
+    renderSection();
+  }catch(e){toast('Error: '+e.message);}
+}
+
+async function fetchActuals(){
+  if(!state.settings.scriptUrl){toast('⚠ Set your Script URL in Settings first');return;}
+  toast('Fetching actuals…');
+  try{
+    const r=await apiCall('getActuals');
+    state.actuals=r.actuals||{};
+    saveLocal();
+    renderMonthBar();
+    toast('Actuals loaded ✓');
+    renderSection();
+  }catch(e){toast('Error: '+e.message);}
+}
+
+async function pushActuals(){
+  if(!state.settings.scriptUrl){toast('⚠ Set your Script URL in Settings first');return;}
+  toast('Pushing actuals…');
+  try{
+    await apiCall('setActuals',{actuals:state.actuals});
+    toast('Actuals saved to sheet ✓');
+  }catch(e){toast('Error: '+e.message);}
+}
+
+async function syncAll(){
+  if(!state.settings.scriptUrl){toast('⚠ Set Script URL in Settings first');showPage('settings');return;}
+  const btn=document.getElementById('syncBtn');
+  btn.innerHTML='<i class="ti ti-refresh" style="font-size:16px;animation:spin .8s linear infinite"></i> Syncing';
+  try{
+    await fetchPlan();
+    await fetchActuals();
+    toast('Synced ✓');
+  }catch(e){toast('Sync failed: '+e.message);}
+  btn.innerHTML='<i class="ti ti-refresh" style="font-size:16px"></i> Sync';
+}
+
+function saveSection(mk,section){
+  if(!state.actuals[mk])state.actuals[mk]={};
+  if(!state.actuals[mk][section])state.actuals[mk][section]={};
+  const cats=section==='income'?INCOME_CATS:section==='expenses'?EXPENSE_CATS:INVEST_CATS;
+  cats.forEach(c=>{
+    const prefix=section==='income'?'inc':section==='expenses'?'exp':'inv';
+    const el=document.getElementById(`${prefix}_${mk}_${c.key}`);
+    if(el)state.actuals[mk][section][c.key]=parseFloat(el.value)||0;
+  });
+  saveLocal();
+  renderMonthBar();
+  toast('Saved locally ✓ — tap Sync to push to sheet');
+  if(state.settings.scriptUrl){
+    pushActuals().catch(()=>{});
+  }
+}
+
+function clearSection(mk,section){
+  if(state.actuals[mk]&&state.actuals[mk][section]){
+    state.actuals[mk][section]={};
+    saveLocal();
+    renderSection();
+    toast('Cleared');
+  }
+}
+
+loadLocal();
+renderTracker();
+if(state.settings.scriptUrl){
+  syncAll();
+}else{
+  document.getElementById('mainContent').innerHTML=`
+  <div class="empty">
+    <i class="ti ti-plug-connected" style="font-size:40px;color:var(--text3);display:block;margin-bottom:12px"></i>
+    <strong>Connect to Google Sheets</strong><br>
+    Go to <strong>Settings</strong> and paste your Apps Script URL and token to start syncing data.
+  </div>`;
+}
+</script>
+</body>
+</html>
