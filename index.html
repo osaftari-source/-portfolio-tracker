@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#ffffff">
 <title>Portfolio Tracker</title>
 <link rel="manifest" href="manifest.json">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a18;font-size:15px;line-height:1.5;min-height:100vh}
@@ -16,15 +17,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .topbar h1{font-size:16px;font-weight:500}
 .sync-btn{font-size:13px;color:#185fa5;background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:7px}
 .sync-btn:active{background:#e6f1fb}
-.mo-scroll{display:flex;gap:6px;padding:12px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:#fff;border-bottom:0.5px solid #e0ddd4}
-.mo-scroll::-webkit-scrollbar{display:none}
-.mo-chip{padding:6px 14px;border-radius:20px;border:0.5px solid #e0ddd4;background:none;font-size:13px;color:#5f5e5a;cursor:pointer;white-space:nowrap;flex-shrink:0;position:relative}
-.mo-chip.active{background:#185fa5;border-color:#185fa5;color:#fff;font-weight:500}
-.mo-chip.has-data::after{content:'';position:absolute;top:4px;right:4px;width:5px;height:5px;border-radius:50%;background:#3b6d11}
-.mo-chip.active.has-data::after{background:#fff}
-.tab-row{display:flex;background:#fff;border-bottom:0.5px solid #e0ddd4;padding:0 4px}
-.tab{flex:1;padding:10px 4px;border:none;background:none;font-size:12px;color:#888780;cursor:pointer;border-bottom:2px solid transparent}
-.tab.active{color:#185fa5;border-bottom-color:#185fa5;font-weight:500}
 .content{padding:12px 16px}
 .sl{font-size:11px;font-weight:500;color:#888780;letter-spacing:.06em;text-transform:uppercase;margin:14px 0 8px}
 .sl:first-child{margin-top:0}
@@ -37,31 +29,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .card{background:#fff;border-radius:10px;border:0.5px solid #e0ddd4;margin-bottom:10px;overflow:hidden}
 .card-head{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid #f1efe8}
 .card-head span{font-size:13px;font-weight:500}
-.inp-row{display:grid;grid-template-columns:1fr 130px;gap:8px;align-items:center;padding:9px 14px;border-bottom:0.5px solid #f1efe8}
-.inp-row:last-child{border-bottom:none}
-.cat-label{font-size:13px;color:#5f5e5a}
-.cat-sub{font-size:11px;color:#888780;margin-top:1px}
-input[type=number]{width:100%;padding:7px 10px;border:0.5px solid #e0ddd4;border-radius:7px;font-size:14px;background:#fff;color:#1a1a18;outline:none;text-align:right;-moz-appearance:textfield}
-input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
-input[type=number]:focus{border-color:#185fa5}
-.save-bar{padding:10px 14px;border-top:0.5px solid #f1efe8;display:flex;gap:8px}
-.btn-primary{flex:1;padding:9px 16px;border-radius:7px;font-size:14px;font-weight:500;cursor:pointer;border:none;background:#185fa5;color:#fff}
-.btn-primary:active{opacity:.85}
-.btn-ghost{padding:9px 12px;border-radius:7px;background:none;border:0.5px solid #e0ddd4;color:#5f5e5a;font-size:13px;cursor:pointer}
 .badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px}
 .b-ok{background:#eaf3de;color:#3b6d11}
 .b-warn{background:#faeeda;color:#854f0b}
 .b-danger{background:#fcebeb;color:#a32d2d}
 .b-info{background:#e6f1fb;color:#185fa5}
 .b-neutral{background:#f1efe8;color:#444441}
-.sum-row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:0.5px solid #f1efe8;font-size:13px}
-.sum-row:last-child{border-bottom:none}
+.fc-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;background:#faeeda;color:#854f0b;font-weight:500;margin-left:4px;vertical-align:middle}
+.row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:0.5px solid #f1efe8;font-size:13px}
+.row:last-child{border-bottom:none}
+.row-label{color:#5f5e5a}
+.row-val{font-weight:500;text-align:right}
+.row-sub{font-size:11px;color:#888780;text-align:right;margin-top:1px}
 .alert-item{display:flex;gap:10px;padding:10px 14px;border-bottom:0.5px solid #f1efe8;align-items:flex-start}
 .alert-item:last-child{border-bottom:none}
 .alert-text{font-size:13px;color:#5f5e5a;line-height:1.5}
 .alert-text strong{color:#1a1a18;font-weight:500}
-.prog-bar{height:4px;background:#f1efe8;border-radius:2px;overflow:hidden;margin-top:4px}
-.prog-fill{height:100%;border-radius:2px}
+.prog-bar{height:5px;background:#f1efe8;border-radius:3px;overflow:hidden;margin-top:5px}
+.prog-fill{height:100%;border-radius:3px}
+.pf-grp{padding:5px 14px;font-size:11px;font-weight:500;color:#888780;background:#f8f7f3;border-bottom:0.5px solid #e0ddd4}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#2c2c2a;color:#f1efe8;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
 .toast.show{opacity:1}
 .bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:0.5px solid #e0ddd4;display:flex;padding:6px 0 env(safe-area-inset-bottom)}
@@ -72,13 +58,16 @@ input[type=number]:focus{border-color:#185fa5}
 .settings-field label{font-size:12px;color:#888780;display:block;margin-bottom:6px}
 .settings-field input{width:100%;padding:8px 10px;border:0.5px solid #e0ddd4;border-radius:7px;font-size:13px;background:#fff;color:#1a1a18;outline:none}
 .settings-field input:focus{border-color:#185fa5}
-.empty{text-align:center;padding:40px 20px;color:#888780;font-size:14px;line-height:1.7}
-.pf-row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:0.5px solid #f1efe8;font-size:13px}
-.pf-row:last-child{border-bottom:none}
-.pf-grp{padding:5px 14px;font-size:11px;font-weight:500;color:#888780;background:#f8f7f3;border-bottom:0.5px solid #e0ddd4}
-.forecast-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;background:#faeeda;color:#854f0b;font-weight:500;margin-left:5px}
+.mo-scroll{display:flex;gap:6px;padding:10px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:#fff;border-bottom:0.5px solid #e0ddd4}
+.mo-scroll::-webkit-scrollbar{display:none}
+.mo-chip{padding:5px 13px;border-radius:20px;border:0.5px solid #e0ddd4;background:none;font-size:13px;color:#5f5e5a;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.mo-chip.active{background:#185fa5;border-color:#185fa5;color:#fff;font-weight:500}
+.mo-chip.has-data::after{content:'●';font-size:6px;color:#3b6d11;vertical-align:super;margin-left:2px}
+.empty{text-align:center;padding:40px 20px;color:#888780;font-size:14px;line-height:1.8}
 .pos{color:#3b6d11}.neg{color:#a32d2d}.warn-c{color:#854f0b}
-canvas{display:block}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid #e0ddd4;border-top-color:#185fa5;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+canvas{display:block;width:100%!important}
 </style>
 </head>
 <body>
@@ -87,54 +76,47 @@ canvas{display:block}
     <h1>💼 Portfolio Tracker</h1>
     <button class="sync-btn" onclick="syncAll()" id="syncBtn">↻ Sync</button>
   </div>
-  <div class="mo-scroll" id="moScroll" style="display:none"></div>
-  <div class="tab-row" id="tabRow" style="display:none">
-    <button class="tab active" onclick="setTab('income')">Income</button>
-    <button class="tab" onclick="setTab('expenses')">Expenses</button>
-    <button class="tab" onclick="setTab('investments')">Invest</button>
-    <button class="tab" onclick="setTab('summary')">Summary</button>
-  </div>
-  <div class="content" id="mainContent">
-    <div class="empty">⚙️ Go to <strong>Settings</strong> to connect Google Sheets.</div>
+  <div id="pageContent">
+    <div class="content"><div class="empty">⚙️ Go to <strong>Settings</strong> to connect Google Sheets.</div></div>
   </div>
 </div>
+
 <div class="bottomnav">
-  <button class="nav-item active" onclick="showPage('tracker')" id="nav-tracker"><span class="nav-icon">📊</span><span>Tracker</span></button>
-  <button class="nav-item" onclick="showPage('overview')" id="nav-overview"><span class="nav-icon">🗂</span><span>Overview</span></button>
+  <button class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="nav-icon">📊</span><span>Dashboard</span></button>
+  <button class="nav-item" onclick="showPage('monthly')" id="nav-monthly"><span class="nav-icon">📅</span><span>Monthly</span></button>
   <button class="nav-item" onclick="showPage('portfolio')" id="nav-portfolio"><span class="nav-icon">💼</span><span>Portfolio</span></button>
   <button class="nav-item" onclick="showPage('settings')" id="nav-settings"><span class="nav-icon">⚙️</span><span>Settings</span></button>
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 // ─── CONSTANTS ────────────────────────────────────────────────
-var MONTHS     = ['May','Jun','Jul','Aug','Sep','Oct'];
-var MKS        = ['may','jun','jul','aug','sep','oct'];
-var ALL_PERIODS= ['start','jan','feb','mar','apr','may','jun','jul','aug','sep','oct'];
-var ALL_LABELS = ['Start','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'];
-var CURRENT_MK = 'may'; // running month — update each month
-var LAST_ACTUAL= 'apr'; // last complete month
+var MONTHS      = ['May','Jun','Jul','Aug','Sep','Oct'];
+var MKS         = ['may','jun','jul','aug','sep','oct'];
+var ALL_PERIODS = ['start','jan','feb','mar','apr','may','jun','jul','aug','sep','oct'];
+var ALL_LABELS  = ['Start','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'];
+var CURRENT_MK  = 'may';   // ← update each month
+var LAST_ACTUAL = 'apr';   // ← last complete month
 
 var EXPENSE_CATS = [
-  {key:'admin',       label:'Admin',          budget:110000},
-  {key:'food',        label:'Food & Drinks',  budget:1100000},
-  {key:'healthcare',  label:'Healthcare',     budget:200000},
-  {key:'household',   label:'Household',      budget:200000},
-  {key:'installment', label:'Installment',    budget:9090000},
-  {key:'others',      label:'Others',         budget:100000},
-  {key:'shopping',    label:'Shopping',       budget:300000},
-  {key:'sport',       label:'Sport & Ent',    budget:300000},
-  {key:'telecom',     label:'Telecom',        budget:800000},
-  {key:'topup',       label:'Top Up',         budget:500000},
-  {key:'transport',   label:'Transportation', budget:600000},
-  {key:'withdraw',    label:'Withdraw',       budget:2000000},
-  {key:'zakat',       label:'Zakat',          budget:0},
-  {key:'rizka',       label:'Rizka',          budget:1200000}
+  {key:'admin',       label:'Admin'},
+  {key:'food',        label:'Food & Drinks'},
+  {key:'healthcare',  label:'Healthcare'},
+  {key:'household',   label:'Household'},
+  {key:'installment', label:'Installment'},
+  {key:'others',      label:'Others'},
+  {key:'shopping',    label:'Shopping'},
+  {key:'sport',       label:'Sport & Ent'},
+  {key:'telecom',     label:'Telecom'},
+  {key:'topup',       label:'Top Up'},
+  {key:'transport',   label:'Transportation'},
+  {key:'withdraw',    label:'Withdraw'},
+  {key:'zakat',       label:'Zakat'},
+  {key:'rizka',       label:'Rizka'}
 ];
 
 var INCOME_CATS = [
-  {key:'salary',          label:'Salary (Gaji)'},
+  {key:'salary',          label:'Salary'},
   {key:'rd_return',       label:'Reksa Dana return'},
   {key:'deposito_return', label:'Deposito return'},
   {key:'sr025_coupon',    label:'SR025 coupon'},
@@ -144,7 +126,7 @@ var INCOME_CATS = [
 
 var INVEST_CATS = [
   {key:'rd',             label:'RD top-up',                plan:{may:20000000,jun:20000000,jul:20000000,aug:15000000,sep:50000000,oct:5000000}},
-  {key:'sr025',          label:'SR025 T5 – SBN (new)',     plan:{may:0,jun:0,jul:0,aug:0,sep:250000000,oct:0}},
+  {key:'sr025',          label:'SR025 T5 – SBN',           plan:{may:0,jun:0,jul:0,aug:0,sep:250000000,oct:0}},
   {key:'germany_invest', label:'Germany fund (Life Goals)', plan:{may:10000000,jun:10000000,jul:10000000,aug:10000000,sep:10000000,oct:10000000}}
 ];
 
@@ -157,21 +139,27 @@ var INC_PLAN = {
   other_income:    {may:0,jun:0,jul:0,aug:0,sep:0,oct:0}
 };
 
-// Instruments — group, rate, and forecast logic flags
+var EXP_BUDGET = {
+  admin:110000,food:1100000,healthcare:200000,household:200000,
+  installment:9090000,others:100000,shopping:300000,sport:300000,
+  telecom:800000,topup:500000,transport:600000,withdraw:2000000,
+  zakat:0,rizka:1200000
+};
+
 var PF_INSTRUMENTS = [
-  {key:'bni_saving',    label:'BNI Saving',        group:'liquid', forecastFn:'saving'},
-  {key:'bni_lifegoals', label:'Life Goals',         group:'liquid', forecastFn:'lifegoals'},
-  {key:'bsi_ops',       label:'BSI Operational',   group:'liquid', forecastFn:'flat'},
-  {key:'bni_deposito',  label:'BNI Deposito',       group:'fixed',  forecastFn:'deposito', rate:'2.20% net', grossRate:0.0275, taxRate:0.20},
-  {key:'bni_sbn',       label:'SBN (existing)',     group:'fixed',  forecastFn:'flat'},
-  {key:'sr025',         label:'SR025 T5 (new Sep)', group:'fixed',  forecastFn:'sr025', rate:'5.31% net'},
-  {key:'bni_rd',        label:'BNI Reksa Dana',     group:'market', forecastFn:'rd', rate:'5.50% net', netRate:0.055},
-  {key:'mandiri_rd',    label:'Mandiri RD',         group:'market', forecastFn:'flat'},
-  {key:'mandiri_saham', label:'Mandiri Saham',      group:'market', forecastFn:'flat'},
-  {key:'bsi_gold',      label:'BSI Gold',           group:'market', forecastFn:'flat'},
-  {key:'jmo',           label:'JMO',                group:'retire', forecastFn:'retire', monthlyContrib:608000/3},
-  {key:'bri_9189',      label:'BRI-9189',           group:'retire', forecastFn:'retire', monthlyContrib:608000/3},
-  {key:'bri_8628',      label:'BRI-8628',           group:'retire', forecastFn:'retire', monthlyContrib:608000/3}
+  {key:'bni_saving',    label:'BNI Saving',        group:'liquid'},
+  {key:'bni_lifegoals', label:'Life Goals',         group:'liquid'},
+  {key:'bsi_ops',       label:'BSI Operational',   group:'liquid'},
+  {key:'bni_deposito',  label:'BNI Deposito',       group:'fixed',  rate:'2.20% net', grossRate:0.0275,taxRate:0.20},
+  {key:'bni_sbn',       label:'SBN (existing)',     group:'fixed'},
+  {key:'sr025',         label:'SR025 T5 (new Sep)', group:'fixed',  rate:'5.31% net'},
+  {key:'bni_rd',        label:'BNI Reksa Dana',     group:'market', rate:'5.50% net', netRate:0.055},
+  {key:'mandiri_rd',    label:'Mandiri RD',         group:'market'},
+  {key:'mandiri_saham', label:'Mandiri Saham',      group:'market'},
+  {key:'bsi_gold',      label:'BSI Gold',           group:'market'},
+  {key:'jmo',           label:'JMO',                group:'retire', monthlyContrib:202667},
+  {key:'bri_9189',      label:'BRI-9189',           group:'retire', monthlyContrib:202667},
+  {key:'bri_8628',      label:'BRI-8628',           group:'retire', monthlyContrib:202666}
 ];
 
 var GROUP_LABELS = {liquid:'Liquid',fixed:'Fixed Income',market:'Market-linked',retire:'Retirement'};
@@ -179,464 +167,450 @@ var GROUP_COLORS = {liquid:'#185fa5',fixed:'#3b6d11',market:'#ba7517',retire:'#7
 
 // ─── STATE ────────────────────────────────────────────────────
 var state = {
-  activeMK:      'may',
-  activeTab:     'income',
-  activePage:    'tracker',
-  plan:          {},
-  actuals:       {},
-  portfolioData: {}, // from Google Sheets: {key: {start,jan,...,oct}}
-  settings:      {scriptUrl:'', token:''}
+  activePage: 'dashboard',
+  activeMK:   'may',
+  plan:       {},
+  income:     {},   // {may:{salary:..., rd_return:...}, jun:{...}}
+  expenses:   {},   // {may:{food:..., telecom:...}, jun:{...}}
+  invest:     {},   // {may:{rd:..., sr025:...}, jun:{...}}
+  portfolio:  {},   // {bni_saving:{start:...,jan:...,apr:...}, ...}
+  settings:   {scriptUrl:'', token:''}
 };
 
-// ─── LOCAL STORAGE ────────────────────────────────────────────
 function loadLocal() {
   try {
-    var s = localStorage.getItem('pt_pwa_v4');
+    var s = localStorage.getItem('pt_v5');
     if (s) {
       var p = JSON.parse(s);
-      state.actuals       = p.actuals       || {};
-      state.portfolioData = p.portfolioData || {};
-      state.settings      = p.settings      || {scriptUrl:'',token:''};
+      state.plan      = p.plan      || {};
+      state.income    = p.income    || {};
+      state.expenses  = p.expenses  || {};
+      state.invest    = p.invest    || {};
+      state.portfolio = p.portfolio || {};
+      state.settings  = p.settings  || {scriptUrl:'',token:''};
     }
   } catch(e) {}
 }
+
 function saveLocal() {
-  localStorage.setItem('pt_pwa_v4', JSON.stringify({
-    actuals:       state.actuals,
-    portfolioData: state.portfolioData,
-    settings:      state.settings
+  localStorage.setItem('pt_v5', JSON.stringify({
+    plan:      state.plan,
+    income:    state.income,
+    expenses:  state.expenses,
+    invest:    state.invest,
+    portfolio: state.portfolio,
+    settings:  state.settings
   }));
 }
 
 // ─── FORMATTERS ───────────────────────────────────────────────
 function fmt(n) {
-  if (n === null || n === undefined || isNaN(n)) return '—';
-  var abs = Math.abs(Math.round(n));
+  if (n===null||n===undefined||isNaN(n)) return '—';
+  var abs=Math.abs(Math.round(n));
   var s;
-  if (abs >= 1000000000)      s = (abs/1000000000).toFixed(2)+'B';
-  else if (abs >= 1000000)    s = (abs/1000000).toFixed(1)+'M';
-  else if (abs >= 1000)       s = Math.round(abs/1000)+'K';
-  else                        s = abs.toLocaleString();
-  return (n < 0 ? '−' : '') + 'Rp ' + s;
+  if (abs>=1000000000)   s=(abs/1000000000).toFixed(2)+'B';
+  else if (abs>=1000000) s=(abs/1000000).toFixed(1)+'M';
+  else if (abs>=1000)    s=Math.round(abs/1000)+'K';
+  else                   s=abs.toLocaleString();
+  return (n<0?'−':'')+'Rp '+s;
 }
-function fmtFull(n) { return 'Rp ' + Math.round(Math.abs(n||0)).toLocaleString('id-ID'); }
-function fmtPct(n)  { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
-
-function showToast(msg) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); }, 2500);
+function fmtFull(n){return 'Rp '+Math.round(Math.abs(n||0)).toLocaleString('id-ID');}
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2500);
 }
 
 // ─── DATA ACCESSORS ───────────────────────────────────────────
-function getExp(mk,key) { return ((state.actuals[mk]||{}).expenses||{})[key]||0; }
-function getInc(mk,key) { return ((state.actuals[mk]||{}).income||{})[key]||0; }
-function getInv(mk,key) { return ((state.actuals[mk]||{}).investments||{})[key]||0; }
-function getPlanVal(sec,key,mk) { return ((state.plan[sec]||{})[key]||{})[mk] || ((sec==='expenses'?getBudget(key):0)); }
-function getBudget(key) { var c=EXPENSE_CATS.find(function(x){return x.key===key;}); return c?c.budget:0; }
-
-function totalExpActual(mk)  { return EXPENSE_CATS.reduce(function(s,c){return s+getExp(mk,c.key);},0); }
-function totalExpBudget()    { return EXPENSE_CATS.reduce(function(s,c){return s+c.budget;},0); }
-function totalIncActual(mk)  { return INCOME_CATS.reduce(function(s,c){return s+getInc(mk,c.key);},0); }
-function totalIncPlan(mk)    { return INCOME_CATS.reduce(function(s,c){return s+(INC_PLAN[c.key]||{})[mk]||0;},0); }
-
-function hasData(mk) {
-  var d = state.actuals[mk]||{};
-  return Object.keys(d).some(function(sec){
-    return Object.keys(d[sec]||{}).some(function(k){return d[sec][k]>0;});
-  });
+function getInc(mk, key) {
+  var v = (state.income[mk]||{})[key];
+  return (v===null||v===undefined) ? 0 : v;
+}
+function getExp(mk, key) {
+  var v = (state.expenses[mk]||{})[key];
+  return (v===null||v===undefined) ? 0 : v;
+}
+function getInv(mk, key) {
+  var v = (state.invest[mk]||{})[key];
+  return (v===null||v===undefined) ? 0 : v;
+}
+function getPlanInc(mk, key) { return (INC_PLAN[key]||{})[mk]||0; }
+function getPlanExp(key)      { return EXP_BUDGET[key]||0; }
+function getPlanInv(key, mk)  {
+  var c = INVEST_CATS.find(function(x){return x.key===key;});
+  return c ? (c.plan[mk]||0) : 0;
 }
 
-// ─── PORTFOLIO BALANCE ────────────────────────────────────────
-// Returns actual balance for a given period, or null if not yet entered
+function totalInc(mk) { return INCOME_CATS.reduce(function(s,c){return s+getInc(mk,c.key);},0); }
+function totalExp(mk) { return EXPENSE_CATS.reduce(function(s,c){return s+getExp(mk,c.key);},0); }
+function totalInv(mk) { return INVEST_CATS.reduce(function(s,c){return s+getInv(mk,c.key);},0); }
+function totalExpBudget() { return EXPENSE_CATS.reduce(function(s,c){return s+(EXP_BUDGET[c.key]||0);},0); }
+function totalIncPlan(mk) { return INCOME_CATS.reduce(function(s,c){return s+getPlanInc(mk,c.key);},0); }
+
+function hasMonthData(mk) {
+  var hasInc = Object.values(state.income[mk]||{}).some(function(v){return v>0;});
+  var hasExp = Object.values(state.expenses[mk]||{}).some(function(v){return v>0;});
+  return hasInc||hasExp;
+}
+
+// ─── PORTFOLIO ────────────────────────────────────────────────
 function getPfActual(key, period) {
-  var d = state.portfolioData[key];
+  var d = state.portfolio[key];
   if (!d) return null;
   var v = d[period];
-  // null means blank in sheet (not yet entered), 0 means genuinely zero
-  return (v === null || v === undefined) ? null : v;
+  return (v===null||v===undefined) ? null : v;
 }
 
-// Forecast balance for the running month using plan + actuals entered so far
-function getForecast(instrument, prevPeriod) {
-  var prev = getPfActual(instrument.key, prevPeriod);
-  if (prev === null) return null; // can't forecast without prior balance
-  var fn = instrument.forecastFn;
+function getForecast(instr, prevPeriod) {
+  var prev = getPfActual(instr.key, prevPeriod);
+  if (prev===null) return null;
+  var mk = CURRENT_MK;
 
-  if (fn === 'flat') return prev;
-
-  if (fn === 'deposito') {
-    // Monthly interest net of tax
-    var monthlyNet = prev * instrument.grossRate * (1 - instrument.taxRate) / 12;
-    return prev + monthlyNet;
+  if (instr.key==='bni_deposito') {
+    return prev + prev * instr.grossRate * (1-instr.taxRate) / 12;
   }
-
-  if (fn === 'rd') {
-    // Prior balance + monthly return + planned top-up for current month
-    var monthlyReturn = prev * instrument.netRate / 12;
-    var topup = getInv(CURRENT_MK,'rd') || getPlanVal('investments','rd',CURRENT_MK);
-    return prev + monthlyReturn + topup;
+  if (instr.key==='bni_rd') {
+    var rdTopup = getInv(mk,'rd') || getPlanInv('rd',mk);
+    return prev + prev * instr.netRate / 12 + rdTopup;
   }
-
-  if (fn === 'sr025') {
-    // Only deployed in September
-    var sr025planned = CURRENT_MK === 'sep' ? 250000000 : 0;
-    var sr025actual  = getInv(CURRENT_MK,'sr025');
-    return prev + (sr025actual || sr025planned);
+  if (instr.key==='sr025') {
+    var sr = mk==='sep' ? (getInv(mk,'sr025')||250000000) : 0;
+    return prev + sr;
   }
-
-  if (fn === 'lifegoals') {
-    // Monthly contribution of Rp 10M
-    var lgActual = getInv(CURRENT_MK,'germany_invest');
-    return prev + (lgActual || getPlanVal('investments','germany_invest',CURRENT_MK));
+  if (instr.key==='bni_lifegoals') {
+    return prev + (getInv(mk,'germany_invest')||getPlanInv('germany_invest',mk));
   }
-
-  if (fn === 'saving') {
-    // April balance − planned RD top-up − Germany fund + net income surplus
-    var rdOut     = getInv(CURRENT_MK,'rd') || getPlanVal('investments','rd',CURRENT_MK);
-    var lgOut     = getInv(CURRENT_MK,'germany_invest') || getPlanVal('investments','germany_invest',CURRENT_MK);
-    var income    = totalIncActual(CURRENT_MK) || totalIncPlan(CURRENT_MK);
-    var expenses  = totalExpActual(CURRENT_MK) || totalExpBudget();
-    var surplus   = income - expenses;
-    return prev + surplus - rdOut - lgOut;
+  if (instr.key==='bni_saving') {
+    var rdOut  = getInv(mk,'rd')||getPlanInv('rd',mk);
+    var lgOut  = getInv(mk,'germany_invest')||getPlanInv('germany_invest',mk);
+    var inc    = totalInc(mk)||totalIncPlan(mk);
+    var exp    = totalExp(mk)||totalExpBudget();
+    return prev + (inc-exp) - rdOut - lgOut;
   }
-
-  if (fn === 'retire') {
-    return prev + (instrument.monthlyContrib || 0);
+  if (instr.group==='retire') {
+    return prev + (instr.monthlyContrib||0);
   }
-
-  return prev;
+  return prev; // flat for others
 }
 
-// Get balance for any period — actual if available, forecast if running month
 function getPfBal(key, period) {
   var actual = getPfActual(key, period);
-  if (actual !== null) return actual;
-  // If this is the current running month, return forecast
-  if (period === CURRENT_MK) {
+  if (actual!==null) return actual;
+  if (period===CURRENT_MK) {
     var instr = PF_INSTRUMENTS.find(function(i){return i.key===key;});
     if (instr) return getForecast(instr, LAST_ACTUAL);
   }
   return 0;
 }
 
-function isForecastPeriod(period) { return period === CURRENT_MK; }
-
-function totalPortfolio(period) {
-  return PF_INSTRUMENTS.reduce(function(s,i){return s + (getPfBal(i.key,period)||0);},0);
+function totalPf(period) {
+  return PF_INSTRUMENTS.reduce(function(s,i){return s+(getPfBal(i.key,period)||0);},0);
 }
 
-// Blended net yield = sum(balance * rate) / total investable (excl. operational/saving buffer)
 function blendedYield() {
-  var weightedReturn = 0, total = 0;
-  var rates = {bni_deposito:0.022, bni_rd:0.055, bni_sbn:0.0, sr025:0.0531, mandiri_rd:0.05};
-  PF_INSTRUMENTS.forEach(function(i) {
-    var bal = getPfBal(i.key, LAST_ACTUAL) || 0;
-    if (rates[i.key]) { weightedReturn += bal * rates[i.key]; total += bal; }
-  });
-  return total > 0 ? (weightedReturn / total * 100) : 0;
-}
-
-// Annual investment income estimate
-function annualInvestmentIncome() {
-  var income = 0;
-  var rates = {bni_deposito:0.022,bni_rd:0.055,bni_sbn:0.0,sr025:0.0531,mandiri_rd:0.05};
+  var rates={bni_deposito:0.022,bni_rd:0.055,sr025:0.0531};
+  var num=0,den=0;
   PF_INSTRUMENTS.forEach(function(i){
-    var bal = getPfBal(i.key,LAST_ACTUAL)||0;
-    if (rates[i.key]) income += bal * rates[i.key];
+    var bal=getPfBal(i.key,LAST_ACTUAL)||0;
+    if (rates[i.key]){num+=bal*rates[i.key];den+=bal;}
   });
-  return income;
+  return den>0 ? num/den*100 : 0;
 }
 
-// Emergency fund ratio = liquid assets / monthly expenses
+function annualInvestmentIncome() {
+  var rates={bni_deposito:0.022,bni_rd:0.055,sr025:0.0531};
+  return PF_INSTRUMENTS.reduce(function(s,i){
+    return s+(rates[i.key]||0)*(getPfBal(i.key,LAST_ACTUAL)||0);
+  },0);
+}
+
 function emergencyRatio() {
-  var liquid = ['bni_saving','bsi_ops'].reduce(function(s,k){return s+(getPfBal(k,LAST_ACTUAL)||0);},0);
-  var monthlyExp = totalExpBudget();
-  return monthlyExp > 0 ? liquid/monthlyExp : 0;
+  var liquid=(getPfBal('bni_saving',LAST_ACTUAL)||0)+(getPfBal('bsi_ops',LAST_ACTUAL)||0);
+  return totalExpBudget()>0 ? liquid/totalExpBudget() : 0;
 }
 
 // ─── NAVIGATION ───────────────────────────────────────────────
 function showPage(page) {
   state.activePage = page;
-  ['tracker','overview','portfolio','settings'].forEach(function(p){
-    document.getElementById('nav-'+p).classList.toggle('active', p===page);
+  ['dashboard','monthly','portfolio','settings'].forEach(function(p){
+    document.getElementById('nav-'+p).classList.toggle('active',p===page);
   });
-  var isTracker = page==='tracker';
-  document.getElementById('moScroll').style.display = isTracker ? 'flex' : 'none';
-  document.getElementById('tabRow').style.display   = isTracker ? 'flex' : 'none';
-  if (page==='tracker')   { renderMonthBar(); renderSection(); }
-  else if (page==='overview')  renderOverview();
+  if      (page==='dashboard') renderDashboard();
+  else if (page==='monthly')   renderMonthly();
   else if (page==='portfolio') renderPortfolioPage();
-  else renderSettings();
+  else                         renderSettings();
 }
 
-function setMonth(mk) { state.activeMK=mk; renderMonthBar(); renderSection(); }
+// ─── DASHBOARD PAGE ───────────────────────────────────────────
+function renderDashboard() {
+  var aprT  = totalPf(LAST_ACTUAL);
+  var mayT  = totalPf(CURRENT_MK);
+  var startT= totalPf('start');
+  var mom   = aprT>0 ? (mayT-aprT)/aprT*100 : 0;
+  var ytd   = aprT-startT;
+  var ey    = blendedYield();
+  var ai    = annualInvestmentIncome();
+  var ef    = emergencyRatio();
 
-function setTab(tab) {
-  state.activeTab = tab;
-  document.querySelectorAll('.tab').forEach(function(b,i){
-    b.classList.toggle('active', ['income','expenses','investments','summary'][i]===tab);
-  });
-  renderSection();
-}
+  // Current month actuals (if any)
+  var curInc = totalInc(CURRENT_MK);
+  var curExp = totalExp(CURRENT_MK);
+  var curInv = totalInv(CURRENT_MK);
+  var curNet = curInc - curExp - curInv;
+  var hasCurrentData = hasMonthData(CURRENT_MK);
 
-function renderMonthBar() {
-  document.getElementById('moScroll').innerHTML = MONTHS.map(function(m,i){
-    var mk = MKS[i];
-    return '<button class="mo-chip'+(mk===state.activeMK?' active':'')+(hasData(mk)?' has-data':'')+'" onclick="setMonth(\''+mk+'\')">'+m+'</button>';
-  }).join('');
-}
+  var h='';
 
-// ─── TRACKER SECTIONS ─────────────────────────────────────────
-function buildAlerts(mk) {
-  var alerts=[], ea=totalExpActual(mk), eb=totalExpBudget();
-  if (ea>0&&ea>eb) alerts.push({type:'danger',msg:'<strong>Over budget by '+fmtFull(ea-eb)+'.</strong>'});
-  EXPENSE_CATS.forEach(function(c){
-    var act=getExp(mk,c.key);
-    if (c.budget>0&&act>c.budget*1.15) alerts.push({type:'warn',msg:'<strong>'+c.label+'</strong> over by '+fmtFull(act-c.budget)+'.'});
-  });
-  if (mk==='sep'&&getInv(mk,'sr025')===0) alerts.push({type:'warn',msg:'<strong>SR025 not recorded.</strong> Window closes 16 Sep.'});
-  if (mk==='aug'||mk==='sep') alerts.push({type:'info',msg:'SR025 window: <strong>21 Aug – 16 Sep 2026.</strong>'});
-  if (!alerts.length) alerts.push({type:'ok',msg:'<strong>All clear.</strong> '+(ea===0?'Enter actuals to see variance.':'Within budget.')});
-  return alerts;
-}
-function aEmoji(t){return t==='danger'?'🔴':t==='warn'?'🟡':t==='ok'?'🟢':'🔵';}
-
-function renderSection() {
-  if      (state.activeTab==='income')      renderIncome();
-  else if (state.activeTab==='expenses')    renderExpenses();
-  else if (state.activeTab==='investments') renderInvestments();
-  else                                      renderSummary();
-}
-
-function renderIncome() {
-  var mk=state.activeMK, ip=totalIncPlan(mk), ia=totalIncActual(mk);
-  var h='<div class="sl">Income — '+MONTHS[MKS.indexOf(mk)]+' 2026</div>';
-  h+='<div class="g2"><div class="metric"><div class="lbl">Planned</div><div class="val">'+fmt(ip)+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Actual</div><div class="val '+(ia>0&&ia<ip?'warn-c':ia>0?'pos':'')+'\">'+(ia>0?fmt(ia):'—')+'</div></div></div>';
-  h+='<div class="card"><div class="card-head"><span>Enter actual income</span></div>';
-  INCOME_CATS.forEach(function(c){
-    var plan=(INC_PLAN[c.key]||{})[mk]||0, act=getInc(mk,c.key);
-    h+='<div class="inp-row"><div><div class="cat-label">'+c.label+'</div><div class="cat-sub">Plan: '+(plan>0?fmtFull(plan):'—')+'</div></div>';
-    h+='<input type="number" id="inc_'+mk+'_'+c.key+'" value="'+(act||'')+'" placeholder="'+(plan||0)+'" min="0" step="1000"></div>';
-  });
-  h+='<div class="save-bar"><button class="btn-primary" onclick="saveSection(\''+mk+'\',\'income\')">💾 Save income</button></div></div>';
-  document.getElementById('mainContent').innerHTML = h;
-}
-
-function renderExpenses() {
-  var mk=state.activeMK, ea=totalExpActual(mk), eb=totalExpBudget(), v=eb-ea;
-  var h='<div class="sl">Expenses — '+MONTHS[MKS.indexOf(mk)]+' 2026</div>';
-  h+='<div class="g2"><div class="metric"><div class="lbl">Budget</div><div class="val">'+fmt(eb)+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Actual</div><div class="val '+(ea>eb?'neg':'')+'\">'+(ea>0?fmt(ea):'—')+'</div></div></div>';
-  h+='<div class="card"><div class="card-head"><span>Enter actual expenses</span></div>';
-  EXPENSE_CATS.forEach(function(c){
-    var act=getExp(mk,c.key), over=act>0&&c.budget>0&&act>c.budget;
-    h+='<div class="inp-row"><div><div class="cat-label"'+(over?' style="color:#a32d2d"':'')+'>'+c.label+(over?' ▲':'')+'</div>';
-    h+='<div class="cat-sub">Budget: '+(c.budget>0?fmtFull(c.budget):'—')+'</div></div>';
-    h+='<input type="number" id="exp_'+mk+'_'+c.key+'" value="'+(act||'')+'" placeholder="'+(c.budget||0)+'" min="0" step="1000"'+(over?' style="border-color:#a32d2d"':'')+' ></div>';
-  });
-  h+='<div class="save-bar"><button class="btn-ghost" onclick="clearSection(\''+mk+'\',\'expenses\')">Clear</button>';
-  h+='<button class="btn-primary" onclick="saveSection(\''+mk+'\',\'expenses\')">💾 Save</button></div></div>';
-  var alerts=buildAlerts(mk);
-  h+='<div class="card">';
-  alerts.forEach(function(a){h+='<div class="alert-item"><span>'+aEmoji(a.type)+'</span><div class="alert-text">'+a.msg+'</div></div>';});
+  // Portfolio headline
+  h+='<div class="sl">Portfolio — April actual / May forecast</div>';
+  h+='<div class="g2">';
+  h+='<div class="metric"><div class="lbl">Total (Apr)</div><div class="val">'+fmt(aprT)+'</div><div class="sub">last complete month</div></div>';
+  h+='<div class="metric"><div class="lbl">Forecast (May)<span class="fc-badge">est.</span></div><div class="val '+(mom>=0?'pos':'neg')+'">'+fmt(mayT)+'</div><div class="sub">'+(mom>=0?'+':'')+mom.toFixed(2)+'% vs Apr</div></div>';
   h+='</div>';
-  document.getElementById('mainContent').innerHTML = h;
+  h+='<div class="g3">';
+  h+='<div class="metric"><div class="lbl">YTD growth</div><div class="val pos">'+fmt(ytd)+'</div></div>';
+  h+='<div class="metric"><div class="lbl">Blended yield</div><div class="val">'+ey.toFixed(2)+'%</div><div class="sub">net</div></div>';
+  h+='<div class="metric"><div class="lbl">Inv. income/yr</div><div class="val pos">'+fmt(ai)+'</div></div>';
+  h+='</div>';
+
+  // Emergency fund
+  h+='<div class="card"><div class="card-head"><span>Emergency fund</span><span class="badge '+(ef>=6?'b-ok':ef>=3?'b-warn':'b-danger')+'">'+ef.toFixed(1)+'× months</span></div>';
+  h+='<div style="padding:10px 14px">';
+  h+='<div class="prog-bar" style="height:8px"><div class="prog-fill" style="width:'+Math.min(100,ef/6*100).toFixed(0)+'%;background:'+(ef>=6?'#3b6d11':ef>=3?'#ba7517':'#a32d2d')+'"></div></div>';
+  h+='<div style="display:flex;justify-content:space-between;font-size:11px;color:#888780;margin-top:4px"><span>0×</span><span>Target: 6×</span></div>';
+  h+='<div style="font-size:12px;color:#5f5e5a;margin-top:6px">Liquid: '+fmt((getPfBal('bni_saving',LAST_ACTUAL)||0)+(getPfBal('bsi_ops',LAST_ACTUAL)||0))+' vs '+fmt(totalExpBudget()*6)+' target (6 months)</div>';
+  h+='</div></div>';
+
+  // Current month snapshot
+  h+='<div class="sl">May 2026 — current month</div>';
+  if (hasCurrentData) {
+    h+='<div class="g2">';
+    h+='<div class="metric"><div class="lbl">Income</div><div class="val pos">'+fmt(curInc)+'</div><div class="sub">plan: '+fmt(totalIncPlan(CURRENT_MK))+'</div></div>';
+    h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(curExp>totalExpBudget()?'neg':'')+'">'+fmt(curExp)+'</div><div class="sub">budget: '+fmt(totalExpBudget())+'</div></div>';
+    h+='</div>';
+    h+='<div class="g2">';
+    h+='<div class="metric"><div class="lbl">Invested</div><div class="val pos">'+fmt(curInv)+'</div></div>';
+    h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(curNet<0?'neg':'pos')+'">'+fmt(curNet)+'</div><div class="sub">'+(curNet<0?'from savings':'surplus')+'</div></div>';
+    h+='</div>';
+  } else {
+    h+='<div class="card"><div style="padding:14px;font-size:13px;color:#888780">No May data yet. Update your Google Sheets and tap ↻ Sync.</div></div>';
+  }
+
+  // Alerts
+  var alerts = buildAlerts(CURRENT_MK);
+  h+='<div class="sl">Alerts</div><div class="card">';
+  alerts.forEach(function(a){
+    h+='<div class="alert-item"><span>'+aEmoji(a.type)+'</span><div class="alert-text">'+a.msg+'</div></div>';
+  });
+  h+='</div>';
+
+  // Allocation summary
+  h+='<div class="sl">Asset allocation (Apr)</div><div class="card">';
+  var groups={liquid:0,fixed:0,market:0,retire:0};
+  PF_INSTRUMENTS.forEach(function(i){groups[i.group]+=(getPfBal(i.key,LAST_ACTUAL)||0);});
+  Object.keys(groups).forEach(function(g){
+    var pct=aprT>0?groups[g]/aprT*100:0;
+    h+='<div style="padding:8px 14px;border-bottom:0.5px solid #f1efe8">';
+    h+='<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">';
+    h+='<span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:'+GROUP_COLORS[g]+';display:inline-block"></span>'+GROUP_LABELS[g]+'</span>';
+    h+='<span><strong>'+fmt(groups[g])+'</strong> <span style="color:#888780;font-size:12px">'+pct.toFixed(1)+'%</span></span></div>';
+    h+='<div class="prog-bar"><div class="prog-fill" style="width:'+pct.toFixed(0)+'%;background:'+GROUP_COLORS[g]+'"></div></div></div>';
+  });
+  h+='</div>';
+
+  document.getElementById('pageContent').innerHTML = '<div class="content">'+h+'</div>';
 }
 
-function renderInvestments() {
+// ─── MONTHLY PAGE ─────────────────────────────────────────────
+function renderMonthly() {
+  var moBar = '<div class="mo-scroll">';
+  MONTHS.forEach(function(m,i){
+    var mk=MKS[i];
+    moBar+='<button class="mo-chip'+(mk===state.activeMK?' active':'')+(hasMonthData(mk)?' has-data':'')+'" onclick="selectMonth(\''+mk+'\')">'+m+'</button>';
+  });
+  moBar+='</div>';
+
   var mk=state.activeMK;
-  var h='<div class="sl">Investments — '+MONTHS[MKS.indexOf(mk)]+' 2026</div>';
-  h+='<div class="card"><div class="card-head"><span>Deployment actuals</span></div>';
+  var totalI=totalInc(mk), totalE=totalExp(mk), totalV=totalInv(mk);
+  var planI=totalIncPlan(mk), planE=totalExpBudget();
+  var net=totalI-totalE-totalV;
+  var isCurrent = mk===CURRENT_MK;
+
+  var h='';
+
+  // Summary metrics
+  h+='<div class="g2">';
+  h+='<div class="metric"><div class="lbl">Income'+(isCurrent?'<span class="fc-badge">partial</span>':'')+'</div>';
+  h+='<div class="val '+(totalI>0?'pos':'')+'">'+(totalI>0?fmt(totalI):'—')+'</div>';
+  h+='<div class="sub">plan: '+fmt(planI)+'</div></div>';
+  h+='<div class="metric"><div class="lbl">Expenses</div>';
+  h+='<div class="val '+(totalE>planE?'neg':totalE>0?'':'')+'\">'+(totalE>0?fmt(totalE):'—')+'</div>';
+  h+='<div class="sub">budget: '+fmt(planE)+'</div></div>';
+  h+='</div><div class="g2">';
+  h+='<div class="metric"><div class="lbl">Invested</div><div class="val pos">'+(totalV>0?fmt(totalV):'—')+'</div></div>';
+  h+='<div class="metric"><div class="lbl">Net flow</div>';
+  h+='<div class="val '+(totalI>0?(net<0?'neg':'pos'):'')+'">'+(totalI>0?fmt(net):'—')+'</div>';
+  h+='<div class="sub">'+(net<0?'from savings':net>0?'surplus':'')+'</div></div>';
+  h+='</div>';
+
+  // Income breakdown
+  h+='<div class="card"><div class="card-head"><span>Income breakdown</span></div>';
+  var hasAnyInc=false;
+  INCOME_CATS.forEach(function(c){
+    var act=getInc(mk,c.key), plan=getPlanInc(mk,c.key);
+    if (!act&&!plan) return;
+    hasAnyInc=true;
+    var diff=act-plan;
+    h+='<div class="row"><span class="row-label">'+c.label+'</span>';
+    h+='<div><div class="row-val '+(act>0?'pos':'')+'\">'+(act>0?fmt(act):'—')+'</div>';
+    if (plan>0) h+='<div class="row-sub">'+(act>0?(diff>=0?'+':'')+fmt(diff)+' vs plan':'plan: '+fmt(plan))+'</div>';
+    h+='</div></div>';
+  });
+  if (!hasAnyInc) h+='<div style="padding:12px 14px;font-size:13px;color:#888780">No income data yet.</div>';
+  h+='</div>';
+
+  // Expense breakdown
+  h+='<div class="card"><div class="card-head"><span>Expense breakdown</span></div>';
+  var hasAnyExp=false;
+  EXPENSE_CATS.forEach(function(c){
+    var act=getExp(mk,c.key), bud=getPlanExp(c.key);
+    if (!act&&!bud) return;
+    hasAnyExp=true;
+    var over=act>bud&&bud>0;
+    var diff=bud-act;
+    h+='<div class="row"><span class="row-label" style="'+(over?'color:#a32d2d':'')+'">'+c.label+(over?' ▲':'')+'</span>';
+    h+='<div><div class="row-val '+(over?'neg':'')+'">'+(act>0?fmt(act):'—')+'</div>';
+    if (bud>0) h+='<div class="row-sub" style="color:'+(over?'#a32d2d':diff<bud*0.1?'#888780':'#3b6d11')+'">'+(act>0?(diff>=0?'−':'+')+''+fmt(Math.abs(diff))+' vs budget':'budget: '+fmt(bud))+'</div>';
+    h+='</div></div>';
+  });
+  if (!hasAnyExp) h+='<div style="padding:12px 14px;font-size:13px;color:#888780">No expense data yet.</div>';
+  h+='</div>';
+
+  // Investment breakdown
+  h+='<div class="card"><div class="card-head"><span>Investments</span></div>';
   INVEST_CATS.forEach(function(c){
-    var plan=c.plan[mk]||0, act=getInv(mk,c.key);
-    if (plan===0&&act===0) return;
+    var act=getInv(mk,c.key), plan=getPlanInv(c.key,mk);
+    if (!plan&&!act) return;
     var pct=plan>0?Math.min(100,Math.round(act/plan*100)):0;
     var color=pct>=100?'#3b6d11':pct>0?'#ba7517':'#d3d1c7';
-    var slbl=act===0?'Not done':act>=plan?'✓ Done':'Partial';
-    h+='<div style="padding:10px 14px;border-bottom:0.5px solid #f1efe8">';
-    h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">';
-    h+='<div><div class="cat-label">'+c.label+'</div>';
-    h+='<span class="badge '+(act>=plan&&act>0?'b-ok':act>0?'b-warn':'b-info')+'" style="font-size:10px;margin-top:3px">'+slbl+'</span></div>';
-    h+='<div style="text-align:right"><div class="cat-sub" style="margin-bottom:4px">Plan: '+fmtFull(plan)+'</div>';
-    h+='<input type="number" id="inv_'+mk+'_'+c.key+'" value="'+(act||'')+'" placeholder="0" min="0" step="1000000" style="width:130px"></div></div>';
-    if (plan>0){h+='<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%;background:'+color+'"></div></div>';
-    h+='<div style="font-size:11px;color:#888780;margin-top:3px">'+pct+'% of plan</div>';}
+    h+='<div style="padding:9px 14px;border-bottom:0.5px solid #f1efe8">';
+    h+='<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">';
+    h+='<span class="row-label">'+c.label+'</span>';
+    h+='<div><div class="row-val '+(act>=plan&&act>0?'pos':'')+'\">'+(act>0?fmt(act):'—')+'</div>';
+    h+='<div class="row-sub">plan: '+fmt(plan)+'</div></div></div>';
+    if (plan>0){h+='<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%;background:'+color+'"></div></div>';}
     h+='</div>';
   });
-  h+='<div class="save-bar"><button class="btn-ghost" onclick="clearSection(\''+mk+'\',\'investments\')">Clear</button>';
-  h+='<button class="btn-primary" onclick="saveSection(\''+mk+'\',\'investments\')">💾 Save</button></div></div>';
-  document.getElementById('mainContent').innerHTML = h;
-}
-
-function renderSummary() {
-  var mk=state.activeMK;
-  var ip=totalIncPlan(mk), ia=totalIncActual(mk)||totalIncPlan(mk);
-  var ea=totalExpActual(mk), eb=totalExpBudget();
-  var inv=INVEST_CATS.reduce(function(s,c){return s+getInv(mk,c.key);},0);
-  var net=ia-ea-inv;
-  var alerts=buildAlerts(mk);
-  var h='<div class="sl">Summary — '+MONTHS[MKS.indexOf(mk)]+' 2026</div>';
-  h+='<div class="g2"><div class="metric"><div class="lbl">Income</div><div class="val pos">'+fmt(ia)+'</div><div class="sub">plan: '+fmt(ip)+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(ea>eb?'neg':'')+'\">'+(ea>0?fmt(ea):'—')+'</div><div class="sub">budget: '+fmt(eb)+'</div></div></div>';
-  h+='<div class="g2"><div class="metric"><div class="lbl">Invested</div><div class="val pos">'+(inv>0?fmt(inv):'—')+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(net<0?'neg':'pos')+'\">'+(ea>0?fmt(net):'—')+'</div><div class="sub">'+(net<0?'from savings':'surplus')+'</div></div></div>';
-  h+='<div class="card">';
-  alerts.forEach(function(a){h+='<div class="alert-item"><span>'+aEmoji(a.type)+'</span><div class="alert-text">'+a.msg+'</div></div>';});
   h+='</div>';
-  document.getElementById('mainContent').innerHTML = h;
+
+  document.getElementById('pageContent').innerHTML = moBar+'<div class="content">'+h+'</div>';
 }
 
-// ─── OVERVIEW PAGE ────────────────────────────────────────────
-function renderOverview() {
-  var h='<div class="sl">6-month tracker overview</div>';
-  MONTHS.forEach(function(m,i){
-    var mk=MKS[i], ea=totalExpActual(mk), ep=totalExpBudget();
-    var inv=INVEST_CATS.reduce(function(s,c){return s+getInv(mk,c.key);},0);
-    var hd=hasData(mk);
-    h+='<div class="card" style="margin-bottom:8px"><div class="card-head"><span>'+m+' 2026</span>';
-    h+='<span class="badge '+(hd?(ea>ep?'b-danger':'b-ok'):'b-neutral')+'">'+(hd?(ea>ep?'Over':'On track'):'Pending')+'</span></div>';
-    if (hd) {
-      var ia=totalIncActual(mk);
-      h+='<div class="sum-row"><span style="color:#5f5e5a">Income</span><span class="pos">'+fmt(ia)+'</span></div>';
-      h+='<div class="sum-row"><span style="color:#5f5e5a">Expenses</span><span class="'+(ea>ep?'neg':'')+'">'+fmt(ea)+' <span style="font-size:11px;color:#888780">/ '+fmt(ep)+'</span></span></div>';
-      h+='<div class="sum-row"><span style="color:#5f5e5a">Invested</span><span class="pos">'+(inv>0?fmt(inv):'—')+'</span></div>';
-    } else {
-      h+='<div style="padding:12px 14px;font-size:13px;color:#888780">No actuals entered yet.</div>';
-    }
-    h+='</div>';
-  });
-  document.getElementById('mainContent').innerHTML = h;
-}
+function selectMonth(mk){ state.activeMK=mk; renderMonthly(); }
 
 // ─── PORTFOLIO PAGE ───────────────────────────────────────────
 function renderPortfolioPage() {
-  var aprTotal = totalPortfolio(LAST_ACTUAL);
-  var mayForecast = totalPortfolio(CURRENT_MK);
-  var startTotal = totalPortfolio('start');
-  var ytd = aprTotal - startTotal;
-  var mom = aprTotal > 0 ? ((mayForecast - aprTotal)/aprTotal*100) : 0;
-  var ey = blendedYield();
-  var annIncome = annualInvestmentIncome();
-  var emFund = emergencyRatio();
+  var aprT=totalPf(LAST_ACTUAL), mayT=totalPf(CURRENT_MK), startT=totalPf('start');
+  var mom=aprT>0?(mayT-aprT)/aprT*100:0;
 
   var h='<div class="sl">Key metrics</div>';
   h+='<div class="g2">';
-  h+='<div class="metric"><div class="lbl">Portfolio (Apr actual)</div><div class="val">'+fmt(aprTotal)+'</div><div class="sub">last complete month</div></div>';
-  h+='<div class="metric"><div class="lbl">May forecast <span class="forecast-badge">est.</span></div><div class="val pos">'+fmt(mayForecast)+'</div><div class="sub">'+(mom>=0?'+':'')+mom.toFixed(2)+'% vs Apr</div></div>';
+  h+='<div class="metric"><div class="lbl">Portfolio (Apr)</div><div class="val">'+fmt(aprT)+'</div><div class="sub">last complete month</div></div>';
+  h+='<div class="metric"><div class="lbl">May forecast<span class="fc-badge">est.</span></div><div class="val pos">'+fmt(mayT)+'</div><div class="sub">'+(mom>=0?'+':'')+mom.toFixed(2)+'% vs Apr</div></div>';
   h+='</div>';
-  h+='<div class="g2">';
-  h+='<div class="metric"><div class="lbl">YTD growth</div><div class="val pos">'+fmt(ytd)+'</div><div class="sub">vs start of year</div></div>';
-  h+='<div class="metric"><div class="lbl">Blended yield</div><div class="val">'+ey.toFixed(2)+'%</div><div class="sub">net, on yielding assets</div></div>';
-  h+='</div>';
-  h+='<div class="g2">';
-  h+='<div class="metric"><div class="lbl">Annual inv. income</div><div class="val pos">'+fmt(annIncome)+'</div><div class="sub">est. per year</div></div>';
-  h+='<div class="metric"><div class="lbl">Emergency fund</div><div class="val '+(emFund<6?'warn-c':'pos')+'">'+emFund.toFixed(1)+'×</div><div class="sub">'+(emFund>=6?'✓ Healthy':'Target: 6×')+' monthly exp.</div></div>';
+  h+='<div class="g3">';
+  h+='<div class="metric"><div class="lbl">YTD growth</div><div class="val pos">'+fmt(aprT-startT)+'</div></div>';
+  h+='<div class="metric"><div class="lbl">Blended yield</div><div class="val">'+blendedYield().toFixed(2)+'%</div><div class="sub">net</div></div>';
+  h+='<div class="metric"><div class="lbl">Inv. income/yr</div><div class="val pos">'+fmt(annualInvestmentIncome())+'</div></div>';
   h+='</div>';
 
-  // Allocation
-  var groups={liquid:0,fixed:0,market:0,retire:0};
-  PF_INSTRUMENTS.forEach(function(i){groups[i.group]+=(getPfBal(i.key,LAST_ACTUAL)||0);});
-  h+='<div class="sl">Asset allocation — April (actual)</div>';
-  h+='<div class="card">';
-  Object.keys(groups).forEach(function(g){
-    var pct=aprTotal>0?(groups[g]/aprTotal*100):0;
-    var barW=Math.round(pct);
-    h+='<div style="padding:8px 14px;border-bottom:0.5px solid #f1efe8">';
-    h+='<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px">';
-    h+='<span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:2px;background:'+GROUP_COLORS[g]+';display:inline-block"></span>'+GROUP_LABELS[g]+'</span>';
-    h+='<span><strong>'+fmt(groups[g])+'</strong> <span style="color:#888780;font-size:12px">'+pct.toFixed(1)+'%</span></span></div>';
-    h+='<div class="prog-bar"><div class="prog-fill" style="width:'+barW+'%;background:'+GROUP_COLORS[g]+'"></div></div></div>';
-  });
-  h+='</div>';
-
-  // Holdings detail
-  h+='<div class="sl">Holdings — Apr actual / May forecast</div>';
-  h+='<div class="card">';
+  // Holdings
+  h+='<div class="sl">Holdings — Apr actual / May est.</div><div class="card">';
   var curGrp='';
   PF_INSTRUMENTS.forEach(function(i){
-    if (i.group!==curGrp){ h+='<div class="pf-grp">'+GROUP_LABELS[i.group]+'</div>'; curGrp=i.group; }
-    var aprBal = getPfBal(i.key,LAST_ACTUAL)||0;
-    var mayBal = getPfBal(i.key,CURRENT_MK);
-    var mayActual = getPfActual(i.key,CURRENT_MK);
-    var isFC = mayActual === null;
-    var diff = mayBal - aprBal;
-    h+='<div class="pf-row"><div>';
-    h+='<div style="font-size:13px">'+i.label+'</div>';
-    if (i.rate) h+='<div style="font-size:11px;color:#888780">'+i.rate+'</div>';
-    h+='</div>';
-    h+='<div style="text-align:right">';
-    h+='<div><strong>'+(mayBal>0?fmt(mayBal):'—')+'</strong>'+(isFC&&mayBal>0?'<span class="forecast-badge">est.</span>':'')+'</div>';
-    h+='<div style="font-size:11px;color:'+(diff>0?'#3b6d11':diff<0?'#a32d2d':'#888780')+'">';
-    h+=(mayBal>0&&aprBal>0?(diff>=0?'+':'')+fmt(diff)+' vs Apr':'Apr: '+fmt(aprBal))+'</div>';
-    h+='</div></div>';
+    if (i.group!==curGrp){h+='<div class="pf-grp">'+GROUP_LABELS[i.group]+'</div>';curGrp=i.group;}
+    var aprBal=getPfBal(i.key,LAST_ACTUAL)||0;
+    var mayBal=getPfBal(i.key,CURRENT_MK)||0;
+    var isFC=getPfActual(i.key,CURRENT_MK)===null;
+    var diff=mayBal-aprBal;
+    h+='<div class="row"><div><div style="font-size:13px">'+i.label+'</div>'+(i.rate?'<div style="font-size:11px;color:#888780">'+i.rate+'</div>':'')+'</div>';
+    h+='<div style="text-align:right"><div class="row-val">'+(mayBal>0?fmt(mayBal):'—')+(isFC&&mayBal>0?'<span class="fc-badge">est.</span>':'')+'</div>';
+    h+='<div class="row-sub" style="color:'+(diff>0?'#3b6d11':diff<0?'#a32d2d':'#888780')+'">'+(diff!==0?(diff>0?'+':'')+fmt(diff)+' vs Apr':'Apr: '+fmt(aprBal))+'</div></div></div>';
   });
-  var aprT=totalPortfolio(LAST_ACTUAL), mayT=totalPortfolio(CURRENT_MK);
-  h+='<div class="pf-row" style="border-top:0.5px solid #e0ddd4"><span style="font-weight:500">Total</span>';
-  h+='<div style="text-align:right"><div style="font-weight:500">'+fmt(mayT)+'<span class="forecast-badge">est.</span></div>';
-  h+='<div style="font-size:11px;color:#3b6d11">+'+fmt(mayT-aprT)+' vs Apr</div></div></div></div>';
+  var tDiff=mayT-aprT;
+  h+='<div class="row" style="border-top:0.5px solid #e0ddd4"><span style="font-weight:500">Total</span>';
+  h+='<div><div class="row-val">'+fmt(mayT)+'<span class="fc-badge">est.</span></div>';
+  h+='<div class="row-sub pos">'+(tDiff>=0?'+':'')+fmt(tDiff)+' vs Apr</div></div></div></div>';
 
   // Growth chart
-  h+='<div class="sl">Portfolio growth</div>';
-  h+='<div class="card" style="padding:14px"><canvas id="chart_growth" height="180"></canvas></div>';
+  h+='<div class="sl">Growth over time</div>';
+  h+='<div class="card" style="padding:14px"><canvas id="growth_chart" height="180"></canvas></div>';
 
-  document.getElementById('mainContent').innerHTML = h;
+  // History table
+  h+='<div class="sl">Balance history</div>';
+  h+='<div class="card"><div style="overflow-x:auto;padding:0 0 10px">';
+  h+='<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:380px">';
+  h+='<thead><tr><th style="text-align:left;padding:6px 14px;color:#888780;font-weight:500;border-bottom:0.5px solid #e0ddd4;white-space:nowrap">Instrument</th>';
+  ['Start','Jan','Feb','Mar','Apr'].forEach(function(l){
+    h+='<th style="text-align:right;padding:6px 8px;color:#888780;font-weight:500;border-bottom:0.5px solid #e0ddd4">'+l+'</th>';
+  });
+  h+='</tr></thead><tbody>';
+  PF_INSTRUMENTS.forEach(function(i){
+    h+='<tr><td style="padding:4px 14px;color:#5f5e5a;white-space:nowrap">'+i.label+'</td>';
+    ['start','jan','feb','mar','apr'].forEach(function(p){
+      var v=getPfBal(i.key,p);
+      h+='<td style="text-align:right;padding:4px 8px;color:#1a1a18">'+(v>0?fmt(v):'—')+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='<tr style="font-weight:500;border-top:0.5px solid #e0ddd4">';
+  h+='<td style="padding:6px 14px">Total</td>';
+  ['start','jan','feb','mar','apr'].forEach(function(p){
+    h+='<td style="text-align:right;padding:6px 8px">'+fmt(totalPf(p))+'</td>';
+  });
+  h+='</tr></tbody></table></div></div>';
 
-  // Render chart after DOM update
+  document.getElementById('pageContent').innerHTML = '<div class="content">'+h+'</div>';
+
   setTimeout(function(){
-    var ctx = document.getElementById('chart_growth');
+    var ctx=document.getElementById('growth_chart');
     if (!ctx) return;
-    var periods = ['start','jan','feb','mar','apr','may'];
-    var labels  = ['Start','Jan','Feb','Mar','Apr','May (est.)'];
-    var actuals = periods.map(function(p){ return p===CURRENT_MK ? null : (totalPortfolio(p)||null); });
-    var forecast= periods.map(function(p){ return p===LAST_ACTUAL||p===CURRENT_MK ? totalPortfolio(p) : null; });
-
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: 'Actual',
-            data: actuals,
-            borderColor: '#185fa5',
-            backgroundColor: 'rgba(24,95,165,0.08)',
-            fill: true,
-            tension: 0.3,
-            pointRadius: 5,
-            borderWidth: 2,
-            spanGaps: false
-          },
-          {
-            label: 'Forecast',
-            data: forecast,
-            borderColor: '#ba7517',
-            backgroundColor: 'transparent',
-            borderDash: [5,4],
-            tension: 0.3,
-            pointRadius: 5,
-            borderWidth: 2,
-            spanGaps: false
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { labels: { color:'#888780', font:{size:11} } },
-          tooltip: { callbacks: { label: function(ctx){ return ctx.dataset.label+': '+fmt(ctx.raw); } } }
-        },
-        scales: {
-          x: { ticks:{color:'#888780'}, grid:{display:false} },
-          y: { ticks:{color:'#888780', callback:function(v){return 'Rp '+(v/1000000000).toFixed(2)+'B';}}, grid:{color:'rgba(0,0,0,0.05)'} }
+    var periods=['start','jan','feb','mar','apr','may'];
+    var labels =['Start','Jan','Feb','Mar','Apr','May (est.)'];
+    var actuals =periods.map(function(p){ return p===CURRENT_MK?null:(totalPf(p)||null); });
+    var forecast=periods.map(function(p){ return (p===LAST_ACTUAL||p===CURRENT_MK)?(totalPf(p)||null):null; });
+    new Chart(ctx,{
+      type:'line',
+      data:{labels:labels,datasets:[
+        {label:'Actual',data:actuals,borderColor:'#185fa5',backgroundColor:'rgba(24,95,165,0.07)',fill:true,tension:0.3,pointRadius:5,borderWidth:2,spanGaps:false},
+        {label:'Forecast',data:forecast,borderColor:'#ba7517',backgroundColor:'transparent',borderDash:[5,4],tension:0.3,pointRadius:5,borderWidth:2,spanGaps:false}
+      ]},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#888780',font:{size:11}}},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+fmt(ctx.raw);}}}},
+        scales:{
+          x:{ticks:{color:'#888780'},grid:{display:false}},
+          y:{ticks:{color:'#888780',callback:function(v){return 'Rp '+(v/1000000000).toFixed(2)+'B';}},grid:{color:'rgba(0,0,0,0.05)'}}
         }
       }
     });
-  }, 100);
+  },100);
 }
+
+// ─── ALERTS ───────────────────────────────────────────────────
+function buildAlerts(mk) {
+  var alerts=[], ea=totalExp(mk), eb=totalExpBudget();
+  if (ea>0&&ea>eb) alerts.push({type:'danger',msg:'<strong>Over budget by '+fmtFull(ea-eb)+'</strong> this month.'});
+  EXPENSE_CATS.forEach(function(c){
+    var act=getExp(mk,c.key), bud=getPlanExp(c.key);
+    if (bud>0&&act>bud*1.15) alerts.push({type:'warn',msg:'<strong>'+c.label+'</strong> over budget by '+fmtFull(act-bud)+'.'});
+  });
+  if (mk==='sep'&&getInv(mk,'sr025')===0) alerts.push({type:'warn',msg:'<strong>SR025 not recorded.</strong> Window closes 16 Sep 2026.'});
+  if (mk==='aug'||mk==='sep') alerts.push({type:'info',msg:'SR025 window: <strong>21 Aug – 16 Sep 2026.</strong>'});
+  if (!alerts.length) alerts.push({type:'ok',msg:'<strong>All clear</strong> for '+MONTHS[MKS.indexOf(mk)]+'. Update Google Sheets and sync to see latest.'});
+  return alerts;
+}
+function aEmoji(t){return t==='danger'?'🔴':t==='warn'?'🟡':t==='ok'?'🟢':'🔵';}
 
 // ─── SETTINGS PAGE ────────────────────────────────────────────
 function renderSettings() {
@@ -644,109 +618,63 @@ function renderSettings() {
   h+='<div class="card">';
   h+='<div class="settings-field"><label>Apps Script web app URL</label><input type="url" id="cfg_url" value="'+state.settings.scriptUrl+'" placeholder="https://script.google.com/macros/s/.../exec"></div>';
   h+='<div class="settings-field"><label>Secret token</label><input type="text" id="cfg_token" value="'+state.settings.token+'" placeholder="your-secret-token"></div>';
-  h+='<div class="save-bar"><button class="btn-primary" onclick="saveSettings()">Save settings</button></div></div>';
-  h+='<div class="sl">Manual sync</div><div class="card">';
-  h+='<div class="sum-row"><span style="color:#5f5e5a">Pull plan from sheet</span><button class="btn-ghost" onclick="fetchPlan()" style="font-size:12px;padding:5px 10px">Pull plan</button></div>';
-  h+='<div class="sum-row"><span style="color:#5f5e5a">Pull actuals from sheet</span><button class="btn-ghost" onclick="fetchActuals()" style="font-size:12px;padding:5px 10px">Pull</button></div>';
-  h+='<div class="sum-row"><span style="color:#5f5e5a">Push actuals to sheet</span><button class="btn-ghost" onclick="pushActuals()" style="font-size:12px;padding:5px 10px">Push</button></div>';
-  h+='<div class="sum-row"><span style="color:#5f5e5a">Pull portfolio balances</span><button class="btn-ghost" onclick="fetchPortfolio()" style="font-size:12px;padding:5px 10px">Pull</button></div></div>';
+  h+='<div style="padding:10px 14px;border-top:0.5px solid #f1efe8"><button class="btn-primary" style="width:100%;padding:9px;border-radius:7px;font-size:14px;font-weight:500;border:none;background:#185fa5;color:#fff;cursor:pointer" onclick="saveSettings()">Save settings</button></div></div>';
+  h+='<div class="sl">Sync</div><div class="card">';
+  h+='<div class="row"><span class="row-label">Sync all data from sheet</span><button onclick="syncAll()" style="padding:6px 14px;border-radius:7px;border:0.5px solid #e0ddd4;background:none;font-size:13px;cursor:pointer">↻ Sync all</button></div>';
+  h+='<div class="row"><span class="row-label">Pull portfolio only</span><button onclick="fetchPortfolio()" style="padding:6px 14px;border-radius:7px;border:0.5px solid #e0ddd4;background:none;font-size:13px;cursor:pointer">Pull</button></div>';
+  h+='</div>';
   h+='<div class="sl">About</div><div class="card">';
-  h+='<div class="sum-row"><span style="color:#5f5e5a">Version</span><span>2.0 — May 2026</span></div>';
-  h+='<div class="sum-row"><span style="color:#5f5e5a">Current month</span><span>May 2026</span></div>';
-  h+='<div class="sum-row"><span style="color:#5f5e5a">Last complete month</span><span>April 2026</span></div></div>';
-  document.getElementById('mainContent').innerHTML = h;
+  h+='<div class="row"><span class="row-label">Version</span><span>3.0 — May 2026</span></div>';
+  h+='<div class="row"><span class="row-label">Current month</span><span>May 2026</span></div>';
+  h+='<div class="row"><span class="row-label">Last complete</span><span>April 2026</span></div>';
+  h+='<div class="row"><span class="row-label">Data source</span><span>Google Sheets (read-only)</span></div>';
+  h+='</div>';
+  document.getElementById('pageContent').innerHTML='<div class="content">'+h+'</div>';
 }
 
 function saveSettings() {
-  state.settings.scriptUrl = document.getElementById('cfg_url').value.trim();
-  state.settings.token     = document.getElementById('cfg_token').value.trim();
-  saveLocal();
-  showToast('Settings saved ✓');
+  state.settings.scriptUrl=document.getElementById('cfg_url').value.trim();
+  state.settings.token=document.getElementById('cfg_token').value.trim();
+  saveLocal(); showToast('Settings saved ✓');
 }
 
-// ─── API CALLS ────────────────────────────────────────────────
-function apiCall(action, payload) {
-  var url = state.settings.scriptUrl;
-  if (!url) return Promise.reject(new Error('No script URL configured'));
-  var body = JSON.stringify(Object.assign({action:action, token:state.settings.token}, payload||{}));
-  return fetch(url, {method:'POST', body:body, headers:{'Content-Type':'text/plain'}})
-    .then(function(r){ return r.json(); })
-    .then(function(j){ if (!j.ok) throw new Error(j.error||'Error'); return j; });
-}
-
-function fetchPlan() {
-  if (!state.settings.scriptUrl){ showToast('⚠ Set Script URL first'); return Promise.resolve(); }
-  return apiCall('getPlan').then(function(r){
-    state.plan = r.plan||{};
-    saveLocal();
-  }).catch(function(e){ showToast('Plan error: '+e.message); });
-}
-
-function fetchActuals() {
-  if (!state.settings.scriptUrl){ showToast('⚠ Set Script URL first'); return Promise.resolve(); }
-  return apiCall('getActuals').then(function(r){
-    state.actuals = r.actuals||{};
-    saveLocal();
-    renderMonthBar();
-  }).catch(function(e){ showToast('Actuals error: '+e.message); });
-}
-
-function pushActuals() {
-  if (!state.settings.scriptUrl){ showToast('⚠ Set Script URL first'); return Promise.resolve(); }
-  return apiCall('setActuals',{actuals:state.actuals}).then(function(){
-    showToast('Saved to sheet ✓');
-  }).catch(function(e){ showToast('Push error: '+e.message); });
+// ─── API ──────────────────────────────────────────────────────
+function apiCall(action,payload) {
+  var url=state.settings.scriptUrl;
+  if (!url) return Promise.reject(new Error('No script URL'));
+  var body=JSON.stringify(Object.assign({action:action,token:state.settings.token},payload||{}));
+  return fetch(url,{method:'POST',body:body,headers:{'Content-Type':'text/plain'}})
+    .then(function(r){return r.json();})
+    .then(function(j){if(!j.ok)throw new Error(j.error||'Error');return j;});
 }
 
 function fetchPortfolio() {
-  if (!state.settings.scriptUrl){ showToast('⚠ Set Script URL first'); return Promise.resolve(); }
-  return apiCall('getPortfolio').then(function(r){
-    state.portfolioData = r.portfolio||{};
-    saveLocal();
-    showToast('Portfolio loaded ✓');
-  }).catch(function(e){ showToast('Portfolio error: '+e.message); });
+  return apiCall('getPortfolio').then(function(r){state.portfolio=r.portfolio||{};saveLocal();}).catch(function(e){showToast('Portfolio error: '+e.message);});
 }
 
 function syncAll() {
-  if (!state.settings.scriptUrl){ showToast('⚠ Set Script URL in Settings'); showPage('settings'); return; }
-  document.getElementById('syncBtn').textContent = '↻ Syncing…';
-  Promise.all([fetchPlan(), fetchActuals(), fetchPortfolio()]).then(function(){
-    showToast('All synced ✓');
-    document.getElementById('syncBtn').textContent = '↻ Sync';
-    if (state.activePage==='tracker')   renderSection();
-    if (state.activePage==='portfolio') renderPortfolioPage();
-    if (state.activePage==='overview')  renderOverview();
-  }).catch(function(){
-    document.getElementById('syncBtn').textContent = '↻ Sync';
+  if (!state.settings.scriptUrl){showToast('⚠ Set Script URL in Settings');showPage('settings');return;}
+  document.getElementById('syncBtn').textContent='↻ Syncing…';
+  // Use getAll to fetch everything in one call
+  apiCall('getAll').then(function(r){
+    state.plan      = r.plan      || {};
+    state.income    = r.income    || {};
+    state.expenses  = r.expenses  || {};
+    state.invest    = r.invest    || {};
+    state.portfolio = r.portfolio || {};
+    saveLocal();
+    showToast('Synced ✓');
+    document.getElementById('syncBtn').textContent='↻ Sync';
+    showPage(state.activePage);
+  }).catch(function(e){
+    showToast('Sync error: '+e.message);
+    document.getElementById('syncBtn').textContent='↻ Sync';
   });
-}
-
-// ─── SAVE / CLEAR ─────────────────────────────────────────────
-function saveSection(mk, section) {
-  if (!state.actuals[mk]) state.actuals[mk]={};
-  if (!state.actuals[mk][section]) state.actuals[mk][section]={};
-  var cats   = section==='income'?INCOME_CATS:section==='expenses'?EXPENSE_CATS:INVEST_CATS;
-  var prefix = section==='income'?'inc':section==='expenses'?'exp':'inv';
-  cats.forEach(function(c){
-    var el = document.getElementById(prefix+'_'+mk+'_'+c.key);
-    if (el) state.actuals[mk][section][c.key] = parseFloat(el.value)||0;
-  });
-  saveLocal();
-  renderMonthBar();
-  showToast('Saved ✓');
-  if (state.settings.scriptUrl) pushActuals();
-}
-
-function clearSection(mk, section) {
-  if (state.actuals[mk]) state.actuals[mk][section]={};
-  saveLocal();
-  renderSection();
-  showToast('Cleared');
 }
 
 // ─── INIT ─────────────────────────────────────────────────────
 loadLocal();
-showPage('tracker');
+showPage('dashboard');
 if (state.settings.scriptUrl) syncAll();
 </script>
 </body>
