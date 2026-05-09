@@ -31,7 +31,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .b-warn{background:#faeeda;color:#854f0b}
 .b-danger{background:#fcebeb;color:#a32d2d}
 .b-info{background:#e6f1fb;color:#185fa5}
-.b-neutral{background:#f1efe8;color:#444441}
 .fc-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;background:#faeeda;color:#854f0b;font-weight:500;margin-left:4px;vertical-align:middle}
 .row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:0.5px solid #f1efe8;font-size:13px}
 .row:last-child{border-bottom:none}
@@ -64,7 +63,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .rate-box .rb-lbl{font-size:10px;color:#888780;margin-bottom:2px}
 .rate-box .rb-val{font-size:15px;font-weight:500}
 .rate-box .rb-unit{font-size:10px;color:#888780}
-/* Fixed-height chart containers — prevents Chart.js infinite expand */
+.not-connected{background:#faeeda;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:#633806;display:flex;gap:10px;align-items:flex-start}
+/* Fixed-height chart containers */
 .chart-box{position:relative;height:220px;width:100%;overflow:hidden}
 .chart-box canvas{position:absolute!important;top:0!important;left:0!important;width:100%!important;height:100%!important}
 .pos{color:#3b6d11}.neg{color:#a32d2d}.warn-c{color:#854f0b}
@@ -90,6 +90,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="toast" id="toast"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+// ── CONSTANTS ────────────────────────────────────────────────
 var MONTHS=['May','Jun','Jul','Aug','Sep','Oct'];
 var MKS=['may','jun','jul','aug','sep','oct'];
 var CURRENT_MK='may';
@@ -97,21 +98,41 @@ var LAST_ACTUAL='apr';
 var HIST_PERIODS=['start','jan','feb','mar','apr'];
 var HIST_LABELS=['Start','Jan','Feb','Mar','Apr'];
 
+// Fallback budgets — used only when Plan sheet not yet synced
+var FB_BUDGET={admin:110000,food:1100000,healthcare:200000,household:200000,installment:9090000,others:100000,shopping:300000,sport:300000,telecom:800000,topup:500000,transport:600000,withdraw:2000000,zakat:0,rizka:1200000};
+
+// Fallback income plan — used only when Plan sheet not yet synced
+var FB_INC={
+  salary:{may:17440701,jun:17440701,jul:17440701,aug:17440701,sep:17440701,oct:17440701},
+  rd_return:{may:454627,jun:531332,jul:608324,aug:666855,sep:856856,oct:878819},
+  deposito_return:{may:540000,jun:540000,jul:540000,aug:540000,sep:0,oct:0},
+  sr025_coupon:{may:0,jun:0,jul:0,aug:0,sep:1106250,oct:1106250},
+  sppd:{may:0,jun:0,jul:0,aug:0,sep:0,oct:0},
+  other_income:{may:0,jun:0,jul:0,aug:0,sep:0,oct:0}
+};
+
+// Fallback investment plan — used only when Plan sheet not yet synced
+var FB_INV={
+  rd:{may:20000000,jun:20000000,jul:20000000,aug:15000000,sep:50000000,oct:5000000},
+  sr025:{may:0,jun:0,jul:0,aug:0,sep:250000000,oct:0},
+  germany_invest:{may:10000000,jun:10000000,jul:10000000,aug:10000000,sep:10000000,oct:10000000}
+};
+
 var EXPENSE_CATS=[
-  {key:'admin',label:'Admin',budget:110000},
-  {key:'food',label:'Food & Drinks',budget:1100000},
-  {key:'healthcare',label:'Healthcare',budget:200000},
-  {key:'household',label:'Household',budget:200000},
-  {key:'installment',label:'Installment',budget:9090000},
-  {key:'others',label:'Others',budget:100000},
-  {key:'shopping',label:'Shopping',budget:300000},
-  {key:'sport',label:'Sport & Ent',budget:300000},
-  {key:'telecom',label:'Telecom',budget:800000},
-  {key:'topup',label:'Top Up',budget:500000},
-  {key:'transport',label:'Transportation',budget:600000},
-  {key:'withdraw',label:'Withdraw',budget:2000000},
-  {key:'zakat',label:'Zakat',budget:0},
-  {key:'rizka',label:'Rizka',budget:1200000}
+  {key:'admin',label:'Admin'},
+  {key:'food',label:'Food & Drinks'},
+  {key:'healthcare',label:'Healthcare'},
+  {key:'household',label:'Household'},
+  {key:'installment',label:'Installment'},
+  {key:'others',label:'Others'},
+  {key:'shopping',label:'Shopping'},
+  {key:'sport',label:'Sport & Ent'},
+  {key:'telecom',label:'Telecom'},
+  {key:'topup',label:'Top Up'},
+  {key:'transport',label:'Transportation'},
+  {key:'withdraw',label:'Withdraw'},
+  {key:'zakat',label:'Zakat'},
+  {key:'rizka',label:'Rizka'}
 ];
 
 var INCOME_CATS=[
@@ -124,19 +145,10 @@ var INCOME_CATS=[
 ];
 
 var INVEST_CATS=[
-  {key:'rd',label:'RD top-up',plan:{may:20000000,jun:20000000,jul:20000000,aug:15000000,sep:50000000,oct:5000000}},
-  {key:'sr025',label:'SR025 T5 – SBN',plan:{may:0,jun:0,jul:0,aug:0,sep:250000000,oct:0}},
-  {key:'germany_invest',label:'Germany fund (Life Goals)',plan:{may:10000000,jun:10000000,jul:10000000,aug:10000000,sep:10000000,oct:10000000}}
+  {key:'rd',label:'RD top-up'},
+  {key:'sr025',label:'SR025 T5 – SBN'},
+  {key:'germany_invest',label:'Germany fund (Life Goals)'}
 ];
-
-var INC_PLAN={
-  salary:{may:17440701,jun:17440701,jul:17440701,aug:17440701,sep:17440701,oct:17440701},
-  rd_return:{may:454627,jun:531332,jul:608324,aug:666855,sep:856856,oct:878819},
-  deposito_return:{may:540000,jun:540000,jul:540000,aug:540000,sep:0,oct:0},
-  sr025_coupon:{may:0,jun:0,jul:0,aug:0,sep:1106250,oct:1106250},
-  sppd:{may:0,jun:0,jul:0,aug:0,sep:0,oct:0},
-  other_income:{may:0,jun:0,jul:0,aug:0,sep:0,oct:0}
-};
 
 var RATE_CATS=['food','household','shopping','sport','topup','withdraw'];
 
@@ -159,19 +171,48 @@ var PF_INSTRUMENTS=[
 var GRP_LABELS={liquid:'Liquid',fixed:'Fixed Income',market:'Market-linked',retire:'Retirement'};
 var GRP_COLORS={liquid:'#185fa5',fixed:'#3b6d11',market:'#ba7517',retire:'#73726c'};
 
-// ── STATE ────────────────────────────────────────────────────
-var S={page:'dashboard',mk:'may',plan:{},income:{},expenses:{},invest:{},portfolio:{},settings:{url:'',token:''}};
+// ── STATE ─────────────────────────────────────────────────────
+var S={
+  page:'dashboard',mk:'may',
+  plan:{},income:{},expenses:{},invest:{},portfolio:{},
+  settings:{url:'',token:''}
+};
 
 function load(){
-  try{var d=JSON.parse(localStorage.getItem('ptv6')||'{}');S.plan=d.plan||{};S.income=d.income||{};S.expenses=d.expenses||{};S.invest=d.invest||{};S.portfolio=d.portfolio||{};S.settings=d.settings||{url:'',token:''};}catch(e){}
+  try{
+    var d=JSON.parse(localStorage.getItem('ptv6')||'{}');
+    S.plan=d.plan||{};S.income=d.income||{};S.expenses=d.expenses||{};
+    S.invest=d.invest||{};S.portfolio=d.portfolio||{};
+    S.settings=d.settings||{url:'',token:''};
+  }catch(e){}
 }
 function save(){
-  localStorage.setItem('ptv6',JSON.stringify({plan:S.plan,income:S.income,expenses:S.expenses,invest:S.invest,portfolio:S.portfolio,settings:S.settings}));
+  localStorage.setItem('ptv6',JSON.stringify({
+    plan:S.plan,income:S.income,expenses:S.expenses,
+    invest:S.invest,portfolio:S.portfolio,settings:S.settings
+  }));
 }
 
-// ── FORMAT ───────────────────────────────────────────────────
+// ── CONNECTION CHECK ──────────────────────────────────────────
+// True only when URL is set AND data has been pulled at least once
+function connected(){
+  return S.settings.url!=='' && (
+    Object.keys(S.plan).length>0||
+    Object.keys(S.income).length>0||
+    Object.keys(S.expenses).length>0||
+    Object.keys(S.portfolio).length>0
+  );
+}
+
+function notConnectedBanner(){
+  return '<div class="not-connected"><span style="font-size:16px;flex-shrink:0">🔌</span>'
+    +'<div><strong>Not connected to Google Sheets.</strong><br>'
+    +'Go to Settings and enter your Apps Script URL and token to see your data.</div></div>';
+}
+
+// ── FORMAT ────────────────────────────────────────────────────
 function fmt(n){
-  if(n===null||n===undefined||isNaN(n))return'—';
+  if(n===null||n===undefined||isNaN(n)||n===0)return'—';
   var a=Math.abs(Math.round(n)),s;
   if(a>=1000000000)s=(a/1000000000).toFixed(2)+'B';
   else if(a>=1000000)s=(a/1000000).toFixed(1)+'M';
@@ -180,31 +221,67 @@ function fmt(n){
   return(n<0?'−':'')+'Rp '+s;
 }
 function fmtFull(n){return'Rp '+Math.round(Math.abs(n||0)).toLocaleString('id-ID');}
-function fmtPct(n){return(n>=0?'+':'')+n.toFixed(2)+'%';}
-function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
+function toast(m){
+  var t=document.getElementById('toast');
+  t.textContent=m;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2500);
+}
 
-// ── DATA ACCESS ──────────────────────────────────────────────
-function gExp(mk,k){var v=((S.expenses[mk]||{})[k]);return(v===null||v===undefined)?0:Number(v)||0;}
-function gInc(mk,k){var v=((S.income[mk]||{})[k]);return(v===null||v===undefined)?0:Number(v)||0;}
-function gInv(mk,k){var v=((S.invest[mk]||{})[k]);return(v===null||v===undefined)?0:Number(v)||0;}
-function gPlanInc(mk,k){return(INC_PLAN[k]||{})[mk]||0;}
-function gBudget(k){var c=EXPENSE_CATS.find(function(x){return x.key===k;});return c?c.budget:0;}
-function gPlanInv(k,mk){var c=INVEST_CATS.find(function(x){return x.key===k;});return c?(c.plan[mk]||0):0;}
+// ── DATA ACCESSORS ────────────────────────────────────────────
+// Actuals — return 0 if not connected
+function gExp(mk,k){
+  if(!connected())return 0;
+  var v=((S.expenses[mk]||{})[k]);
+  return(v===null||v===undefined)?0:Number(v)||0;
+}
+function gInc(mk,k){
+  if(!connected())return 0;
+  var v=((S.income[mk]||{})[k]);
+  return(v===null||v===undefined)?0:Number(v)||0;
+}
+function gInv(mk,k){
+  if(!connected())return 0;
+  var v=((S.invest[mk]||{})[k]);
+  return(v===null||v===undefined)?0:Number(v)||0;
+}
+
+// Plan values — prefer Plan sheet, fall back to hardcoded, zero if not connected
+function gBudget(k){
+  if(!connected())return 0;
+  var fromSheet=((S.plan.expenses||{})[k]||{})[CURRENT_MK];
+  if(fromSheet!==undefined&&fromSheet!==null)return Number(fromSheet)||0;
+  return FB_BUDGET[k]||0;
+}
+function gPlanInc(mk,k){
+  if(!connected())return 0;
+  var fromSheet=((S.plan.income||{})[k]||{})[mk];
+  if(fromSheet!==undefined&&fromSheet!==null)return Number(fromSheet)||0;
+  return(FB_INC[k]||{})[mk]||0;
+}
+function gPlanInv(k,mk){
+  if(!connected())return 0;
+  var fromSheet=((S.plan.investments||{})[k]||{})[mk];
+  if(fromSheet!==undefined&&fromSheet!==null)return Number(fromSheet)||0;
+  return(FB_INV[k]||{})[mk]||0;
+}
+
+// Totals
 function totExp(mk){return EXPENSE_CATS.reduce(function(s,c){return s+gExp(mk,c.key);},0);}
 function totInc(mk){return INCOME_CATS.reduce(function(s,c){return s+gInc(mk,c.key);},0);}
 function totInv(mk){return INVEST_CATS.reduce(function(s,c){return s+gInv(mk,c.key);},0);}
-function totBudget(){return EXPENSE_CATS.reduce(function(s,c){return s+c.budget;},0);}
+function totBudget(){return EXPENSE_CATS.reduce(function(s,c){return s+gBudget(c.key);},0);}
 function totPlanInc(mk){return INCOME_CATS.reduce(function(s,c){return s+gPlanInc(mk,c.key);},0);}
-function hasExpData(mk){return EXPENSE_CATS.some(function(c){return gExp(mk,c.key)>0;});}
-function hasMonthData(mk){return INCOME_CATS.some(function(c){return gInc(mk,c.key)>0;})||EXPENSE_CATS.some(function(c){return gExp(mk,c.key)>0;});}
+function hasExpData(mk){return connected()&&EXPENSE_CATS.some(function(c){return gExp(mk,c.key)>0;});}
+function hasMonthData(mk){return connected()&&(INCOME_CATS.some(function(c){return gInc(mk,c.key)>0;})||EXPENSE_CATS.some(function(c){return gExp(mk,c.key)>0;}));}
 
-// ── DATE ─────────────────────────────────────────────────────
+// ── DATE HELPERS ──────────────────────────────────────────────
 function daysLeft(){var n=new Date(),l=new Date(n.getFullYear(),n.getMonth()+1,0).getDate();return l-n.getDate()+1;}
 function daysInMonth(){var n=new Date();return new Date(n.getFullYear(),n.getMonth()+1,0).getDate();}
 function actualMK(){return['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'][new Date().getMonth()];}
 
-// ── PORTFOLIO ────────────────────────────────────────────────
+// ── PORTFOLIO ─────────────────────────────────────────────────
 function pfActual(key,period){
+  if(!connected())return null;
   var d=S.portfolio[key];if(!d)return null;
   var v=d[period];return(v===null||v===undefined)?null:Number(v);
 }
@@ -226,31 +303,35 @@ function pfForecast(instr,prev){
   return prev;
 }
 function pfBal(key,period){
+  if(!connected())return 0;
   var a=pfActual(key,period);if(a!==null)return a;
-  if(period===CURRENT_MK){var ins=PF_INSTRUMENTS.find(function(i){return i.key===key;});if(ins)return pfForecast(ins,pfActual(key,LAST_ACTUAL));}
+  if(period===CURRENT_MK){
+    var ins=PF_INSTRUMENTS.find(function(i){return i.key===key;});
+    if(ins)return pfForecast(ins,pfActual(key,LAST_ACTUAL));
+  }
   return 0;
 }
 function totPf(period){return PF_INSTRUMENTS.reduce(function(s,i){return s+(pfBal(i.key,period)||0);},0);}
 function grpTot(g,period){return PF_INSTRUMENTS.filter(function(i){return i.group===g;}).reduce(function(s,i){return s+(pfBal(i.key,period)||0);},0);}
+
 function blendYield(){
+  if(!connected())return 0;
   var rates={bni_deposito:0.022,bni_rd:0.055,sr025:0.0531},n=0,d=0;
   PF_INSTRUMENTS.forEach(function(i){var b=pfBal(i.key,LAST_ACTUAL)||0;if(rates[i.key]){n+=b*rates[i.key];d+=b;}});
   return d>0?n/d*100:0;
 }
 function annIncome(){
+  if(!connected())return 0;
   var rates={bni_deposito:0.022,bni_rd:0.055,sr025:0.0531};
   return PF_INSTRUMENTS.reduce(function(s,i){return s+(rates[i.key]||0)*(pfBal(i.key,LAST_ACTUAL)||0);},0);
 }
 function emFund(){
+  if(!connected())return 0;
   var liq=(pfBal('bni_saving',LAST_ACTUAL)||0)+(pfBal('bsi_ops',LAST_ACTUAL)||0);
   return totBudget()>0?liq/totBudget():0;
 }
-function momGrowth(period,prevPeriod){
-  var cur=totPf(period),prev=totPf(prevPeriod);
-  return prev>0?(cur-prev)/prev*100:0;
-}
 
-// ── CHART HELPER ─────────────────────────────────────────────
+// ── CHART HELPER ──────────────────────────────────────────────
 function mkChart(id,cfg){
   var el=document.getElementById(id);if(!el)return;
   if(el._ch){el._ch.destroy();el._ch=null;}
@@ -259,9 +340,8 @@ function mkChart(id,cfg){
   cfg.options.maintainAspectRatio=false;
   el._ch=new Chart(el,cfg);
 }
-
-function chartDefaults(){
-  return{
+function chartOpts(extra){
+  var o={
     plugins:{
       legend:{labels:{color:'#888780',font:{size:11},boxWidth:10,boxHeight:10}},
       tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fmt(c.raw);}}}
@@ -271,12 +351,16 @@ function chartDefaults(){
       y:{ticks:{color:'#888780',callback:function(v){return'Rp '+(v/1000000000).toFixed(2)+'B';}},grid:{color:'rgba(0,0,0,0.05)'}}
     }
   };
+  if(extra)Object.assign(o,extra);
+  return o;
 }
 
-// ── NAV ──────────────────────────────────────────────────────
+// ── NAV ───────────────────────────────────────────────────────
 function nav(page){
   S.page=page;
-  ['dashboard','monthly','portfolio','settings'].forEach(function(p){document.getElementById('nav-'+p).classList.toggle('active',p===page);});
+  ['dashboard','monthly','portfolio','settings'].forEach(function(p){
+    document.getElementById('nav-'+p).classList.toggle('active',p===page);
+  });
   document.getElementById('subBar').innerHTML='';
   if(page==='dashboard')renderDashboard();
   else if(page==='monthly')renderMonthly();
@@ -284,42 +368,45 @@ function nav(page){
   else renderSettings();
 }
 
-// ── DASHBOARD ────────────────────────────────────────────────
+// ── DASHBOARD ─────────────────────────────────────────────────
 function renderDashboard(){
+  var con=connected();
   var aprT=totPf(LAST_ACTUAL),mayT=totPf(CURRENT_MK),startT=totPf('start');
   var mom=aprT>0?(mayT-aprT)/aprT*100:0;
   var ef=emFund(),ai=annIncome(),ey=blendYield();
-  var curE=totExp(CURRENT_MK),curI=totInc(CURRENT_MK),curV=totInv(CURRENT_MK),net=curI-curE-curV,eb=totBudget();
-  var alerts=buildAlerts(CURRENT_MK);
+  var curE=totExp(CURRENT_MK),curI=totInc(CURRENT_MK),curV=totInv(CURRENT_MK);
+  var net=curI-curE-curV,eb=totBudget();
   var h='';
+  if(!con)h+=notConnectedBanner();
   h+='<div class="sl">Portfolio — April actual / May forecast</div>';
   h+='<div class="g2">';
   h+='<div class="metric"><div class="lbl">Total (Apr)</div><div class="val">'+fmt(aprT)+'</div><div class="sub">last complete month</div></div>';
-  h+='<div class="metric"><div class="lbl">May forecast <span class="fc-badge">est.</span></div><div class="val pos">'+fmt(mayT)+'</div><div class="sub">'+(mom>=0?'+':'')+mom.toFixed(2)+'% vs Apr</div></div>';
+  h+='<div class="metric"><div class="lbl">May forecast <span class="fc-badge">est.</span></div><div class="val '+(con?'pos':'')+'">'+fmt(mayT)+'</div><div class="sub">'+(con?(mom>=0?'+':'')+mom.toFixed(2)+'% vs Apr':'—')+'</div></div>';
   h+='</div><div class="g3">';
-  h+='<div class="metric"><div class="lbl">YTD growth</div><div class="val pos">'+fmt(aprT-startT)+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Blended yield</div><div class="val">'+ey.toFixed(2)+'%</div><div class="sub">net</div></div>';
-  h+='<div class="metric"><div class="lbl">Inv. income/yr</div><div class="val pos">'+fmt(ai)+'</div></div>';
+  h+='<div class="metric"><div class="lbl">YTD growth</div><div class="val '+(con?'pos':'')+'">'+fmt(aprT-startT)+'</div></div>';
+  h+='<div class="metric"><div class="lbl">Blended yield</div><div class="val">'+(con?ey.toFixed(2)+'%':'—')+'</div><div class="sub">net</div></div>';
+  h+='<div class="metric"><div class="lbl">Inv. income/yr</div><div class="val '+(con?'pos':'')+'">'+fmt(ai)+'</div></div>';
   h+='</div>';
   h+='<div class="sl">Emergency fund (Apr)</div>';
   h+='<div class="card"><div style="padding:12px 14px">';
   h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
-  h+='<span style="font-size:13px">'+ef.toFixed(1)+'× months covered</span>';
-  h+='<span class="badge '+(ef>=6?'b-ok':ef>=3?'b-warn':'b-danger')+'">'+(ef>=6?'Healthy':ef>=3?'Low':'Critical')+'</span></div>';
-  h+='<div class="pbar" style="height:8px"><div class="pfill" style="width:'+Math.min(100,ef/6*100).toFixed(0)+'%;background:'+(ef>=6?'#3b6d11':ef>=3?'#ba7517':'#a32d2d')+'"></div></div>';
+  h+='<span style="font-size:13px">'+(con?ef.toFixed(1)+'× months covered':'—')+'</span>';
+  if(con)h+='<span class="badge '+(ef>=6?'b-ok':ef>=3?'b-warn':'b-danger')+'">'+(ef>=6?'Healthy':ef>=3?'Low':'Critical')+'</span>';
+  h+='</div>';
+  h+='<div class="pbar" style="height:8px"><div class="pfill" style="width:'+(con?Math.min(100,ef/6*100).toFixed(0):0)+'%;background:'+(ef>=6?'#3b6d11':ef>=3?'#ba7517':'#a32d2d')+'"></div></div>';
   h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>0×</span><span>Target 6×</span></div>';
   h+='</div></div>';
   h+='<div class="sl">May 2026 — current month</div>';
-  if(hasMonthData(CURRENT_MK)){
+  if(con&&hasMonthData(CURRENT_MK)){
     h+='<div class="g2"><div class="metric"><div class="lbl">Income <span class="fc-badge">partial</span></div><div class="val pos">'+fmt(curI)+'</div><div class="sub">plan: '+fmt(totPlanInc(CURRENT_MK))+'</div></div>';
     h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(curE>eb?'neg':'')+'">'+fmt(curE)+'</div><div class="sub">budget: '+fmt(eb)+'</div></div></div>';
     h+='<div class="g2"><div class="metric"><div class="lbl">Invested</div><div class="val pos">'+fmt(curV)+'</div></div>';
     h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(net<0?'neg':'pos')+'">'+fmt(net)+'</div><div class="sub">'+(net<0?'from savings':'surplus')+'</div></div></div>';
   }else{
-    h+='<div class="card"><div style="padding:14px;font-size:13px;color:#888780">No May data yet. Update Google Sheets and tap ↻ Sync.</div></div>';
+    h+='<div class="card"><div style="padding:14px;font-size:13px;color:#888780">'+(con?'No May data yet. Update Google Sheets and tap ↻ Sync.':'Connect Google Sheets to see data.')+'</div></div>';
   }
   h+='<div class="sl">Alerts</div><div class="card">';
-  alerts.forEach(function(a){h+='<div class="alert-item"><span>'+aIcon(a.t)+'</span><div class="alert-text">'+a.m+'</div></div>';});
+  buildAlerts(CURRENT_MK).forEach(function(a){h+='<div class="alert-item"><span>'+aIcon(a.t)+'</span><div class="alert-text">'+a.m+'</div></div>';});
   h+='</div>';
   h+='<div class="sl">Asset allocation (Apr)</div><div class="card">';
   var grps={liquid:0,fixed:0,market:0,retire:0};
@@ -329,33 +416,38 @@ function renderDashboard(){
     h+='<div style="padding:8px 14px;border-bottom:0.5px solid #f1efe8">';
     h+='<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">';
     h+='<span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:'+GRP_COLORS[g]+';display:inline-block"></span>'+GRP_LABELS[g]+'</span>';
-    h+='<span><strong>'+fmt(grps[g])+'</strong> <span style="color:#888780;font-size:12px">'+pct.toFixed(1)+'%</span></span></div>';
+    h+='<span><strong>'+fmt(grps[g])+'</strong> <span style="color:#888780;font-size:12px">'+(con?pct.toFixed(1):'—')+'%</span></span></div>';
     h+='<div class="pbar"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+GRP_COLORS[g]+'"></div></div></div>';
   });
   h+='</div>';
   set(h);
 }
 
-// ── MONTHLY ──────────────────────────────────────────────────
+// ── MONTHLY ───────────────────────────────────────────────────
 function renderMonthly(){
   var bar='<div class="mo-scroll">';
   MONTHS.forEach(function(m,i){var mk=MKS[i];bar+='<button class="mo-chip'+(mk===S.mk?' active':'')+'" onclick="selMo(\''+mk+'\')">'+m+'</button>';});
   bar+='</div>';
   document.getElementById('subBar').innerHTML=bar;
-  var mk=S.mk,tI=totInc(mk),tE=totExp(mk),tV=totInv(mk),pI=totPlanInc(mk),pE=totBudget(),net=tI-tE-tV;
-  var dl=daysLeft(),dim=daysInMonth(),dp=dim-dl+1,amk=actualMK(),isCur=(mk===amk),hasExp=hasExpData(mk);
+  var con=connected();
+  var mk=S.mk,tI=totInc(mk),tE=totExp(mk),tV=totInv(mk);
+  var pI=totPlanInc(mk),pE=totBudget(),net=tI-tE-tV;
+  var dl=daysLeft(),dim=daysInMonth(),dp=dim-dl+1;
+  var amk=actualMK(),isCur=(mk===amk),hasExp=hasExpData(mk);
   var h='';
   h+='<div class="sl">Summary</div><div class="g2">';
-  h+='<div class="metric"><div class="lbl">Income'+(mk===CURRENT_MK?'<span class="fc-badge">partial</span>':'')+'</div><div class="val '+(tI>0?'pos':'')+'">'+(tI>0?fmt(tI):'—')+'</div><div class="sub">plan: '+fmt(pI)+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(tE>pE?'neg':tE>0?'':'')+'\">'+(tE>0?fmt(tE):'—')+'</div><div class="sub">budget: '+fmt(pE)+'</div></div>';
+  h+='<div class="metric"><div class="lbl">Income'+(mk===CURRENT_MK?'<span class="fc-badge">partial</span>':'')+'</div><div class="val '+(tI>0?'pos':'')+'">'+(tI>0?fmt(tI):'—')+'</div><div class="sub">'+(pI>0?'plan: '+fmt(pI):'—')+'</div></div>';
+  h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(tE>pE&&pE>0?'neg':tE>0?'':'')+'\">'+(tE>0?fmt(tE):'—')+'</div><div class="sub">'+(pE>0?'budget: '+fmt(pE):'—')+'</div></div>';
   h+='</div><div class="g2">';
   h+='<div class="metric"><div class="lbl">Invested</div><div class="val pos">'+(tV>0?fmt(tV):'—')+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(tI>0?(net<0?'neg':'pos'):'')+'">'+(tI>0?fmt(net):'—')+'</div><div class="sub">'+(net<0?'from savings':net>0?'surplus':'')+'</div></div>';
+  h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(tI>0?(net<0?'neg':'pos'):'')+'">'+(tI>0?fmt(net):'—')+'</div><div class="sub">'+(tI>0?(net<0?'from savings':'surplus'):'')+'</div></div>';
   h+='</div>';
   h+='<div class="sl">Daily & weekly spending rate</div>';
-  if(!isCur){
+  if(!con){
+    h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">Connect Google Sheets to see spending rate.</div></div>';
+  }else if(!isCur){
     var aLabel=MKS.indexOf(amk)>=0?MONTHS[MKS.indexOf(amk)]:amk;
-    h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">📅 Rate calculation is only for the current month.<br><span style="font-size:12px">Switch to <strong>'+aLabel+'</strong>.</span></div></div>';
+    h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">📅 Rate only available for current month.<br><span style="font-size:12px">Switch to <strong>'+aLabel+'</strong>.</span></div></div>';
   }else if(!hasExp){
     h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">No expense data for '+MONTHS[MKS.indexOf(mk)]+' yet.<br><span style="font-size:12px">Update ExpenseActuals sheet and tap ↻ Sync.</span></div></div>';
   }else{
@@ -397,30 +489,34 @@ function renderMonthly(){
   h+='<div class="sl">Expense breakdown</div><div class="card">';
   var anyE=false;
   EXPENSE_CATS.forEach(function(c){
-    var a=gExp(mk,c.key),b=c.budget;if(!a&&!b)return;anyE=true;
+    var a=gExp(mk,c.key),b=gBudget(c.key);
+    if(!a&&!b)return;anyE=true;
     var ov=a>b&&b>0,df=b-a;
     h+='<div class="row"><span class="row-label" style="'+(ov?'color:#a32d2d':'')+'">'+c.label+(ov?' ▲':'')+'</span>';
     h+='<div><div class="row-val '+(ov?'neg':'')+'">'+(a>0?fmt(a):'—')+'</div>';
     if(b>0)h+='<div class="row-sub" style="color:'+(ov?'#a32d2d':df<b*0.1?'#888780':'#3b6d11')+'">'+(a>0?(df>=0?'−':'+')+''+fmt(Math.abs(df))+' vs budget':'budget: '+fmt(b))+'</div>';
     h+='</div></div>';
   });
-  if(!anyE)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">No expense data yet.</div>';
+  if(!anyE)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(con?'No expense data yet.':'Connect Google Sheets to see data.')+'</div>';
   h+='</div>';
   h+='<div class="sl">Income breakdown</div><div class="card">';
   var anyI=false;
   INCOME_CATS.forEach(function(c){
-    var a=gInc(mk,c.key),p=gPlanInc(mk,c.key);if(!a&&!p)return;anyI=true;
+    var a=gInc(mk,c.key),p=gPlanInc(mk,c.key);
+    if(!a&&!p)return;anyI=true;
     var df=a-p;
     h+='<div class="row"><span class="row-label">'+c.label+'</span>';
     h+='<div><div class="row-val '+(a>0?'pos':'')+'">'+(a>0?fmt(a):'—')+'</div>';
     if(p>0)h+='<div class="row-sub">'+(a>0?(df>=0?'+':'')+fmt(df)+' vs plan':'plan: '+fmt(p))+'</div>';
     h+='</div></div>';
   });
-  if(!anyI)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">No income data yet.</div>';
+  if(!anyI)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(con?'No income data yet.':'Connect Google Sheets to see data.')+'</div>';
   h+='</div>';
   h+='<div class="sl">Investments</div><div class="card">';
+  var anyV=false;
   INVEST_CATS.forEach(function(c){
-    var a=gInv(mk,c.key),p=gPlanInv(c.key,mk);if(!p&&!a)return;
+    var a=gInv(mk,c.key),p=gPlanInv(c.key,mk);
+    if(!p&&!a)return;anyV=true;
     var pct=p>0?Math.min(100,Math.round(a/p*100)):0,col=pct>=100?'#3b6d11':pct>0?'#ba7517':'#d3d1c7';
     h+='<div style="padding:9px 14px;border-bottom:0.5px solid #f1efe8">';
     h+='<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">';
@@ -429,56 +525,47 @@ function renderMonthly(){
     if(p>0)h+='<div class="pbar"><div class="pfill" style="width:'+pct+'%;background:'+col+'"></div></div>';
     h+='</div>';
   });
+  if(!anyV)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(con?'No investment data yet.':'Connect Google Sheets to see data.')+'</div>';
   h+='</div>';
   set(h);
 }
 function selMo(mk){S.mk=mk;renderMonthly();}
 
-// ── PORTFOLIO ────────────────────────────────────────────────
+// ── PORTFOLIO ─────────────────────────────────────────────────
 function renderPortfolio(){
   document.getElementById('subBar').innerHTML='';
+  var con=connected();
   var aprT=totPf(LAST_ACTUAL),mayT=totPf(CURRENT_MK),startT=totPf('start');
   var mom=aprT>0?(mayT-aprT)/aprT*100:0;
   var h='';
-
-  // Key metrics
-  h+='<div class="sl">Key metrics</div>';
-  h+='<div class="g2">';
+  if(!con)h+=notConnectedBanner();
+  h+='<div class="sl">Key metrics</div><div class="g2">';
   h+='<div class="metric"><div class="lbl">Portfolio (Apr)</div><div class="val">'+fmt(aprT)+'</div><div class="sub">last complete month</div></div>';
-  h+='<div class="metric"><div class="lbl">May forecast <span class="fc-badge">est.</span></div><div class="val pos">'+fmt(mayT)+'</div><div class="sub">'+(mom>=0?'+':'')+mom.toFixed(2)+'% vs Apr</div></div>';
+  h+='<div class="metric"><div class="lbl">May forecast <span class="fc-badge">est.</span></div><div class="val '+(con?'pos':'')+'">'+fmt(mayT)+'</div><div class="sub">'+(con?(mom>=0?'+':'')+mom.toFixed(2)+'% vs Apr':'—')+'</div></div>';
   h+='</div><div class="g3">';
-  h+='<div class="metric"><div class="lbl">YTD growth</div><div class="val pos">'+fmt(aprT-startT)+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Blended yield</div><div class="val">'+blendYield().toFixed(2)+'%</div><div class="sub">net</div></div>';
-  h+='<div class="metric"><div class="lbl">Inv. income/yr</div><div class="val pos">'+fmt(annIncome())+'</div></div>';
+  h+='<div class="metric"><div class="lbl">YTD growth</div><div class="val '+(con?'pos':'')+'">'+fmt(aprT-startT)+'</div></div>';
+  h+='<div class="metric"><div class="lbl">Blended yield</div><div class="val">'+(con?blendYield().toFixed(2)+'%':'—')+'</div><div class="sub">net</div></div>';
+  h+='<div class="metric"><div class="lbl">Inv. income/yr</div><div class="val '+(con?'pos':'')+'">'+fmt(annIncome())+'</div></div>';
   h+='</div>';
-
-  // MoM growth table
-  h+='<div class="sl">Month-on-month growth</div>';
-  h+='<div class="card">';
+  // MoM growth
+  h+='<div class="sl">Month-on-month growth</div><div class="card">';
   var momPairs=[
     {label:'Start → Jan',cur:'jan',prev:'start'},
     {label:'Jan → Feb',cur:'feb',prev:'jan'},
     {label:'Feb → Mar',cur:'mar',prev:'feb'},
     {label:'Mar → Apr',cur:'apr',prev:'mar'},
-    {label:'Apr → May (est.)',cur:'may',prev:'apr',forecast:true}
+    {label:'Apr → May (est.)',cur:'may',prev:'apr',fc:true}
   ];
   momPairs.forEach(function(p){
     var cur=totPf(p.cur),prev=totPf(p.prev),chg=cur-prev,pct=prev>0?chg/prev*100:0;
-    h+='<div class="row">';
-    h+='<span class="row-label">'+p.label+'</span>';
-    h+='<div style="text-align:right">';
-    h+='<div class="row-val '+(chg>=0?'pos':'neg')+'">'+(chg>=0?'+':'')+fmt(chg)+(p.forecast?'<span class="fc-badge">est.</span>':'')+'</div>';
-    h+='<div class="row-sub" style="color:'+(pct>=0?'#3b6d11':'#a32d2d')+'">'+(pct>=0?'+':'')+pct.toFixed(2)+'%</div>';
-    h+='</div></div>';
+    h+='<div class="row"><span class="row-label">'+p.label+'</span>';
+    h+='<div style="text-align:right"><div class="row-val '+(chg>=0?'pos':'neg')+'">'+(con?(chg>=0?'+':'')+fmt(chg)+(p.fc?'<span class="fc-badge">est.</span>':''):'—')+'</div>';
+    h+='<div class="row-sub" style="color:'+(pct>=0?'#3b6d11':'#a32d2d')+'">'+(con?(pct>=0?'+':'')+pct.toFixed(2)+'%':'—')+'</div></div></div>';
   });
   h+='</div>';
-
-  // Growth over time chart
+  // Growth chart
   h+='<div class="sl">Growth over time</div>';
-  h+='<div class="card" style="padding:14px">';
-  h+='<div class="chart-box"><canvas id="gc"></canvas></div>';
-  h+='</div>';
-
+  h+='<div class="card" style="padding:14px"><div class="chart-box"><canvas id="gc"></canvas></div></div>';
   // Holdings
   h+='<div class="sl">Holdings — Apr actual / May est.</div><div class="card">';
   var cg='';
@@ -488,33 +575,26 @@ function renderPortfolio(){
     var isFC=pfActual(i.key,CURRENT_MK)===null,df=mb-ab;
     h+='<div class="row"><div><div style="font-size:13px">'+i.label+'</div>'+(i.rate?'<div style="font-size:11px;color:#888780">'+i.rate+'</div>':'')+'</div>';
     h+='<div style="text-align:right"><div class="row-val">'+(mb>0?fmt(mb):'—')+(isFC&&mb>0?'<span class="fc-badge">est.</span>':'')+'</div>';
-    h+='<div class="row-sub" style="color:'+(df>0?'#3b6d11':df<0?'#a32d2d':'#888780')+'">'+(df!==0?(df>0?'+':'')+fmt(df)+' vs Apr':'Apr: '+fmt(ab))+'</div></div></div>';
+    h+='<div class="row-sub" style="color:'+(df>0?'#3b6d11':df<0?'#a32d2d':'#888780')+'">'+(df!==0&&con?(df>0?'+':'')+fmt(df)+' vs Apr':'Apr: '+fmt(ab))+'</div></div></div>';
   });
   var td=mayT-aprT;
   h+='<div class="row" style="border-top:0.5px solid #e0ddd4"><span style="font-weight:500">Total</span>';
-  h+='<div><div class="row-val">'+fmt(mayT)+'<span class="fc-badge">est.</span></div>';
-  h+='<div class="row-sub pos">'+(td>=0?'+':'')+fmt(td)+' vs Apr</div></div></div></div>';
-
-  // Balance history charts
+  h+='<div><div class="row-val">'+fmt(mayT)+(con?'<span class="fc-badge">est.</span>':'')+'</div>';
+  h+='<div class="row-sub '+(td>=0?'pos':'neg')+'">'+(con?(td>=0?'+':'')+fmt(td)+' vs Apr':'—')+'</div></div></div></div>';
+  // History charts
   h+='<div class="sl">Balance history — by group</div>';
   h+='<div class="card" style="padding:14px;margin-bottom:10px">';
   h+='<div style="font-size:13px;font-weight:500;margin-bottom:6px">Total portfolio (stacked)</div>';
   h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;font-size:11px">';
-  Object.keys(GRP_LABELS).forEach(function(g){
-    h+='<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:'+GRP_COLORS[g]+';display:inline-block"></span>'+GRP_LABELS[g]+'</span>';
-  });
-  h+='</div>';
-  h+='<div class="chart-box"><canvas id="hbar"></canvas></div></div>';
-
+  Object.keys(GRP_LABELS).forEach(function(g){h+='<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:'+GRP_COLORS[g]+';display:inline-block"></span>'+GRP_LABELS[g]+'</span>';});
+  h+='</div><div class="chart-box"><canvas id="hbar"></canvas></div></div>';
   h+='<div class="card" style="padding:14px;margin-bottom:10px">';
   h+='<div style="font-size:13px;font-weight:500;margin-bottom:10px">Group trends (line)</div>';
   h+='<div class="chart-box"><canvas id="hline"></canvas></div></div>';
-
-  // Collapsible numbers table
+  // Collapsible table
   h+='<div class="card" style="margin-bottom:10px">';
   h+='<div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTable()">';
-  h+='<span style="font-size:13px;font-weight:500">Detailed numbers</span>';
-  h+='<span id="tbl-toggle" style="font-size:12px;color:#185fa5">Show ▾</span></div>';
+  h+='<span style="font-size:13px;font-weight:500">Detailed numbers</span><span id="tbl-toggle" style="font-size:12px;color:#185fa5">Show ▾</span></div>';
   h+='<div id="tbl-wrap" style="display:none;overflow-x:auto;padding:0 0 10px">';
   h+='<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:360px"><thead><tr>';
   h+='<th style="text-align:left;padding:6px 14px;color:#888780;font-weight:500;border-bottom:0.5px solid #e0ddd4">Instrument</th>';
@@ -528,97 +608,48 @@ function renderPortfolio(){
   h+='<tr style="font-weight:500;border-top:0.5px solid #e0ddd4"><td style="padding:6px 14px">Total</td>';
   HIST_PERIODS.forEach(function(p){h+='<td style="text-align:right;padding:6px 8px">'+fmt(totPf(p))+'</td>';});
   h+='</tr></tbody></table></div></div>';
-
   set(h);
-
-  // Render charts after DOM update
   setTimeout(function(){
     var grpKeys=Object.keys(GRP_LABELS);
-
-    // Growth over time — 6 points, actual stops at Apr, forecast bridges Apr→May
+    // Growth chart — 6 points, actual solid, forecast dashed bridging Apr→May
     mkChart('gc',{
       type:'line',
       data:{
         labels:['Start','Jan','Feb','Mar','Apr','May (est.)'],
         datasets:[
-          {
-            label:'Actual',
-            data:[
-              totPf('start'),
-              totPf('jan'),
-              totPf('feb'),
-              totPf('mar'),
-              totPf('apr'),
-              null
-            ],
-            borderColor:'#185fa5',
-            backgroundColor:'rgba(24,95,165,0.07)',
-            fill:true,tension:0.3,pointRadius:4,borderWidth:2,spanGaps:false
-          },
-          {
-            label:'Forecast',
-            data:[
-              null,
-              null,
-              null,
-              null,
-              totPf('apr'),
-              totPf('may')
-            ],
-            borderColor:'#ba7517',
-            backgroundColor:'transparent',
-            borderDash:[6,4],tension:0.3,pointRadius:4,borderWidth:2,spanGaps:false
-          }
+          {label:'Actual',data:[totPf('start'),totPf('jan'),totPf('feb'),totPf('mar'),totPf('apr'),null],
+           borderColor:'#185fa5',backgroundColor:'rgba(24,95,165,0.07)',fill:true,tension:0.3,pointRadius:4,borderWidth:2,spanGaps:false},
+          {label:'Forecast',data:[null,null,null,null,totPf('apr'),totPf('may')],
+           borderColor:'#ba7517',backgroundColor:'transparent',borderDash:[6,4],tension:0.3,pointRadius:4,borderWidth:2,spanGaps:false}
         ]
       },
-      options:chartDefaults()
+      options:chartOpts()
     });
-
-    // Stacked bar — history only (Start→Apr)
+    // Stacked bar — legend hidden (HTML legend above chart already shows it)
     mkChart('hbar',{
       type:'bar',
       data:{
         labels:HIST_LABELS,
-        datasets:grpKeys.map(function(g){
-          return{
-            label:GRP_LABELS[g],
-            data:HIST_PERIODS.map(function(p){return grpTot(g,p);}),
-            backgroundColor:GRP_COLORS[g],
-            borderWidth:0
-          };
-        })
+        datasets:grpKeys.map(function(g){return{label:GRP_LABELS[g],data:HIST_PERIODS.map(function(p){return grpTot(g,p);}),backgroundColor:GRP_COLORS[g],borderWidth:0};})
       },
-      options:(function(){
-        var o=chartDefaults();
-        o.plugins.legend.display=false;
-        o.scales.x.stacked=true;
-        o.scales.y.stacked=true;
-        return o;
-      })()
+      options:chartOpts({
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fmt(c.raw);}}}},
+        scales:{x:{stacked:true,ticks:{color:'#888780'},grid:{display:false}},y:{stacked:true,ticks:{color:'#888780',callback:function(v){return'Rp '+(v/1000000000).toFixed(2)+'B';}},grid:{color:'rgba(0,0,0,0.05)'}}}
+      })
     });
-
-    // Line per group — history only (Start→Apr)
+    // Line per group
     mkChart('hline',{
       type:'line',
       data:{
         labels:HIST_LABELS,
-        datasets:grpKeys.map(function(g){
-          return{
-            label:GRP_LABELS[g],
-            data:HIST_PERIODS.map(function(p){return grpTot(g,p);}),
-            borderColor:GRP_COLORS[g],
-            backgroundColor:'transparent',
-            tension:0.3,pointRadius:3,borderWidth:2,
-            pointBackgroundColor:GRP_COLORS[g]
-          };
-        })
+        datasets:grpKeys.map(function(g){return{label:GRP_LABELS[g],data:HIST_PERIODS.map(function(p){return grpTot(g,p);}),borderColor:GRP_COLORS[g],backgroundColor:'transparent',tension:0.3,pointRadius:3,borderWidth:2,pointBackgroundColor:GRP_COLORS[g]};})
       },
-      options:chartDefaults()
+      options:chartOpts()
     });
   },150);
 }
 
-// ── SETTINGS ─────────────────────────────────────────────────
+// ── SETTINGS ──────────────────────────────────────────────────
 function renderSettings(){
   document.getElementById('subBar').innerHTML='';
   var h='<div class="sl">Google Sheets connection</div><div class="card">';
@@ -632,7 +663,8 @@ function renderSettings(){
   h+='<div class="row"><span class="row-label">Version</span><span>4.0 — May 2026</span></div>';
   h+='<div class="row"><span class="row-label">Current month</span><span>May 2026</span></div>';
   h+='<div class="row"><span class="row-label">Last complete</span><span>April 2026</span></div>';
-  h+='<div class="row"><span class="row-label">Data source</span><span>Google Sheets (read-only)</span></div></div>';
+  h+='<div class="row"><span class="row-label">Data source</span><span>Google Sheets (read-only)</span></div>';
+  h+='<div class="row"><span class="row-label">Connected</span><span class="badge '+(connected()?'b-ok':'b-danger')+'">'+(connected()?'Yes':'No')+'</span></div></div>';
   set(h);
 }
 function saveCfg(){
@@ -641,11 +673,12 @@ function saveCfg(){
   save();toast('Settings saved ✓');
 }
 
-// ── ALERTS ───────────────────────────────────────────────────
+// ── ALERTS ────────────────────────────────────────────────────
 function buildAlerts(mk){
   var a=[],tE=totExp(mk),pE=totBudget();
+  if(!connected()){return[{t:'info',m:'Connect Google Sheets in Settings to see alerts.'}];}
   if(tE>0&&tE>pE)a.push({t:'danger',m:'<strong>Over budget by '+fmtFull(tE-pE)+'</strong> this month.'});
-  EXPENSE_CATS.forEach(function(c){var act=gExp(mk,c.key),bud=c.budget;if(bud>0&&act>bud*1.15)a.push({t:'warn',m:'<strong>'+c.label+'</strong> over budget by '+fmtFull(act-bud)+'.'});});
+  EXPENSE_CATS.forEach(function(c){var act=gExp(mk,c.key),bud=gBudget(c.key);if(bud>0&&act>bud*1.15)a.push({t:'warn',m:'<strong>'+c.label+'</strong> over budget by '+fmtFull(act-bud)+'.'});});
   if(mk==='sep'&&gInv(mk,'sr025')===0)a.push({t:'warn',m:'<strong>SR025 not recorded.</strong> Window closes 16 Sep 2026.'});
   if(mk==='aug'||mk==='sep')a.push({t:'info',m:'SR025 window: <strong>21 Aug – 16 Sep 2026.</strong>'});
   if(!a.length)a.push({t:'ok',m:'<strong>All clear.</strong> Update Google Sheets and sync to see latest.'});
@@ -653,7 +686,7 @@ function buildAlerts(mk){
 }
 function aIcon(t){return t==='danger'?'🔴':t==='warn'?'🟡':t==='ok'?'🟢':'🔵';}
 
-// ── TABLE TOGGLE ─────────────────────────────────────────────
+// ── TABLE TOGGLE ──────────────────────────────────────────────
 function toggleTable(){
   var w=document.getElementById('tbl-wrap'),t=document.getElementById('tbl-toggle');
   if(!w||!t)return;
@@ -662,7 +695,7 @@ function toggleTable(){
   t.textContent=open?'Hide ▴':'Show ▾';
 }
 
-// ── API ──────────────────────────────────────────────────────
+// ── API ───────────────────────────────────────────────────────
 function api(action,payload){
   var url=S.settings.url;
   if(!url)return Promise.reject(new Error('No URL'));
@@ -687,10 +720,10 @@ function syncPf(){
   .catch(function(e){toast('Error: '+e.message);});
 }
 
-// ── UTILS ────────────────────────────────────────────────────
+// ── UTILS ─────────────────────────────────────────────────────
 function set(h){document.getElementById('pageContent').innerHTML=h;}
 
-// ── INIT ─────────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────────
 load();
 nav('dashboard');
 if(S.settings.url)syncAll();
