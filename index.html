@@ -75,7 +75,7 @@ function dleft(){return dim()-TODAY.getDate()+1;}
 var CURRENT_MK=currentMk(), LAST_ACTUAL=prevMk(CURRENT_MK), NAV_MONTHS=rolling(CURRENT_MK,6);
 
 var ASSUMPTIONS={
-  rd_expected_return:.045,
+  rd_expected_return:.040,
   sr025_net_rate:.0531,        // 5.9% gross × (1 − 10% PPh)
   jmo_monthly_contrib:202667,
   bri_9189_monthly_contrib:202667,
@@ -102,7 +102,7 @@ var RATE_CATS=['food','household','shopping','sport','topup','withdraw'];
 var PF=[
  {key:'bni_saving',label:'BNI Saving',group:'liquid'}, {key:'bni_lifegoals',label:'Life Goals',group:'liquid'}, {key:'bsi_ops',label:'BSI Operational',group:'liquid'},
  {key:'bni_deposito',label:'BNI Deposito',group:'fixed'}, {key:'bni_sbn',label:'SBN Existing',group:'fixed'}, {key:'sr025',label:'SR025 T5',group:'fixed'},
- {key:'bni_rd',label:'BNI Reksa Dana',group:'market',rate:'5.50% est'}, {key:'mandiri_rd',label:'Mandiri RD',group:'market'}, {key:'mandiri_saham',label:'Mandiri Saham',group:'market'}, {key:'bsi_gold',label:'BSI Gold',group:'market'},
+ {key:'bni_rd',label:'BNI Reksa Dana',group:'market',rate:'4.00% est'}, {key:'mandiri_rd',label:'Mandiri RD',group:'market'}, {key:'mandiri_saham',label:'Mandiri Saham',group:'market'}, {key:'bsi_gold',label:'BSI Gold',group:'market'},
  {key:'jmo',label:'JMO',group:'retire'}, {key:'bri_9189',label:'BRI-9189',group:'retire'}, {key:'bri_8628',label:'BRI-8628',group:'retire'}
 ];
 var GRP_LABELS={liquid:'Liquid',fixed:'Fixed Income',market:'Market-linked',retire:'Retirement'};
