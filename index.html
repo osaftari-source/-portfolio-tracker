@@ -512,7 +512,7 @@ function renderMonthly(){
   h+='<div class="g2"><div class="metric"><div class="lbl">Invested</div><div class="val pos">'+fmt(tV,{showZero:con})+'</div></div>';
   h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(tI>0?(net<0?'neg':'pos'):'')+'">'+fmt(net,{showZero:con})+'</div><div class="sub">'+(tI>0?(net<0?'from savings':'surplus'):'')+'</div></div></div>';
   if(con)h+=renderExpenseControl(mk);
-  if(con)h+=renderExpenseControl(mk);
+  
   h+='<div class="section">Daily & weekly spending rate</div>';
   if(!con)h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">Connect Google Sheets to see spending rate.</div></div>';
   else if(!isCur)h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">📅 Rate only available for current month.<br><span style="font-size:12px">Switch to <strong>'+labelFromMk(amk)+'</strong>.</span></div></div>';
@@ -529,10 +529,11 @@ function renderExpenseControl(mk){
   var pct=budget>0?Math.min(100,regular/budget*100):0;
   var col=regular>budget&&budget>0?'#a32d2d':pct>85?'#ba7517':'#3b6d11';
   var h='<div class="section">Expense control</div>';
-  h+='<div class="card"><div style="padding:12px 14px">';
-  h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px">';
-  h+='<div><div style="font-size:12px;color:#888780">Regular expenses</div><div style="font-size:19px;font-weight:650">'+fmt(regular,{showZero:true})+'</div><div style="font-size:11px;color:#888780">excluding incidental</div></div>';
-  h+='<div style="text-align:right"><div style="font-size:12px;color:#888780">Remaining budget</div><div style="font-size:19px;font-weight:650;color:'+col+'">'+fmt(remain,{showZero:true})+'</div><div style="font-size:11px;color:#888780">budget: '+fmt(budget,{showZero:true})+'</div></div>';
+  h+='<div class="card">';
+  h+='<div style="padding:12px 14px">';
+  h+='<div class="g2" style="margin-bottom:10px">';
+  h+='<div><div class="lbl" style="font-size:11px;color:#888780;margin-bottom:3px">Regular expenses</div><div class="val" style="font-size:18px;font-weight:650">'+fmt(regular,{showZero:true})+'</div><div class="sub" style="font-size:11px;color:#888780;margin-top:2px">excluding incidental</div></div>';
+  h+='<div style="text-align:right"><div class="lbl" style="font-size:11px;color:#888780;margin-bottom:3px">Remaining budget</div><div class="val" style="font-size:18px;font-weight:650;color:'+col+'">'+fmt(remain,{showZero:true})+'</div><div class="sub" style="font-size:11px;color:#888780;margin-top:2px">budget: '+fmt(budget,{showZero:true})+'</div></div>';
   h+='</div>';
   h+='<div class="pbar" style="height:7px"><div class="pfill" style="width:'+Math.min(100,pct).toFixed(0)+'%;background:'+col+'"></div></div>';
   h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Regular spent: '+fmt(regular,{showZero:true})+'</span><span>'+pct.toFixed(0)+'% used</span></div>';
@@ -562,18 +563,43 @@ function renderSpendingRate(mk,dl,dim,dp){
   });
   return h;
 }
+
+function toggleCollapse(id){
+  var body=document.getElementById(id+'-body');
+  var icon=document.getElementById(id+'-icon');
+  if(!body||!icon)return;
+  var open=body.style.display==='none';
+  body.style.display=open?'block':'none';
+  icon.textContent=open?'▴':'▾';
+}
+function collapsibleCard(id,title,bodyHtml,defaultOpen){
+  return '<div class="section">'+title+'</div>'
+    +'<div class="card">'
+    +'<div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleCollapse(\\''+id+'\\')">'
+    +'<span style="font-size:13px;font-weight:650">'+title+'</span>'
+    +'<span id="'+id+'-icon" style="font-size:12px;color:#185fa5">'+(defaultOpen?'▴':'▾')+'</span>'
+    +'</div>'
+    +'<div id="'+id+'-body" style="display:'+(defaultOpen?'block':'none')+'">'
+    +bodyHtml
+    +'</div>'
+    +'</div>';
+}
+
 function renderBreakdown(title,cats,actualFn,planFn,label){
-  var h='<div class="section">'+title+'</div><div class="card">',any=false;
+  var body='',any=false;
   cats.forEach(function(c){
     var a=actualFn(c),p=planFn(c);
-    if(a===null&&p===null)return;any=true;
+    if(a===null&&p===null)return;
+    any=true;
     var av=num(a),pv=num(p),over=label==='budget'&&pv>0&&av>pv,df=av-pv;
-    h+='<div class="row"><span class="row-label" style="'+(over?'color:#a32d2d':'')+'">'+c.label+(over?' ▲':'')+'</span><div><div class="row-val '+(over?'neg':av>0&&label==='plan'?'pos':'')+'">'+fmt(av,{showZero:a!==null})+'</div>';
-    if(p!==null)h+='<div class="row-sub" style="color:'+(over?'#a32d2d':label==='budget'&&pv-av>pv*.1?'#3b6d11':'#888780')+'">'+(a!==null?(df>=0?'+':'')+fmt(df,{showZero:true})+' vs '+label:label+': '+fmt(pv,{showZero:true}))+'</div>';
-    h+='</div></div>';
+    body+='<div class="row"><span class="row-label" style="'+(over?'color:#a32d2d':'')+'">'+c.label+(over?' ▲':'')+'</span><div>';
+    body+='<div class="row-val '+(over?'neg':av>0&&label==='plan'?'pos':'')+'">'+fmt(av,{showZero:a!==null})+'</div>';
+    if(p!==null)body+='<div class="row-sub" style="color:'+(over?'#a32d2d':label==='budget'&&pv-av>pv*.1?'#3b6d11':'#888780')+'">'+(a!==null?(df>=0?'+':'')+fmt(df,{showZero:true})+' vs '+label:label+': '+fmt(pv,{showZero:true}))+'</div>';
+    body+='</div></div>';
   });
-  if(!any)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(connected()?'No data yet.':'Connect Google Sheets to see data.')+'</div>';
-  return h+'</div>';
+  if(!any)body+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(connected()?'No data yet.':'Connect Google Sheets to see data.')+'</div>';
+  var id=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  return collapsibleCard(id,title,body,false);
 }
 function renderInvestments(mk){
   var h='<div class="section">Investments</div><div class="card">',any=false;
