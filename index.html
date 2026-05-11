@@ -76,6 +76,7 @@ var CURRENT_MK=currentMk(), LAST_ACTUAL=prevMk(CURRENT_MK), NAV_MONTHS=rolling(C
 
 var ASSUMPTIONS={
   rd_expected_return:.055,
+  sr025_net_rate:.0531,        // 5.9% gross × (1 − 10% PPh)
   jmo_monthly_contrib:202667,
   bri_9189_monthly_contrib:202667,
   bri_8628_monthly_contrib:202666
@@ -114,7 +115,9 @@ function load(){
   try{
     var old=localStorage.getItem(STORAGE_KEY)||localStorage.getItem('pt_clean_v1')||localStorage.getItem('ptv7')||localStorage.getItem('ptv6')||'{}';
     var d=JSON.parse(old);
-    S.settings=d.settings||S.settings; S.meta=d.meta||S.meta; S.plan=d.plan||{}; S.income=d.income||{}; S.expenses=d.expenses||{}; S.invest=d.invest||{}; S.portfolio=d.portfolio||{};
+     S.settings=d.settings||S.settings; S.meta=d.meta||S.meta; S.plan=d.plan||{}; S.income=d.income||{}; S.expenses=d.expenses||{}; S.invest=d.invest||{}; S.portfolio=d.portfolio||{};
+    if(d.page)S.page=d.page;
+    if(d.mk)S.mk=d.mk;
   }catch(e){console.warn(e);}
 }
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(S));}
@@ -205,7 +208,6 @@ function renderDashboard(){
   Object.keys(GRP_LABELS).forEach(function(g){var amt=grpTot(g,LAST_ACTUAL),pct=totPf(LAST_ACTUAL)>0?amt/totPf(LAST_ACTUAL)*100:0;h+='<div style="padding:8px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>'+GRP_LABELS[g]+'</span><span><strong>'+fmt(amt)+'</strong> <span style="color:#888780;font-size:12px">'+(connected()?pct.toFixed(1):'—')+'%</span></span></div><div class="pbar"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+GRP_COLORS[g]+'"></div></div></div>';});
   h+='</div>';pageEl().innerHTML=h;
 }
-function alerts(){var a=[];if(!connected())return[{icon:'🔵',text:'Connect Google Sheets in Settings to see alerts.'}];if(CURRENT_MK==='dec')a.push({icon:'🔵',text:'<strong>Year-end reminder.</strong> In early January, archive this tracker and move December closing balances to Start.'});a.push({icon:'🟢',text:'<strong>All clear.</strong> Current month uses actual values where filled and estimates blanks.'});return a;}
 
 function renderMonthly(){
  var bar='<div class="mo-scroll">';NAV_MONTHS.forEach(function(m){bar+='<button class="mo-chip '+(m===S.mk?'active':'')+'" data-mk="'+m+'">'+label(m)+'</button>';});bar+='</div>';subEl().innerHTML=bar;subEl().querySelectorAll('.mo-chip').forEach(function(b){b.onclick=function(){S.mk=b.dataset.mk;save();renderMonthly();};});
