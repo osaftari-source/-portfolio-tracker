@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#185fa5">
@@ -10,95 +10,71 @@
 <link rel="manifest" href="manifest.json">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-:root{
-  --blue:#185fa5;--blue-soft:#e6f1fb;--bg:#f5f5f0;--card:#fff;--text:#1a1a18;
-  --muted:#888780;--line:#e0ddd4;--line-soft:#f1efe8;--green:#3b6d11;
-  --green-soft:#eaf3de;--orange:#854f0b;--orange-soft:#faeeda;--red:#a32d2d;--red-soft:#fcebeb;
-}
+:root{--blue:#185fa5;--blue-soft:#e6f1fb;--bg:#f5f5f0;--card:#fff;--text:#1a1a18;--muted:#888780;--line:#e0ddd4;--line-soft:#f1efe8;--green:#3b6d11;--green-soft:#eaf3de;--orange:#854f0b;--orange-soft:#faeeda;--red:#a32d2d;--red-soft:#fcebeb;--gray:#73726c}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;min-height:100vh}
-button,input{font:inherit}button{cursor:pointer;border:none;background:none}.app{max-width:480px;margin:0 auto;padding-bottom:88px}
-.topbar{height:58px;background:var(--card);border-bottom:.5px solid var(--line);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-.topbar h1{font-size:17px;font-weight:700;letter-spacing:-.01em}.sync-btn{font-size:13px;color:var(--blue);padding:6px 10px;border-radius:8px}.sync-btn:active{background:var(--blue-soft)}
+button,input,textarea{font:inherit}button{cursor:pointer;border:none;background:none}.app{max-width:480px;margin:0 auto;padding-bottom:88px}
+.topbar{height:58px;background:var(--card);border-bottom:.5px solid var(--line);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}.topbar h1{font-size:17px;font-weight:700}.sync-btn{font-size:13px;color:var(--blue);padding:6px 10px;border-radius:8px}.sync-btn:active{background:var(--blue-soft)}
 .content{padding:12px 16px}.section{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin:16px 0 8px}.section:first-child{margin-top:0}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
 .metric,.card{background:var(--card);border:.5px solid var(--line);border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.02)}.metric{padding:12px}.card{margin-bottom:10px;overflow:hidden}
 .lbl{font-size:11px;color:var(--muted);margin-bottom:3px}.val{font-size:18px;font-weight:700;letter-spacing:-.01em}.sub{font-size:11px;color:var(--muted);margin-top:2px}.small-note{font-size:12px;color:var(--muted);padding:8px 0}
 .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 14px;border-bottom:.5px solid var(--line-soft);font-size:13px}.row:last-child{border-bottom:none}.row-label{color:#5f5e5a}.row-val{font-weight:700;text-align:right}.row-sub{font-size:11px;color:var(--muted);text-align:right;margin-top:1px}
-.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}.b-ok{background:var(--green-soft);color:var(--green)}.b-warn{background:var(--orange-soft);color:var(--orange)}.b-danger{background:var(--red-soft);color:var(--red)}.b-info{background:var(--blue-soft);color:var(--blue)}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}.b-ok{background:var(--green-soft);color:var(--green)}.b-warn{background:var(--orange-soft);color:var(--orange)}.b-danger{background:var(--red-soft);color:var(--red)}.b-info{background:var(--blue-soft);color:var(--blue)}
 .fc-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;background:var(--orange-soft);color:var(--orange);font-weight:700;margin-left:4px;vertical-align:middle}
 .pbar{height:5px;background:var(--line-soft);border-radius:3px;overflow:hidden;margin-top:4px}.pfill{height:100%;border-radius:3px}.pos{color:var(--green)}.neg{color:var(--red)}.warn-c{color:var(--orange)}
 .alert-item{display:flex;gap:10px;padding:10px 14px;border-bottom:.5px solid var(--line-soft);align-items:flex-start}.alert-item:last-child{border-bottom:none}.alert-text{font-size:13px;color:#5f5e5a}.alert-text strong{color:var(--text)}
 .mo-scroll{display:flex;gap:6px;padding:10px 16px;overflow-x:auto;background:var(--card);border-bottom:.5px solid var(--line);scrollbar-width:none}.mo-scroll::-webkit-scrollbar{display:none}.mo-chip{padding:5px 13px;border-radius:20px;border:.5px solid var(--line);font-size:13px;color:#5f5e5a;white-space:nowrap;flex-shrink:0}.mo-chip.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
 .rate-box{flex:1;background:#f8f7f3;border-radius:8px;padding:9px;text-align:center}.rb-lbl{font-size:10px;color:var(--muted);margin-bottom:2px}.rb-val{font-size:15px;font-weight:700}.rb-unit{font-size:10px;color:var(--muted)}
 .pf-grp{padding:6px 14px;font-size:11px;font-weight:700;color:var(--muted);background:#f8f7f3;border-bottom:.5px solid var(--line)}
-.settings-field{padding:12px 14px;border-bottom:.5px solid var(--line-soft)}.settings-field label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}.settings-field input{width:100%;padding:9px 10px;border:.5px solid var(--line);border-radius:8px;background:#fff;color:var(--text);outline:none}.settings-field input:focus{border-color:var(--blue)}
+.settings-field{padding:12px 14px;border-bottom:.5px solid var(--line-soft)}.settings-field label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}.settings-field input,.settings-field textarea{width:100%;padding:9px 10px;border:.5px solid var(--line);border-radius:8px;background:#fff;color:var(--text);outline:none}.settings-field input:focus,.settings-field textarea:focus{border-color:var(--blue)}
 .primary-btn{width:100%;padding:10px;border-radius:8px;font-size:14px;font-weight:700;background:var(--blue);color:#fff}.secondary-btn{padding:6px 14px;border-radius:8px;border:.5px solid var(--line);font-size:13px;color:var(--text)}
 .bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--card);border-top:.5px solid var(--line);display:flex;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:20}.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;color:var(--muted);font-size:10px}.nav-item.active{color:var(--blue);font-weight:700}.nav-icon{font-size:20px;line-height:1}
-.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#2c2c2a;color:#f1efe8;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:99;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}.toast.show{opacity:1}
+.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#2c2c2a;color:#f1efe8;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:9999;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}.toast.show{opacity:1}
 .chart-box{position:relative;height:220px;width:100%;overflow:hidden}.chart-box canvas{position:absolute!important;top:0!important;left:0!important;width:100%!important;height:100%!important}
-.chart-simple{height:140px;display:flex;align-items:end;gap:8px;padding:12px;background:#fff}.bar{flex:1;background:var(--blue);border-radius:5px 5px 0 0;min-height:8px;opacity:.85}.bar.est{background:#ba7517;opacity:.85}.chart-labels{display:flex;gap:8px;padding:0 12px 12px;color:var(--muted);font-size:10px}.chart-labels span{flex:1;text-align:center}
-.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;line-height:1.8}
-.not-connected{background:var(--orange-soft);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:#633806;display:flex;gap:10px;align-items:flex-start}
-@media(max-width:360px){.content{padding:10px 12px}.metric .val,.val{font-size:16px}.g3{gap:6px}}
-
-.fab{position:fixed;right:calc(50% - 220px);bottom:92px;width:54px;height:54px;border-radius:50%;background:var(--blue);color:#fff;font-size:30px;line-height:54px;text-align:center;box-shadow:0 6px 18px rgba(24,95,165,.35);z-index:25}
-.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:40;align-items:flex-end;justify-content:center}
-.modal{width:100%;max-width:480px;background:var(--bg);border-radius:18px 18px 0 0;padding:14px 16px 20px;max-height:92vh;overflow:auto}
-.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.modal-title{font-size:16px;font-weight:700}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}
-.seg button{padding:8px;border:.5px solid var(--line);border-radius:8px;color:#5f5e5a;background:#fff;font-size:13px}
-.seg button.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
-.chip-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.cat-chip{padding:6px 10px;border:.5px solid var(--line);border-radius:20px;font-size:12px;background:#fff;color:#5f5e5a}
-.cat-chip.active{background:var(--blue-soft);border-color:var(--blue);color:var(--blue);font-weight:700}
-.txn-item{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:.5px solid var(--line-soft)}
-.txn-main{font-size:13px}
-.txn-note{font-size:11px;color:var(--muted)}
-.delete-btn{color:var(--red);font-size:12px;padding:4px 6px}
-@media(max-width:480px){.fab{right:18px}}
-
+.empty{text-align:center;padding:28px 16px;color:var(--muted);font-size:13px;line-height:1.7}.not-connected{background:var(--orange-soft);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:#633806;display:flex;gap:10px;align-items:flex-start}
+.fab{position:fixed;right:calc(50% - 220px);bottom:92px;width:54px;height:54px;border-radius:50%;background:var(--blue);color:#fff;font-size:30px;line-height:54px;text-align:center;box-shadow:0 6px 18px rgba(24,95,165,.35);z-index:9998;pointer-events:auto}
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:9997;align-items:flex-end;justify-content:center}.modal{width:100%;max-width:480px;background:var(--bg);border-radius:18px 18px 0 0;padding:14px 16px 20px;max-height:92vh;overflow:auto}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-title{font-size:16px;font-weight:700}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}.seg button{padding:8px;border:.5px solid var(--line);border-radius:8px;color:#5f5e5a;background:#fff;font-size:13px}.seg button.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.chip-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.cat-chip{padding:6px 10px;border:.5px solid var(--line);border-radius:20px;font-size:12px;background:#fff;color:#5f5e5a}.cat-chip.active{background:var(--blue-soft);border-color:var(--blue);color:var(--blue);font-weight:700}
+.txn-item{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:.5px solid var(--line-soft)}.txn-main{font-size:13px}.txn-note{font-size:11px;color:var(--muted)}.delete-btn{color:var(--red);font-size:12px;padding:4px 6px}
+@media(max-width:480px){.fab{right:18px}}@media(max-width:360px){.content{padding:10px 12px}.metric .val,.val{font-size:16px}.g3{gap:6px}}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="topbar"><h1>💼 Portfolio Tracker</h1><button class="sync-btn" id="syncBtn">↻ Sync</button></div>
+  <div class="topbar"><h1>💼 Portfolio Tracker</h1><button class="sync-btn" id="syncBtn" type="button">↻ Sync</button></div>
   <div id="subBar"></div>
   <main class="content" id="pageContent"></main>
 </div>
 
-<button class="fab" id="fab">+</button>
+<button class="fab" id="fab" type="button" onclick="window.openTxnModal && window.openTxnModal()">+</button>
+
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title">Add transaction</div>
-      <button id="closeModal" style="font-size:24px;color:#888780">×</button>
-    </div>
-    <div class="seg">
-      <button id="typeExpense" class="active">Expense</button>
-      <button id="typeIncome">Income</button>
-    </div>
+    <div class="modal-head"><div class="modal-title">Add transaction</div><button id="closeModal" type="button" style="font-size:24px;color:#888780">×</button></div>
+    <div class="seg"><button id="typeExpense" type="button" class="active">Expense</button><button id="typeIncome" type="button">Income</button></div>
     <div class="settings-field"><label>Date</label><input type="date" id="txnDate"></div>
     <div class="settings-field"><label>Category</label><div class="chip-grid" id="catGrid"></div></div>
     <div class="settings-field"><label>Amount</label><input type="number" id="txnAmount" placeholder="Example: 50000" inputmode="numeric"></div>
     <div class="settings-field"><label>Note</label><textarea id="txnNote" rows="2" placeholder="Optional note"></textarea></div>
-    <button class="primary-btn" id="saveTxn">Save transaction</button>
+    <button class="primary-btn" id="saveTxn" type="button">Save transaction</button>
   </div>
 </div>
 
 <nav class="bottomnav" aria-label="Bottom navigation">
-  <button class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span><span>Dashboard</span></button>
-  <button class="nav-item" data-page="monthly"><span class="nav-icon">📅</span><span>Monthly</span></button>
-  <button class="nav-item" data-page="portfolio"><span class="nav-icon">💼</span><span>Portfolio</span></button>
-  <button class="nav-item" data-page="settings"><span class="nav-icon">⚙️</span><span>Settings</span></button>
+  <button class="nav-item active" type="button" data-page="dashboard"><span class="nav-icon">📊</span><span>Dashboard</span></button>
+  <button class="nav-item" type="button" data-page="monthly"><span class="nav-icon">📅</span><span>Monthly</span></button>
+  <button class="nav-item" type="button" data-page="portfolio"><span class="nav-icon">💼</span><span>Portfolio</span></button>
+  <button class="nav-item" type="button" data-page="settings"><span class="nav-icon">⚙️</span><span>Settings</span></button>
 </nav>
 <div class="toast" id="toast"></div>
+
 <script>
 (function(){
 'use strict';
 
-var STORAGE_KEY='portfolio_tracker_os_v6';
+var STORAGE_KEY='portfolio_tracker_os_v9';
 var MONTH_KEYS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 var MONTH_LABELS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var TODAY=new Date();
@@ -108,43 +84,37 @@ function prevMk(mk){return addMk(mk,-1);}
 function label(mk){var i=MONTH_KEYS.indexOf(mk);return i>=0?MONTH_LABELS[i]:String(mk||'').toUpperCase();}
 function fullLabel(mk){var i=MONTH_KEYS.indexOf(mk);return i>=0?new Date(TODAY.getFullYear(),i,1).toLocaleString('en-US',{month:'long'}):mk;}
 function rolling(start,count){var a=[];for(var i=0;i<count;i++)a.push(addMk(start,i));return a;}
-function dim(){return new Date(TODAY.getFullYear(),TODAY.getMonth()+1,0).getDate();}
-function dleft(){return dim()-TODAY.getDate()+1;}
+function daysInMonth(){return new Date(TODAY.getFullYear(),TODAY.getMonth()+1,0).getDate();}
+function daysLeft(){return daysInMonth()-TODAY.getDate()+1;}
 function todayIso(){return new Date().toISOString().slice(0,10);}
 function monthFromDate(dateText){var d=new Date(dateText+'T00:00:00');return MONTH_KEYS[d.getMonth()];}
-var CURRENT_MK=currentMk(), LAST_ACTUAL=prevMk(CURRENT_MK), NAV_MONTHS=rolling(CURRENT_MK,6);
 
-var ASSUMPTIONS={
-  rd_expected_return:.040,
-  sr025_net_rate:.0531,        // 5.9% gross × (1 − 10% PPh)
-  jmo_monthly_contrib:202667,
-  bri_9189_monthly_contrib:202667,
-  bri_8628_monthly_contrib:202666
-};
+var CURRENT_MK=currentMk(),LAST_ACTUAL=prevMk(CURRENT_MK),NAV_MONTHS=rolling(CURRENT_MK,6);
 
+var ASSUMPTIONS={deposito_net_rate:.022,rd_expected_return:.040,sr025_net_rate:.0531,jmo_monthly_contrib:202667,bri_9189_monthly_contrib:202667,bri_8628_monthly_contrib:202666};
 var EXPENSE_CATS=[
- ['admin','Admin'],['food','Food & Drinks'],['healthcare','Healthcare'],['household','Household'],
- ['installment','Installment'],['others','Others'],['shopping','Shopping'],['sport','Sport & Ent'],
- ['telecom','Telecom'],['topup','Top Up'],['transport','Transportation'],['withdraw','Withdraw'],
- ['zakat','Zakat'],['rizka','Rizka'],['incidental','Incidental']
+ ['admin','Admin'],['food','Food & Drinks'],['healthcare','Healthcare'],['household','Household'],['installment','Installment'],['others','Others'],['shopping','Shopping'],['sport','Sport & Ent'],['telecom','Telecom'],['topup','Top Up'],['transport','Transportation'],['withdraw','Withdraw'],['zakat','Zakat'],['rizka','Rizka'],['incidental','Incidental']
 ].map(function(x){return{key:x[0],label:x[1]};});
-
 var INCOME_CATS=[
- ['salary','Salary'],['rd_return','Reksa Dana return'],['deposito_return','Deposito return'],
- ['sr025_coupon','SR025 coupon'],['sppd','SPPD / Dinas'],['other_income','Other income']
+ ['salary','Salary'],['rd_return','Reksa Dana return'],['deposito_return','Deposito return'],['sr025_coupon','SR025 coupon'],['sppd','SPPD / Dinas'],['other_income','Other income']
 ].map(function(x){return{key:x[0],label:x[1]};});
 var INPUT_INCOME_CATS=INCOME_CATS.filter(function(c){return c.key==='sppd'||c.key==='other_income';});
-
-var INVEST_CATS=[
- ['rd','RD top-up'],['sr025','SR025 T5 – SBN'],['germany_invest','Germany fund / Life Goals']
-].map(function(x){return{key:x[0],label:x[1]};});
-
+var INVEST_CATS=[['rd','RD top-up'],['sr025','SR025 T5 – SBN'],['germany_invest','Germany fund / Life Goals']].map(function(x){return{key:x[0],label:x[1]};});
 var RATE_CATS=['food','household','shopping','sport','topup','withdraw'];
 var PF=[
- {key:'bni_saving',label:'BNI Saving',group:'liquid'}, {key:'bni_lifegoals',label:'Life Goals',group:'liquid'}, {key:'bsi_ops',label:'BSI Operational',group:'liquid'},
- {key:'bni_deposito',label:'BNI Deposito',group:'fixed'}, {key:'bni_sbn',label:'SBN Existing',group:'fixed'}, {key:'sr025',label:'SR025 T5',group:'fixed'},
- {key:'bni_rd',label:'BNI Reksa Dana',group:'market',rate:'4.00% est'}, {key:'mandiri_rd',label:'Mandiri RD',group:'market'}, {key:'mandiri_saham',label:'Mandiri Saham',group:'market'}, {key:'bsi_gold',label:'BSI Gold',group:'market'},
- {key:'jmo',label:'JMO',group:'retire'}, {key:'bri_9189',label:'BRI-9189',group:'retire'}, {key:'bri_8628',label:'BRI-8628',group:'retire'}
+ {key:'bni_saving',label:'BNI Saving',group:'liquid'},
+ {key:'bni_lifegoals',label:'Life Goals',group:'liquid'},
+ {key:'bsi_ops',label:'BSI Operational',group:'liquid'},
+ {key:'bni_deposito',label:'BNI Deposito',group:'fixed'},
+ {key:'bni_sbn',label:'SBN Existing',group:'fixed'},
+ {key:'sr025',label:'SR025 T5',group:'fixed'},
+ {key:'bni_rd',label:'BNI Reksa Dana',group:'market',rate:'4.0% est'},
+ {key:'mandiri_rd',label:'Mandiri RD',group:'market'},
+ {key:'mandiri_saham',label:'Mandiri Saham',group:'market'},
+ {key:'bsi_gold',label:'BSI Gold',group:'market'},
+ {key:'jmo',label:'JMO',group:'retire'},
+ {key:'bri_9189',label:'BRI-9189',group:'retire'},
+ {key:'bri_8628',label:'BRI-8628',group:'retire'}
 ];
 var GRP_LABELS={liquid:'Liquid',fixed:'Fixed Income',market:'Market-linked',retire:'Retirement'};
 var GRP_COLORS={liquid:'#185fa5',fixed:'#3b6d11',market:'#ba7517',retire:'#73726c'};
@@ -152,26 +122,18 @@ var FB_BUDGET={admin:110000,food:1100000,healthcare:200000,household:200000,inst
 
 var S={page:'dashboard',mk:CURRENT_MK,settings:{url:'',token:''},meta:{lastSync:null,lastError:null},plan:{},income:{},expenses:{},invest:{},portfolio:{},transactions:[]};
 
-function load(){
-  try{
-    var old=localStorage.getItem(STORAGE_KEY)||localStorage.getItem('pt_clean_v1')||localStorage.getItem('ptv7')||localStorage.getItem('ptv6')||'{}';
-    var d=JSON.parse(old);
-     S.settings=d.settings||S.settings; S.meta=d.meta||S.meta; S.plan=d.plan||{}; S.income=d.income||{}; S.expenses=d.expenses||{}; S.invest=d.invest||{}; S.portfolio=d.portfolio||{}; S.transactions=d.transactions||[];
-    if(d.page)S.page=d.page;
-    if(d.mk)S.mk=d.mk;
-  }catch(e){console.warn(e);}
-}
+function load(){try{var old=localStorage.getItem(STORAGE_KEY)||localStorage.getItem('portfolio_tracker_os_v8')||localStorage.getItem('portfolio_tracker_os_v7')||localStorage.getItem('portfolio_tracker_os_v6')||localStorage.getItem('pt_clean_v1')||localStorage.getItem('ptv7')||localStorage.getItem('ptv6')||'{}';var d=JSON.parse(old);S.settings=d.settings||S.settings;S.meta=d.meta||S.meta;S.plan=d.plan||{};S.income=d.income||{};S.expenses=d.expenses||{};S.invest=d.invest||{};S.portfolio=d.portfolio||{};S.transactions=d.transactions||[];if(d.page)S.page=d.page;if(d.mk&&MONTH_KEYS.includes(d.mk))S.mk=d.mk;}catch(e){console.warn(e);}}
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(S));}
 function hasKeys(o){return o&&Object.keys(o).length>0;}
-function connected(){return !!S.settings.url && (hasKeys(S.plan)||hasKeys(S.income)||hasKeys(S.expenses)||hasKeys(S.portfolio)||hasKeys(S.invest));}
+function connected(){return !!S.settings.url&&(hasKeys(S.plan)||hasKeys(S.income)||hasKeys(S.expenses)||hasKeys(S.portfolio)||hasKeys(S.invest));}
 function num(v){return v===null||v===undefined||isNaN(Number(v))?0:Number(v);}
 function fmt(n,opt){opt=opt||{};if(n===null||n===undefined||isNaN(Number(n)))return '—';n=Number(n);if(n===0&&!opt.showZero)return '—';var a=Math.abs(Math.round(n)),s;if(a>=1e9)s=(a/1e9).toFixed(2)+'B';else if(a>=1e6)s=(a/1e6).toFixed(1)+'M';else if(a>=1e3)s=Math.round(a/1e3)+'K';else s=a.toLocaleString('id-ID');return(n<0?'−':'')+'Rp '+s;}
 function fmtPct(n){return isFinite(n)?(n>=0?'+':'')+n.toFixed(2)+'%':'—';}
-function fmtDate(iso){if(!iso)return 'Never';try{return new Date(iso).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}catch(e){return iso;}}
+function fmtDate(iso){if(!iso)return 'Never';try{return new Date(iso).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return iso;}}
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];});}
 
-function get(obj,mk,k){var v=((obj[mk]||{})[k]);return(v===null||v===undefined||v==='')?null:Number(v)||0;}
 function wb(mk,type,cat){return (S.transactions||[]).filter(function(t){return t.month===mk&&t.type===type&&t.category===cat;}).reduce(function(s,t){return s+num(t.amount);},0);}
+function get(obj,mk,k){var v=((obj[mk]||{})[k]);return(v===null||v===undefined||v==='')?null:Number(v)||0;}
 function gExp(mk,k){var base=get(S.expenses,mk,k),add=wb(mk,'expense',k);return base===null&&add===0?null:num(base)+add;}
 function gInc(mk,k){var base=get(S.income,mk,k),add=wb(mk,'income',k);return base===null&&add===0?null:num(base)+add;}
 function gInv(mk,k){return get(S.invest,mk,k);}
@@ -183,198 +145,78 @@ function sum(cats,fn){return cats.reduce(function(s,c){return s+num(fn(c));},0);
 function totExp(mk){return sum(EXPENSE_CATS,function(c){return gExp(mk,c.key);});}
 function totInc(mk){return sum(INCOME_CATS,function(c){return gInc(mk,c.key);});}
 function totInv(mk){return sum(INVEST_CATS,function(c){return gInv(mk,c.key);});}
-function totBudget(mk){return sum(EXPENSE_CATS,function(c){return gBudget(c.key,mk);});}
-function totPlanInc(mk){return sum(INCOME_CATS,function(c){return gPlanInc(mk,c.key);});}
 function incidentalExp(mk){return num(gExp(mk,'incidental'));}
 function regularExp(mk){return EXPENSE_CATS.reduce(function(s,c){return c.key==='incidental'?s:s+num(gExp(mk,c.key));},0);}
 function regularBudget(mk){return EXPENSE_CATS.reduce(function(s,c){return c.key==='incidental'?s:s+num(gBudget(c.key,mk));},0);}
 function estIncome(mk){return INCOME_CATS.reduce(function(s,c){var a=gInc(mk,c.key);return s+num(a!==null?a:gPlanInc(mk,c.key));},0);}
 function estInvestByKey(mk,key){var a=gInv(mk,key);return num(a!==null?a:gPlanInv(key,mk));}
+function actualNet(mk){return totInc(mk)-totExp(mk)-totInv(mk);}
+function forecastNet(mk){return estIncome(mk)-totExp(mk)-estInvestByKey(mk,'rd')-estInvestByKey(mk,'germany_invest')-estInvestByKey(mk,'sr025');}
 
 function pfActual(key,period){var d=S.portfolio[key];if(!d)return null;var v=d[period];return(v===null||v===undefined||v==='')?null:Number(v)||0;}
 function pfBal(key,period){var a=pfActual(key,period);if(a!==null)return a;if(period===CURRENT_MK){var ins=PF.find(function(i){return i.key===key;});return forecast(ins,pfActual(key,LAST_ACTUAL),period);}return 0;}
-function forecast(ins,prev,mk){if(!ins||prev===null||prev===undefined)return 0;if(ins.key==='bni_deposito')
-  return prev + gRealloc('bni_deposito', mk);
-
-if(ins.key==='bni_rd')
-  return prev
-    + prev * ASSUMPTIONS.rd_expected_return / 12
-    + estInvestByKey(mk,'rd')
-    + gRealloc('rd', mk);
-
-if(ins.key==='sr025')
-  return prev
-    + estInvestByKey(mk,'sr025')
-    + gRealloc('sr025', mk);if(ins.key==='bni_lifegoals')return prev+estInvestByKey(mk,'germany_invest');if(ins.key==='bni_saving')return prev+estIncome(mk)-totExp(mk)-estInvestByKey(mk,'rd')-estInvestByKey(mk,'germany_invest')-estInvestByKey(mk,'sr025');if(ins.key==='jmo')return prev+ASSUMPTIONS.jmo_monthly_contrib;if(ins.key==='bri_9189')return prev+ASSUMPTIONS.bri_9189_monthly_contrib;if(ins.key==='bri_8628')return prev+ASSUMPTIONS.bri_8628_monthly_contrib;return prev;}
+function forecast(ins,prev,mk){if(!ins||prev===null||prev===undefined)return 0;if(ins.key==='bni_deposito')return prev+gRealloc('bni_deposito',mk);if(ins.key==='bni_rd')return prev+prev*ASSUMPTIONS.rd_expected_return/12+estInvestByKey(mk,'rd')+gRealloc('rd',mk);if(ins.key==='sr025')return prev+estInvestByKey(mk,'sr025')+gRealloc('sr025',mk);if(ins.key==='bni_lifegoals')return prev+estInvestByKey(mk,'germany_invest');if(ins.key==='bni_saving')return prev+estIncome(mk)-totExp(mk)-estInvestByKey(mk,'rd')-estInvestByKey(mk,'germany_invest')-estInvestByKey(mk,'sr025');if(ins.key==='jmo')return prev+ASSUMPTIONS.jmo_monthly_contrib;if(ins.key==='bri_9189')return prev+ASSUMPTIONS.bri_9189_monthly_contrib;if(ins.key==='bri_8628')return prev+ASSUMPTIONS.bri_8628_monthly_contrib;return prev;}
 function totPf(p){return PF.reduce(function(s,i){return s+num(pfBal(i.key,p));},0);}
 function grpTot(g,p){return PF.filter(function(i){return i.group===g;}).reduce(function(s,i){return s+num(pfBal(i.key,p));},0);}
-function emFund(){var liq=num(pfBal('bni_saving',LAST_ACTUAL))+num(pfBal('bsi_ops',LAST_ACTUAL));return regularBudget(CURRENT_MK)>0?liq/regularBudget(CURRENT_MK):0;}
+function annualIncomeByInstrument(key,mk){var bal=pfBal(key,mk)||0;if(bal<=0)return 0;if(key==='bni_deposito'){var actual=gInc(mk,'deposito_return'),plan=gPlanInc(mk,'deposito_return');if(actual!==null)return num(actual)*12;if(num(plan)>0)return num(plan)*12;return bal*ASSUMPTIONS.deposito_net_rate;}if(key==='bni_rd')return bal*ASSUMPTIONS.rd_expected_return;if(key==='sr025')return bal*ASSUMPTIONS.sr025_net_rate;return 0;}
+function yieldBaseForMonth(mk){return ['bni_deposito','bni_rd','sr025'].reduce(function(s,k){return s+(pfBal(k,mk)||0);},0);}
+function annIncomeForMonth(mk){return ['bni_deposito','bni_rd','sr025'].reduce(function(s,k){return s+annualIncomeByInstrument(k,mk);},0);}
+function blendYieldForMonth(mk){var base=yieldBaseForMonth(mk);return base>0?annIncomeForMonth(mk)/base*100:0;}
+function blendYield(){return blendYieldForMonth(CURRENT_MK);}
+function annIncome(){return annIncomeForMonth(CURRENT_MK);}
+function emFund(){var liq=(pfBal('bni_saving',LAST_ACTUAL)||0)+(pfBal('bsi_ops',LAST_ACTUAL)||0);return regularBudget(CURRENT_MK)>0?liq/regularBudget(CURRENT_MK):0;}
 
 function pageEl(){return document.getElementById('pageContent');}
 function subEl(){return document.getElementById('subBar');}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(function(){t.classList.remove('show');},2200);}
 function note(){return connected()?'<div class="small-note">Last sync: <strong>'+fmtDate(S.meta.lastSync)+'</strong>'+(S.meta.lastError?' · Last error: '+esc(S.meta.lastError):'')+'</div>':'';}
 function notConnected(){return '<div class="not-connected"><span>🔌</span><div><strong>Not connected to Google Sheets.</strong><br>Go to Settings and enter Apps Script URL and token.</div></div>';}
-function nav(p){S.page=p;
+function nav(p){S.page=p;save();document.querySelectorAll('.nav-item').forEach(function(b){b.classList.toggle('active',b.dataset.page===p);});subEl().innerHTML='';if(p==='dashboard')renderDashboard();if(p==='monthly')renderMonthly();if(p==='portfolio')renderPortfolio();if(p==='settings')renderSettings();}
+function metric(lbl,val,sub,cls){return '<div class="metric"><div class="lbl">'+lbl+'</div><div class="val '+(cls||'')+'">'+val+'</div><div class="sub">'+(sub||'')+'</div></div>';}
+
+function keyMetrics(){var last=totPf(LAST_ACTUAL),cur=totPf(CURRENT_MK),mom=last>0?(cur-last)/last*100:0,ytd=last-totPf('start');return '<div class="section">Portfolio — '+label(LAST_ACTUAL)+' actual / '+label(CURRENT_MK)+' forecast</div><div class="g2">'+metric('Total ('+label(LAST_ACTUAL)+')',fmt(last),'last complete month')+metric(label(CURRENT_MK)+' forecast <span class="fc-badge">est.</span>',fmt(cur),connected()?fmtPct(mom)+' vs '+label(LAST_ACTUAL):'—','pos')+'</div><div class="g3">'+metric('YTD growth',fmt(ytd),'','pos')+metric('Blended yield',connected()?blendYield().toFixed(2)+'%':'—','net')+metric('Inv. income/yr',fmt(annIncome()),'','pos')+'</div>';}
+function renderDashboard(){var h='';if(!connected())h+=notConnected();else h+=note();h+=keyMetrics();var ef=emFund();h+='<div class="section">Emergency fund ('+label(LAST_ACTUAL)+')</div><div class="card"><div style="padding:12px 14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:13px">'+(connected()?ef.toFixed(1)+'× months covered':'—')+'</span>'+(connected()?'<span class="badge '+(ef>=6?'b-ok':ef>=3?'b-warn':'b-danger')+'">'+(ef>=6?'Healthy':ef>=3?'Low':'Critical')+'</span>':'')+'</div><div class="pbar" style="height:8px"><div class="pfill" style="width:'+(connected()?Math.min(100,ef/6*100).toFixed(0):0)+'%;background:'+(ef>=6?'#3b6d11':ef>=3?'#ba7517':'#a32d2d')+'"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>0×</span><span>Target 6×</span></div></div></div>';var fnet=forecastNet(CURRENT_MK);h+='<div class="section">'+fullLabel(CURRENT_MK)+' '+TODAY.getFullYear()+' — Current Month</div><div class="g2">'+metric('Income <span class="fc-badge">partial</span>',fmt(totInc(CURRENT_MK),{showZero:connected()}),'est: '+fmt(estIncome(CURRENT_MK),{showZero:connected()}),'pos')+metric('Expenses',fmt(totExp(CURRENT_MK),{showZero:connected()}),'regular: '+fmt(regularExp(CURRENT_MK),{showZero:connected()}))+'</div><div class="g2">'+metric('Invested',fmt(totInv(CURRENT_MK),{showZero:connected()}),'planned/actual','pos')+metric('Net flow forecast',fmt(fnet,{showZero:connected()}),'actual: '+fmt(actualNet(CURRENT_MK),{showZero:connected()}),fnet<0?'neg':'pos')+'</div>';h+='<div class="section">Asset allocation ('+label(LAST_ACTUAL)+')</div><div class="card">';Object.keys(GRP_LABELS).forEach(function(g){var amt=grpTot(g,LAST_ACTUAL),pct=totPf(LAST_ACTUAL)>0?amt/totPf(LAST_ACTUAL)*100:0;h+='<div style="padding:8px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>'+GRP_LABELS[g]+'</span><span><strong>'+fmt(amt)+'</strong> <span style="color:#888780;font-size:12px">'+(connected()?pct.toFixed(1):'—')+'%</span></span></div><div class="pbar"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+GRP_COLORS[g]+'"></div></div></div>';});h+='</div><div class="section">Alerts</div><div class="card">'+alerts().map(function(a){return '<div class="alert-item"><span>'+a.icon+'</span><div class="alert-text">'+a.text+'</div></div>';}).join('')+'</div>';pageEl().innerHTML=h;}
+function alerts(){if(!connected())return[{icon:'🔵',text:'Connect Google Sheets in Settings to see alerts.'}];var a=[];if(CURRENT_MK==='dec')a.push({icon:'🔵',text:'<strong>Year-end reminder.</strong> In early January, archive this tracker and move December closing balances to Start.'});if(regularExp(CURRENT_MK)>regularBudget(CURRENT_MK))a.push({icon:'🔴',text:'<strong>Regular expenses are over budget.</strong> Review monthly categories.'});a.push({icon:'🟢',text:'<strong>All clear.</strong> Input feature adds Workbook transactions on top of manual actuals.'});return a;}
+
+function renderMonthly(){var bar='<div class="mo-scroll">';NAV_MONTHS.forEach(function(m){bar+='<button class="mo-chip '+(m===S.mk?'active':'')+'" data-mk="'+m+'">'+label(m)+'</button>';});bar+='</div>';subEl().innerHTML=bar;subEl().querySelectorAll('.mo-chip').forEach(function(b){b.onclick=function(){S.mk=b.dataset.mk;save();renderMonthly();};});var mk=S.mk,h='';if(!connected())h+=notConnected();else h+=note();var fnet=forecastNet(mk),anet=actualNet(mk);h+='<div class="section">'+fullLabel(mk)+' Summary</div><div class="g2">'+metric('Income <span class="fc-badge">partial</span>',fmt(totInc(mk),{showZero:connected()}),'est: '+fmt(estIncome(mk),{showZero:connected()}),'pos')+metric('Expenses',fmt(totExp(mk),{showZero:connected()}),'regular: '+fmt(regularExp(mk),{showZero:connected()}))+'</div><div class="g2">'+metric('Invested',fmt(totInv(mk),{showZero:connected()}),'planned/actual','pos')+metric('Net flow forecast',fmt(fnet,{showZero:connected()}),'actual: '+fmt(anet,{showZero:connected()}),fnet<0?'neg':'pos')+'</div>';if(connected())h+=expenseControl(mk);h+='<div class="section">Recent transactions</div>'+transactions(mk);h+='<div class="section">Daily & weekly spending rate</div>'+spendingRate(mk);h+=breakdown('Expense breakdown',EXPENSE_CATS,function(c){return gExp(mk,c.key);},function(c){return gBudget(c.key,mk);},'budget');h+=breakdown('Income breakdown',INCOME_CATS,function(c){return gInc(mk,c.key);},function(c){return gPlanInc(mk,c.key);},'plan');h+=investments(mk)+reallocations(mk);pageEl().innerHTML=h;bindCollapses();bindDeleteButtons();}
+function expenseControl(mk){var total=totExp(mk),reg=regularExp(mk),inc=incidentalExp(mk),bud=regularBudget(mk),rem=bud-reg,pct=bud>0?Math.min(100,reg/bud*100):0,col=reg>bud?'#a32d2d':pct>85?'#ba7517':'#3b6d11';return '<div class="section">Expense control</div><div class="card"><div style="padding:12px 14px"><div class="g2" style="margin-bottom:10px"><div><div class="lbl">Regular expenses</div><div class="val">'+fmt(reg,{showZero:true})+'</div><div class="sub">excluding incidental</div></div><div style="text-align:right"><div class="lbl">Remaining budget</div><div class="val" style="color:'+col+'">'+fmt(rem,{showZero:true})+'</div><div class="sub">budget: '+fmt(bud,{showZero:true})+'</div></div></div><div class="pbar" style="height:7px"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+col+'"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Regular spent: '+fmt(reg,{showZero:true})+'</span><span>'+pct.toFixed(0)+'% used</span></div></div><div class="row"><span class="row-label">Incidental expenses</span><div><div class="row-val warn-c">'+fmt(inc,{showZero:true})+'</div><div class="row-sub">non-recurring</div></div></div><div class="row"><span class="row-label">Total expenses</span><div><div class="row-val">'+fmt(total,{showZero:true})+'</div><div class="row-sub">regular + incidental</div></div></div></div>';}
+function transactions(mk){var rows=(S.transactions||[]).filter(function(t){return t.month===mk;}).slice().reverse();if(!rows.length)return '<div class="card"><div class="empty">No transactions from app yet.</div></div>';var h='<div class="card">';rows.forEach(function(t){var cat=EXPENSE_CATS.concat(INCOME_CATS).find(function(c){return c.key===t.category;}),name=cat?cat.label:t.category;h+='<div class="txn-item"><div><div class="txn-main"><strong>'+name+'</strong> <span class="badge '+(t.type==='expense'?'b-warn':'b-ok')+'">'+t.type+'</span></div><div class="txn-note">'+esc(t.date)+' · '+esc(t.note||'No note')+'</div></div><div style="text-align:right"><div class="row-val '+(t.type==='income'?'pos':'')+'">'+fmt(t.amount,{showZero:true})+'</div><button class="delete-btn" data-id="'+esc(t.id)+'">Delete</button></div></div>';});return h+'</div>';}
+function spendingRate(mk){if(!connected())return '<div class="card"><div class="empty">Connect Google Sheets to see spending rate.</div></div>';var left=daysLeft(),spent=0,bud=0;RATE_CATS.forEach(function(k){spent+=num(gExp(mk,k));bud+=num(gBudget(k,mk));});var rem=Math.max(0,bud-spent),daily=left>0?rem/left:0,weekly=daily*7,pct=bud>0?Math.min(100,spent/bud*100):0;var h='<div style="font-size:12px;color:#888780;margin-bottom:8px">'+left+' days left · '+(daysInMonth()-left+1)+' of '+daysInMonth()+' days gone</div><div class="card"><div style="padding:12px 14px"><div style="font-size:13px;font-weight:700;margin-bottom:4px">Controllable categories</div><div style="font-size:11px;color:#888780;margin-bottom:10px">Daily-use categories only; excludes incidental and fixed bills.</div><div style="display:flex;gap:8px;margin-bottom:10px"><div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val">'+fmt(daily,{showZero:true})+'</div><div class="rb-unit">/day</div></div><div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val">'+fmt(weekly,{showZero:true})+'</div><div class="rb-unit">/week</div></div></div><div class="pbar" style="height:7px"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:#3b6d11"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Spent: '+fmt(spent,{showZero:true})+'</span><span>Remaining: '+fmt(rem,{showZero:true})+'</span></div></div></div>';RATE_CATS.forEach(function(k){var c=EXPENSE_CATS.find(function(x){return x.key===k;}),b=num(gBudget(k,mk)),s=num(gExp(mk,k)),r=b-s,over=r<0,pct=b>0?Math.min(100,s/b*100):0,col=over?'#a32d2d':pct>85?'#ba7517':'#3b6d11';h+='<div class="card"><div style="padding:11px 14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:13px;font-weight:700">'+c.label+'</span><span class="badge '+(over?'b-danger':pct>85?'b-warn':'b-ok')+'">'+(over?'Over':pct.toFixed(0)+'% used')+'</span></div>';if(!over){h+='<div style="display:flex;gap:8px;margin-bottom:10px"><div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val">'+fmt(left>0?r/left:0,{showZero:true})+'</div><div class="rb-unit">/day</div></div><div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val">'+fmt(left>0?r/left*7:0,{showZero:true})+'</div><div class="rb-unit">/week</div></div><div class="rate-box"><div class="rb-lbl">Left</div><div class="rb-val">'+fmt(r,{showZero:true})+'</div><div class="rb-unit">of '+fmt(b,{showZero:true})+'</div></div></div>';}else{h+='<div style="background:#fcebeb;border-radius:7px;padding:8px 10px;font-size:12px;color:#a32d2d;margin-bottom:10px">Over by <strong>'+fmt(Math.abs(r),{showZero:true})+'</strong></div>';}h+='<div class="pbar"><div class="pfill" style="width:'+Math.min(100,pct).toFixed(0)+'%;background:'+col+'"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Spent: '+fmt(s,{showZero:true})+'</span><span>Budget: '+fmt(b,{showZero:true})+'</span></div></div></div>';});return h;}
+function collapse(title,body,id){return '<div class="section">'+title+'</div><div class="card"><button class="row collapse-head" data-target="'+id+'" style="width:100%;background:#fff"><span style="font-size:13px;font-weight:700">'+title+'</span><span id="'+id+'-icon" style="color:#185fa5">▾</span></button><div id="'+id+'" style="display:none">'+body+'</div></div>';}
+function breakdown(title,cats,act,plan,labelText){var body='';cats.forEach(function(c){var a=act(c),p=plan(c);if(a===null&&p===null)return;var av=num(a),pv=num(p),over=labelText==='budget'&&pv>0&&av>pv,df=av-pv;body+='<div class="row"><span class="row-label" style="'+(over?'color:#a32d2d':'')+'">'+c.label+(over?' ▲':'')+'</span><div><div class="row-val '+(over?'neg':av>0&&labelText==='plan'?'pos':'')+'">'+fmt(av,{showZero:a!==null})+'</div><div class="row-sub">'+(a!==null?(df>=0?'+':'')+fmt(df,{showZero:true})+' vs '+labelText:labelText+': '+fmt(pv,{showZero:true}))+'</div></div></div>';});if(!body)body='<div style="padding:12px 14px;font-size:13px;color:#888780">No data yet.</div>';return collapse(title,body,title.toLowerCase().replace(/\s+/g,'-'));}
+function investments(mk){var h='<div class="section">Investments</div><div class="card">',any=false;INVEST_CATS.forEach(function(c){var a=gInv(mk,c.key),p=gPlanInv(c.key,mk),av=num(a),done=p>0&&av>=p,pct=p>0?Math.min(100,av/p*100):0;if(a===null&&p===0)return;any=true;h+='<div style="padding:9px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span class="row-label">'+c.label+'</span><div style="text-align:right"><div class="row-val '+(done?'pos':'')+'">'+fmt(av,{showZero:a!==null})+(done?' ✓':'')+'</div><div class="row-sub">plan: '+fmt(p,{showZero:true})+'</div></div></div>'+(p>0?'<div class="pbar"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+(done?'#3b6d11':'#ba7517')+'"></div></div>':'')+'</div>';});if(!any)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">No investment data yet.</div>';return h+'</div>';}
+function pfLabel(k){var item=PF.find(function(i){return i.key===k;});return item?item.label:k;}
+function reallocations(mk){var r=S.plan.reallocation||{},rows=[];Object.keys(r).forEach(function(k){var v=gRealloc(k,mk);if(v!==0)rows.push({key:k,value:v});});if(!rows.length)return '';var h='<div class="section">Reallocation</div><div class="card">';rows.forEach(function(x){h+='<div class="row"><span class="row-label">'+pfLabel(x.key)+'</span><div><div class="row-val '+(x.value>=0?'pos':'neg')+'">'+(x.value>=0?'+':'')+fmt(x.value,{showZero:true})+'</div><div class="row-sub">portfolio switch</div></div></div>';});var net=rows.reduce(function(s,x){return s+x.value;},0);h+='<div class="row"><span class="row-label"><strong>Net portfolio effect</strong></span><div><div class="row-val '+(net===0?'':'warn-c')+'">'+fmt(net,{showZero:true})+'</div><div class="row-sub">excluded from net flow</div></div></div>';h+='<div class="row"><span class="row-label">Projected blended yield</span><div><div class="row-val">'+blendYieldForMonth(mk).toFixed(2)+'%</div><div class="row-sub">after switch</div></div></div>';h+='<div class="row"><span class="row-label">Projected inv. income/year</span><div><div class="row-val pos">'+fmt(annIncomeForMonth(mk))+'</div><div class="row-sub">after switch</div></div></div>';h+='</div>';return h;}
+function bindCollapses(){document.querySelectorAll('.collapse-head').forEach(function(b){b.onclick=function(){var id=b.dataset.target,el=document.getElementById(id),ic=document.getElementById(id+'-icon'),open=el.style.display==='none';el.style.display=open?'block':'none';ic.textContent=open?'▴':'▾';};});}
 function bindDeleteButtons(){document.querySelectorAll('.delete-btn').forEach(function(b){b.onclick=function(){deleteTransaction(b.dataset.id);};});}
+
+function historyPeriods(){var arr=['start'];var idx=MONTH_KEYS.indexOf(LAST_ACTUAL);if(idx>=0){for(var i=0;i<=idx;i++)arr.push(MONTH_KEYS[i]);}return arr;}
+function renderPortfolio(){var h='';if(!connected())h+=notConnected();else h+=note();h+=keyMetrics();var pairs=[],hist=historyPeriods();for(var i=1;i<hist.length;i++)pairs.push([(hist[i-1]==='start'?'Start':label(hist[i-1]))+' → '+label(hist[i]),hist[i],hist[i-1],false]);pairs.push([label(LAST_ACTUAL)+' → '+label(CURRENT_MK)+' (est.)',CURRENT_MK,LAST_ACTUAL,true]);h+='<div class="section">Month-on-month growth</div><div class="card">';pairs.forEach(function(p){var cur=totPf(p[1]),prev=totPf(p[2]),chg=cur-prev,pp=prev>0?chg/prev*100:0;h+='<div class="row"><span class="row-label">'+p[0]+'</span><div><div class="row-val '+(chg>=0?'pos':'neg')+'">'+(chg>=0?'+':'')+fmt(chg)+(p[3]?'<span class="fc-badge">est.</span>':'')+'</div><div class="row-sub '+(pp>=0?'pos':'neg')+'">'+fmtPct(pp)+'</div></div></div>';});h+='</div><div class="section">Growth over time</div><div class="card" style="padding:14px"><div class="chart-box"><canvas id="growthChart"></canvas></div></div><div class="section">Holdings — '+label(LAST_ACTUAL)+' actual / '+label(CURRENT_MK)+' est.</div><div class="card">';var group='';PF.forEach(function(i){if(i.group!==group){h+='<div class="pf-grp">'+GRP_LABELS[i.group]+'</div>';group=i.group;}var ab=pfBal(i.key,LAST_ACTUAL),mb=pfBal(i.key,CURRENT_MK),df=mb-ab,isFC=pfActual(i.key,CURRENT_MK)===null;h+='<div class="row"><div><div style="font-size:13px">'+i.label+'</div>'+(i.rate?'<div style="font-size:11px;color:#888780">'+i.rate+'</div>':'')+'</div><div><div class="row-val">'+fmt(mb)+(isFC&&mb>0?'<span class="fc-badge">est.</span>':'')+'</div><div class="row-sub '+(df>=0?'pos':'neg')+'">'+(df>=0?'+':'')+fmt(df)+' vs '+label(LAST_ACTUAL)+'</div></div></div>';});h+='</div><div class="section">Balance history — by group</div><div class="card" style="padding:14px"><div style="font-size:13px;font-weight:700;margin-bottom:10px">Total portfolio (stacked)</div><div class="chart-box"><canvas id="stackedChart"></canvas></div></div><div class="section">Group trends</div><div class="card" style="padding:14px"><div class="chart-box"><canvas id="groupChart"></canvas></div></div>';pageEl().innerHTML=h;setTimeout(renderCharts,100);}
+function chartOpts(){return{plugins:{legend:{labels:{color:'#888780',font:{size:11},boxWidth:10,boxHeight:10}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fmt(c.raw,{showZero:true});}}}},scales:{x:{ticks:{color:'#888780'},grid:{display:false}},y:{ticks:{color:'#888780',callback:function(v){return'Rp '+(v/1000000000).toFixed(2)+'B';}},grid:{color:'rgba(0,0,0,.05)'}}}};}
+function mkChart(id,cfg){var el=document.getElementById(id);if(!el||!window.Chart)return;if(el._ch)el._ch.destroy();cfg.options=cfg.options||{};cfg.options.responsive=true;cfg.options.maintainAspectRatio=false;el._ch=new Chart(el,cfg);}
+function renderCharts(){var periods=historyPeriods(),labels=periods.map(function(p){return p==='start'?'Start':label(p);}),groups=Object.keys(GRP_LABELS);mkChart('growthChart',{type:'line',data:{labels:labels.concat([label(CURRENT_MK)+' est.']),datasets:[{label:'Actual',data:periods.map(function(p){return totPf(p);}).concat([null]),borderColor:'#185fa5',backgroundColor:'rgba(24,95,165,.07)',fill:true,tension:.3,pointRadius:4,borderWidth:2},{label:'Forecast',data:Array(periods.length-1).fill(null).concat([totPf(LAST_ACTUAL),totPf(CURRENT_MK)]),borderColor:'#ba7517',borderDash:[6,4],backgroundColor:'transparent',tension:.3,pointRadius:4,borderWidth:2}]},options:chartOpts()});var stackedOpts=chartOpts();stackedOpts.scales.x.stacked=true;stackedOpts.scales.y.stacked=true;mkChart('stackedChart',{type:'bar',data:{labels:labels,datasets:groups.map(function(g){return{label:GRP_LABELS[g],data:periods.map(function(p){return grpTot(g,p);}),backgroundColor:GRP_COLORS[g],borderWidth:0};})},options:stackedOpts});mkChart('groupChart',{type:'line',data:{labels:labels,datasets:groups.map(function(g){return{label:GRP_LABELS[g],data:periods.map(function(p){return grpTot(g,p);}),borderColor:GRP_COLORS[g],backgroundColor:'transparent',tension:.3,pointRadius:3,borderWidth:2};})},options:chartOpts()});}
+
+function renderSettings(){subEl().innerHTML='';var h='<div class="section">Google Sheets connection</div><div class="card"><div class="settings-field"><label>Apps Script URL</label><input id="url" type="url" value="'+esc(S.settings.url)+'" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="settings-field"><label>Secret token</label><input id="token" type="text" value="'+esc(S.settings.token)+'" placeholder="your-secret-token"></div><div style="padding:10px 14px"><button class="primary-btn" id="saveSettings">Save settings</button></div></div><div class="section">Sync</div><div class="card"><div class="row"><span class="row-label">Sync all data</span><button class="secondary-btn" id="syncSettings">↻ Sync all</button></div><div class="row"><span class="row-label">Last sync</span><span>'+fmtDate(S.meta.lastSync)+'</span></div><div class="row"><span class="row-label">Connected</span><span class="badge '+(connected()?'b-ok':'b-danger')+'">'+(connected()?'Yes':'No')+'</span></div></div><div class="section">Input</div><div class="card"><div class="row"><span class="row-label">Merge logic</span><span>Manual + Workbook</span></div><div class="row"><span class="row-label">Income input</span><span>SPPD / Other only</span></div></div><div class="section">About</div><div class="card"><div class="row"><span class="row-label">Version</span><span>OS v9 Full Rewrite</span></div><div class="row"><span class="row-label">Current month</span><span>'+fullLabel(CURRENT_MK)+' '+TODAY.getFullYear()+'</span></div></div>';pageEl().innerHTML=h;document.getElementById('saveSettings').onclick=function(){S.settings.url=document.getElementById('url').value.trim();S.settings.token=document.getElementById('token').value.trim();save();toast('Settings saved ✓');};document.getElementById('syncSettings').onclick=syncAll;}
+
+function api(action,payload){if(!S.settings.url)return Promise.reject(new Error('No Apps Script URL. Open Settings first.'));var body=JSON.stringify(Object.assign({action:action,token:S.settings.token},payload||{}));return fetch(S.settings.url,{method:'POST',body:body,headers:{'Content-Type':'text/plain;charset=utf-8'},cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status+'. Check Apps Script deployment.');return r.text();}).then(function(txt){try{return JSON.parse(txt);}catch(e){throw new Error('Backend did not return valid JSON.');}}).then(function(j){if(!j.ok)throw new Error(j.error||'Unknown backend error');return j;});}
+function syncAll(){if(!S.settings.url){toast('⚠ Set Script URL in Settings');nav('settings');return;}document.getElementById('syncBtn').textContent='↻ Syncing…';api('getAll').then(function(r){['plan','portfolio','income','expenses','invest'].forEach(function(k){if(!r[k]||typeof r[k]!=='object')throw new Error('Invalid response: missing '+k);});S.plan=r.plan||{};S.income=r.income||{};S.expenses=r.expenses||{};S.invest=r.invest||{};S.portfolio=r.portfolio||{};S.transactions=r.transactions||[];S.meta.lastSync=r.lastSync||new Date().toISOString();S.meta.lastError=null;save();toast('Synced ✓');document.getElementById('syncBtn').textContent='↻ Sync';nav(S.page);}).catch(function(e){S.meta.lastError=e.message;save();toast('Error: '+e.message);document.getElementById('syncBtn').textContent='↻ Sync';nav(S.page);});}
 function addTransaction(txn){return api('addTransaction',{transaction:txn}).then(function(){toast('Saved ✓');return syncAll();});}
 function deleteTransaction(id){return api('deleteTransaction',{id:id}).then(function(){toast('Deleted ✓');return syncAll();}).catch(function(e){toast('Error: '+e.message);});}
 
 var modalType='expense',modalCat='food';
-function openModal(){
- document.getElementById('modalBackdrop').style.display='flex';
- document.getElementById('txnDate').value=todayIso();
- modalType='expense';
- document.getElementById('typeExpense').classList.add('active');
- document.getElementById('typeIncome').classList.remove('active');
- renderCats();
-}
+function openModal(){document.getElementById('modalBackdrop').style.display='flex';document.getElementById('txnDate').value=todayIso();modalType='expense';document.getElementById('typeExpense').classList.add('active');document.getElementById('typeIncome').classList.remove('active');renderCats();}
+window.openTxnModal=openModal;
 function closeModal(){document.getElementById('modalBackdrop').style.display='none';}
-function renderCats(){
- var cats=modalType==='expense'?EXPENSE_CATS:INPUT_INCOME_CATS;
- modalCat=cats[0].key;
- document.getElementById('catGrid').innerHTML=cats.map(function(c,i){return '<button class="cat-chip '+(i===0?'active':'')+'" data-cat="'+c.key+'">'+c.label+'</button>';}).join('');
- document.querySelectorAll('.cat-chip').forEach(function(b){b.onclick=function(){modalCat=b.dataset.cat;document.querySelectorAll('.cat-chip').forEach(function(x){x.classList.remove('active');});b.classList.add('active');};});
-}
-function saveTxn(){
- var date=document.getElementById('txnDate').value,amount=num(document.getElementById('txnAmount').value),note=document.getElementById('txnNote').value.trim();
- if(!date||!amount||amount<=0){toast('Fill date and amount');return;}
- var txn={date:date,type:modalType,category:modalCat,amount:amount,note:note};
- addTransaction(txn).then(function(){document.getElementById('txnAmount').value='';document.getElementById('txnNote').value='';closeModal();});
-}
-
-document.querySelectorAll('.nav-item').forEach(function(b){b.classList.toggle('active',b.dataset.page===p);});subEl().innerHTML='';if(p==='dashboard')renderDashboard();if(p==='monthly')renderMonthly();if(p==='portfolio')renderPortfolio();if(p==='settings')renderSettings();}
-function metric(lbl,val,sub,cls){return '<div class="metric"><div class="lbl">'+lbl+'</div><div class="val '+(cls||'')+'">'+val+'</div><div class="sub">'+(sub||'')+'</div></div>';}
-function keyMetrics(){
-  var last=totPf(LAST_ACTUAL),cur=totPf(CURRENT_MK),mom=last>0?(cur-last)/last*100:0,ytd=last-totPf('start');
-  return '<div class="section">Portfolio — '+label(LAST_ACTUAL)+' actual / '+label(CURRENT_MK)+' forecast</div>'
-    +'<div class="g2">'+metric('Total ('+label(LAST_ACTUAL)+')',fmt(last),'last complete month')+metric(label(CURRENT_MK)+' forecast <span class="fc-badge">est.</span>',fmt(cur),connected()?fmtPct(mom)+' vs '+label(LAST_ACTUAL):'—','pos')+'</div>'
-    +'<div class="g3">'+metric('YTD growth',fmt(ytd),'','pos')+metric('Blended yield',connected()?blendYield().toFixed(2)+'%':'—','net')+metric('Inv. income/yr',fmt(annIncome()),'','pos')+'</div>';
-}
-function blendYield(){
-  var rates={bni_rd:ASSUMPTIONS.rd_expected_return,sr025:ASSUMPTIONS.sr025_net_rate},n=0,d=0;
-  PF.forEach(function(i){var b=pfBal(i.key,LAST_ACTUAL)||0;if(rates[i.key]){n+=b*rates[i.key];d+=b;}});
-  return d>0?n/d*100:0;
-}
-function annIncome(){
-  var rates={bni_rd:ASSUMPTIONS.rd_expected_return,sr025:ASSUMPTIONS.sr025_net_rate};
-  return PF.reduce(function(s,i){return s+(rates[i.key]||0)*(pfBal(i.key,LAST_ACTUAL)||0);},0);
-}
-function actualNet(mk){return totInc(mk)-totExp(mk)-totInv(mk);}
-function forecastNet(mk){return estIncome(mk)-totExp(mk)-estInvestByKey(mk,'rd')-estInvestByKey(mk,'germany_invest')-estInvestByKey(mk,'sr025');}
-
-
-function buildAlerts(mk){
-  var a=[];
-  if(!connected())return[{t:'info',m:'Connect Google Sheets in Settings to see alerts.'}];
-  if(CURRENT_MK==='dec')a.push({t:'info',m:'<strong>Year-end reminder.</strong> In early January, archive this tracker and move December closing balances to Start.'});
-  if(totExp(mk)>0&&regularExp(mk)>regularBudget(mk))a.push({t:'danger',m:'<strong>Regular expenses are over budget.</strong> Review monthly categories.'});
-  if(!a.length)a.push({t:'ok',m:'<strong>All clear.</strong> Current month uses actual values where filled and estimates blanks.'});
-  return a;
-}
-function alerts(){return buildAlerts(CURRENT_MK).map(function(x){return{icon:x.t==='danger'?'🔴':x.t==='warn'?'🟡':x.t==='ok'?'🟢':'🔵',text:x.m};});}
-function renderDashboard(){
-  var h='';if(!connected())h+=notConnected();else h+=note();
-  h+=keyMetrics();
-  var ef=emFund();
-  h+='<div class="section">Emergency fund ('+label(LAST_ACTUAL)+')</div><div class="card"><div style="padding:12px 14px">'
-    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:13px">'+(connected()?ef.toFixed(1)+'× months covered':'—')+'</span>'
-    +(connected()?'<span class="badge '+(ef>=6?'b-ok':ef>=3?'b-warn':'b-danger')+'">'+(ef>=6?'Healthy':ef>=3?'Low':'Critical')+'</span>':'')+'</div>'
-    +'<div class="pbar" style="height:8px"><div class="pfill" style="width:'+(connected()?Math.min(100,ef/6*100).toFixed(0):0)+'%;background:'+(ef>=6?'#3b6d11':ef>=3?'#ba7517':'#a32d2d')+'"></div></div>'
-    +'<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>0×</span><span>Target 6×</span></div></div></div>';
-  var fnet=forecastNet(CURRENT_MK);
-  h+='<div class="section">'+fullLabel(CURRENT_MK)+' '+TODAY.getFullYear()+' — Current Month</div>'
-    +'<div class="g2">'+metric('Income <span class="fc-badge">partial</span>',fmt(totInc(CURRENT_MK),{showZero:connected()}),'est: '+fmt(estIncome(CURRENT_MK),{showZero:connected()}),'pos')+metric('Expenses',fmt(totExp(CURRENT_MK),{showZero:connected()}),'regular: '+fmt(regularExp(CURRENT_MK),{showZero:connected()}))+'</div>'
-    +'<div class="g2">'+metric('Invested',fmt(totInv(CURRENT_MK),{showZero:connected()}),'planned/actual','pos')+metric('Net flow forecast',fmt(fnet,{showZero:connected()}),'actual: '+fmt(actualNet(CURRENT_MK),{showZero:connected()}),fnet<0?'neg':'pos')+'</div>';
-  h+='<div class="section">Alerts</div><div class="card">'+alerts().map(function(a){return '<div class="alert-item"><span>'+a.icon+'</span><div class="alert-text">'+a.text+'</div></div>';}).join('')+'</div>';
-  h+='<div class="section">Asset allocation ('+label(LAST_ACTUAL)+')</div><div class="card">';
-  Object.keys(GRP_LABELS).forEach(function(g){var amt=grpTot(g,LAST_ACTUAL),pct=totPf(LAST_ACTUAL)>0?amt/totPf(LAST_ACTUAL)*100:0;h+='<div style="padding:8px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>'+GRP_LABELS[g]+'</span><span><strong>'+fmt(amt)+'</strong> <span style="color:#888780;font-size:12px">'+(connected()?pct.toFixed(1):'—')+'%</span></span></div><div class="pbar"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+GRP_COLORS[g]+'"></div></div></div>';});
-  h+='</div>';pageEl().innerHTML=h;
-}
-
-function renderMonthly(){
- var bar='<div class="mo-scroll">';NAV_MONTHS.forEach(function(m){bar+='<button class="mo-chip '+(m===S.mk?'active':'')+'" data-mk="'+m+'">'+label(m)+'</button>';});bar+='</div>';subEl().innerHTML=bar;subEl().querySelectorAll('.mo-chip').forEach(function(b){b.onclick=function(){S.mk=b.dataset.mk;save();renderMonthly();};});
- var mk=S.mk,h='';if(!connected())h+=notConnected();else h+=note();
- var fnet=forecastNet(mk),anet=actualNet(mk);
- h+='<div class="section">'+fullLabel(mk)+' Summary</div><div class="g2">'+metric('Income <span class="fc-badge">partial</span>',fmt(totInc(mk),{showZero:connected()}),'est: '+fmt(estIncome(mk),{showZero:connected()}),'pos')+metric('Expenses',fmt(totExp(mk),{showZero:connected()}),'regular: '+fmt(regularExp(mk),{showZero:connected()}))+'</div><div class="g2">'+metric('Invested',fmt(totInv(mk),{showZero:connected()}),'planned/actual','pos')+metric('Net flow forecast',fmt(fnet,{showZero:connected()}),'actual: '+fmt(anet,{showZero:connected()}),fnet<0?'neg':'pos')+'</div>';
- if(connected())h+=expenseControl(mk);
- h+='<div class="section">Recent transactions</div>'+transactions(mk);
- h+='<div class="section">Daily & weekly spending rate</div>'+spendingRate(mk);
- h+=breakdown('Expense breakdown',EXPENSE_CATS,function(c){return gExp(mk,c.key);},function(c){return gBudget(c.key,mk);},'budget');
- h+=breakdown('Income breakdown',INCOME_CATS,function(c){return gInc(mk,c.key);},function(c){return gPlanInc(mk,c.key);},'plan');
- h+=investments(mk);pageEl().innerHTML=h;bindCollapses();bindDeleteButtons();
-}
-
-function transactions(mk){
- var rows=(S.transactions||[]).filter(function(t){return t.month===mk;}).slice().reverse();
- if(!rows.length)return '<div class="card"><div class="empty">No transactions from app yet.</div></div>';
- var h='<div class="card">';
- rows.forEach(function(t){
-  var cat=EXPENSE_CATS.concat(INCOME_CATS).find(function(c){return c.key===t.category;}),name=cat?cat.label:t.category;
-  h+='<div class="txn-item"><div><div class="txn-main"><strong>'+name+'</strong> <span class="badge '+(t.type==='expense'?'b-warn':'b-ok')+'">'+t.type+'</span></div><div class="txn-note">'+esc(t.date)+' · '+esc(t.note||'No note')+'</div></div><div style="text-align:right"><div class="row-val '+(t.type==='income'?'pos':'')+'">'+fmt(t.amount,{showZero:true})+'</div><button class="delete-btn" data-id="'+esc(t.id)+'">Delete</button></div></div>';
- });
- return h+'</div>';
-}
-
-function expenseControl(mk){var total=totExp(mk),reg=regularExp(mk),inc=incidentalExp(mk),bud=regularBudget(mk),rem=bud-reg,pct=bud>0?Math.min(100,reg/bud*100):0,col=reg>bud?'#a32d2d':pct>85?'#ba7517':'#3b6d11';return '<div class="section">Expense control</div><div class="card"><div style="padding:12px 14px"><div class="g2" style="margin-bottom:10px"><div><div class="lbl">Regular expenses</div><div class="val">'+fmt(reg,{showZero:true})+'</div><div class="sub">excluding incidental</div></div><div style="text-align:right"><div class="lbl">Remaining budget</div><div class="val" style="color:'+col+'">'+fmt(rem,{showZero:true})+'</div><div class="sub">budget: '+fmt(bud,{showZero:true})+'</div></div></div><div class="pbar" style="height:7px"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+col+'"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Regular spent: '+fmt(reg,{showZero:true})+'</span><span>'+pct.toFixed(0)+'% used</span></div></div><div class="row"><span class="row-label">Incidental expenses</span><div><div class="row-val warn-c">'+fmt(inc,{showZero:true})+'</div><div class="row-sub">non-recurring</div></div></div><div class="row"><span class="row-label">Total expenses</span><div><div class="row-val">'+fmt(total,{showZero:true})+'</div><div class="row-sub">regular + incidental</div></div></div></div>';}
-function spendingRate(mk){
- if(!connected())return '<div class="card"><div class="empty">Connect Google Sheets to see spending rate.</div></div>';
- var left=dleft(),spent=0,bud=0;RATE_CATS.forEach(function(k){spent+=num(gExp(mk,k));bud+=num(gBudget(k,mk));});var rem=Math.max(0,bud-spent),daily=left>0?rem/left:0,weekly=daily*7,pct=bud>0?Math.min(100,spent/bud*100):0;
- var h='<div style="font-size:12px;color:#888780;margin-bottom:8px">'+left+' days left · '+(dim()-left+1)+' of '+dim()+' days gone</div><div class="card"><div style="padding:12px 14px"><div style="font-size:13px;font-weight:700;margin-bottom:4px">Controllable categories</div><div style="font-size:11px;color:#888780;margin-bottom:10px">Daily-use categories only; excludes incidental and fixed bills.</div><div style="display:flex;gap:8px;margin-bottom:10px"><div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val">'+fmt(daily,{showZero:true})+'</div><div class="rb-unit">/day</div></div><div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val">'+fmt(weekly,{showZero:true})+'</div><div class="rb-unit">/week</div></div></div><div class="pbar" style="height:7px"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:#3b6d11"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Spent: '+fmt(spent,{showZero:true})+'</span><span>Remaining: '+fmt(rem,{showZero:true})+'</span></div></div></div>';
- RATE_CATS.forEach(function(k){var c=EXPENSE_CATS.find(function(x){return x.key===k;}),b=num(gBudget(k,mk)),s=num(gExp(mk,k)),r=b-s,over=r<0,pct=b>0?Math.min(100,s/b*100):0,col=over?'#a32d2d':pct>85?'#ba7517':'#3b6d11';h+='<div class="card"><div style="padding:11px 14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:13px;font-weight:700">'+c.label+'</span><span class="badge '+(over?'b-danger':pct>85?'b-warn':'b-ok')+'">'+(over?'Over':pct.toFixed(0)+'% used')+'</span></div>';
- if(!over){h+='<div style="display:flex;gap:8px;margin-bottom:10px"><div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val">'+fmt(left>0?r/left:0,{showZero:true})+'</div><div class="rb-unit">/day</div></div><div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val">'+fmt(left>0?r/left*7:0,{showZero:true})+'</div><div class="rb-unit">/week</div></div><div class="rate-box"><div class="rb-lbl">Left</div><div class="rb-val">'+fmt(r,{showZero:true})+'</div><div class="rb-unit">of '+fmt(b,{showZero:true})+'</div></div></div>';}else{h+='<div style="background:#fcebeb;border-radius:7px;padding:8px 10px;font-size:12px;color:#a32d2d;margin-bottom:10px">Over by <strong>'+fmt(Math.abs(r),{showZero:true})+'</strong></div>';}
- h+='<div class="pbar"><div class="pfill" style="width:'+Math.min(100,pct).toFixed(0)+'%;background:'+col+'"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Spent: '+fmt(s,{showZero:true})+'</span><span>Budget: '+fmt(b,{showZero:true})+'</span></div></div></div>';});return h;
-}
-function collapse(title,body,id){return '<div class="section">'+title+'</div><div class="card"><button class="row collapse-head" data-target="'+id+'" style="width:100%;background:#fff"><span style="font-size:13px;font-weight:700">'+title+'</span><span id="'+id+'-icon" style="color:#185fa5">▾</span></button><div id="'+id+'" style="display:none">'+body+'</div></div>';}
-function breakdown(title,cats,act,plan,labelText){var body='';cats.forEach(function(c){var a=act(c),p=plan(c);if(a===null&&p===null)return;var av=num(a),pv=num(p),over=labelText==='budget'&&pv>0&&av>pv,df=av-pv;body+='<div class="row"><span class="row-label" style="'+(over?'color:#a32d2d':'')+'">'+c.label+(over?' ▲':'')+'</span><div><div class="row-val '+(over?'neg':'')+'">'+fmt(av,{showZero:a!==null})+'</div><div class="row-sub">'+(a!==null?(df>=0?'+':'')+fmt(df,{showZero:true})+' vs '+labelText:labelText+': '+fmt(pv,{showZero:true}))+'</div></div></div>';});if(!body)body='<div style="padding:12px 14px;font-size:13px;color:#888780">No data yet.</div>';return collapse(title,body,title.toLowerCase().replace(/\s+/g,'-'));}
-function investments(mk){
- var h='<div class="section">Investments</div><div class="card">',any=false;
- INVEST_CATS.forEach(function(c){var a=gInv(mk,c.key),p=gPlanInv(c.key,mk),av=num(a),done=p>0&&av>=p,pct=p>0?Math.min(100,av/p*100):0;if(a===null&&p===0)return;any=true;h+='<div style="padding:9px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span class="row-label">'+c.label+'</span><div style="text-align:right"><div class="row-val '+(done?'pos':'')+'">'+fmt(av,{showZero:a!==null})+(done?' ✓':'')+'</div><div class="row-sub">plan: '+fmt(p,{showZero:true})+'</div></div></div>'+(p>0?'<div class="pbar"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+(done?'#3b6d11':'#ba7517')+'"></div></div>':'')+'</div>';});
- if(!any)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">No investment data yet.</div>';return h+'</div>';
-}
-function bindCollapses(){document.querySelectorAll('.collapse-head').forEach(function(b){b.onclick=function(){var id=b.dataset.target,el=document.getElementById(id),ic=document.getElementById(id+'-icon'),open=el.style.display==='none';el.style.display=open?'block':'none';ic.textContent=open?'▴':'▾';};});}
-
-function historyPeriods(){var arr=['start'];var idx=MONTH_KEYS.indexOf(LAST_ACTUAL);for(var i=0;i<=idx;i++)arr.push(MONTH_KEYS[i]);return arr;}
-
-function chartOpts(){return{plugins:{legend:{labels:{color:'#888780',font:{size:11},boxWidth:10,boxHeight:10}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fmt(c.raw,{showZero:true});}}}},scales:{x:{ticks:{color:'#888780'},grid:{display:false}},y:{ticks:{color:'#888780',callback:function(v){return'Rp '+(v/1000000000).toFixed(2)+'B';}},grid:{color:'rgba(0,0,0,.05)'}}}};}
-function mkChart(id,cfg){var el=document.getElementById(id);if(!el||!window.Chart)return;if(el._ch)el._ch.destroy();cfg.options=cfg.options||{};cfg.options.responsive=true;cfg.options.maintainAspectRatio=false;el._ch=new Chart(el,cfg);}
-function renderCharts(){
- var periods=historyPeriods(),labels=periods.map(function(p){return p==='start'?'Start':label(p);}),groups=Object.keys(GRP_LABELS);
- mkChart('growthChart',{type:'line',data:{labels:labels.concat([label(CURRENT_MK)+' est.']),datasets:[{label:'Actual',data:periods.map(function(p){return totPf(p);}).concat([null]),borderColor:'#185fa5',backgroundColor:'rgba(24,95,165,.07)',fill:true,tension:.3,pointRadius:4,borderWidth:2},{label:'Forecast',data:Array(periods.length-1).fill(null).concat([totPf(LAST_ACTUAL),totPf(CURRENT_MK)]),borderColor:'#ba7517',borderDash:[6,4],backgroundColor:'transparent',tension:.3,pointRadius:4,borderWidth:2}]},options:chartOpts()});
- var stackedOpts=chartOpts();stackedOpts.scales.x.stacked=true;stackedOpts.scales.y.stacked=true;
- mkChart('stackedChart',{type:'bar',data:{labels:labels,datasets:groups.map(function(g){return{label:GRP_LABELS[g],data:periods.map(function(p){return grpTot(g,p);}),backgroundColor:GRP_COLORS[g],borderWidth:0};})},options:stackedOpts});
- mkChart('groupChart',{type:'line',data:{labels:labels,datasets:groups.map(function(g){return{label:GRP_LABELS[g],data:periods.map(function(p){return grpTot(g,p);}),borderColor:GRP_COLORS[g],backgroundColor:'transparent',tension:.3,pointRadius:3,borderWidth:2};})},options:chartOpts()});
-}
-
-function renderPortfolio(){
-  var h='';if(!connected())h+=notConnected();else h+=note();
-  h+=keyMetrics();
-  var pairs=[],hist=historyPeriods();
-  for(var i=1;i<hist.length;i++)pairs.push([(hist[i-1]==='start'?'Start':label(hist[i-1]))+' → '+label(hist[i]),hist[i],hist[i-1],false]);
-  pairs.push([label(LAST_ACTUAL)+' → '+label(CURRENT_MK)+' (est.)',CURRENT_MK,LAST_ACTUAL,true]);
-  h+='<div class="section">Month-on-month growth</div><div class="card">';
-  pairs.forEach(function(p){var cur=totPf(p[1]),prev=totPf(p[2]),chg=cur-prev,pp=prev>0?chg/prev*100:0;h+='<div class="row"><span class="row-label">'+p[0]+'</span><div><div class="row-val '+(chg>=0?'pos':'neg')+'">'+(chg>=0?'+':'')+fmt(chg)+(p[3]?'<span class="fc-badge">est.</span>':'')+'</div><div class="row-sub '+(pp>=0?'pos':'neg')+'">'+fmtPct(pp)+'</div></div></div>';});
-  h+='</div><div class="section">Growth over time</div><div class="card" style="padding:14px"><div class="chart-box"><canvas id="growthChart"></canvas></div></div>';
-  h+='<div class="section">Holdings — '+label(LAST_ACTUAL)+' actual / '+label(CURRENT_MK)+' est.</div><div class="card">';
-  var group='';PF.forEach(function(i){if(i.group!==group){h+='<div class="pf-grp">'+GRP_LABELS[i.group]+'</div>';group=i.group;}var ab=pfBal(i.key,LAST_ACTUAL),mb=pfBal(i.key,CURRENT_MK),df=mb-ab,isFC=pfActual(i.key,CURRENT_MK)===null;h+='<div class="row"><div><div style="font-size:13px">'+i.label+'</div>'+(i.rate?'<div style="font-size:11px;color:#888780">'+i.rate+'</div>':'')+'</div><div><div class="row-val">'+fmt(mb)+(isFC&&mb>0?'<span class="fc-badge">est.</span>':'')+'</div><div class="row-sub '+(df>=0?'pos':'neg')+'">'+(df>=0?'+':'')+fmt(df)+' vs '+label(LAST_ACTUAL)+'</div></div></div>';});
-  h+='</div><div class="section">Balance history — by group</div><div class="card" style="padding:14px"><div style="font-size:13px;font-weight:700;margin-bottom:10px">Total portfolio (stacked)</div><div class="chart-box"><canvas id="stackedChart"></canvas></div></div><div class="section">Group trends</div><div class="card" style="padding:14px"><div class="chart-box"><canvas id="groupChart"></canvas></div></div>';
-  pageEl().innerHTML=h;setTimeout(renderCharts,100);
-}
-
-function renderSettings(){subEl().innerHTML='';var h='<div class="section">Google Sheets connection</div><div class="card"><div class="settings-field"><label>Apps Script URL</label><input id="url" type="url" value="'+esc(S.settings.url)+'" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="settings-field"><label>Secret token</label><input id="token" type="text" value="'+esc(S.settings.token)+'" placeholder="your-secret-token"></div><div style="padding:10px 14px"><button class="primary-btn" id="saveSettings">Save settings</button></div></div><div class="section">Sync</div><div class="card"><div class="row"><span class="row-label">Sync all data</span><button class="secondary-btn" id="syncSettings">↻ Sync all</button></div><div class="row"><span class="row-label">Last sync</span><span>'+fmtDate(S.meta.lastSync)+'</span></div><div class="row"><span class="row-label">Connected</span><span class="badge '+(connected()?'b-ok':'b-danger')+'">'+(connected()?'Yes':'No')+'</span></div></div><div class="section">About</div><div class="card"><div class="row"><span class="row-label">Version</span><span>OS v8 Input</span></div><div class="row"><span class="row-label">Current month</span><span>'+fullLabel(CURRENT_MK)+' '+TODAY.getFullYear()+'</span></div></div>';pageEl().innerHTML=h;document.getElementById('saveSettings').onclick=function(){S.settings.url=document.getElementById('url').value.trim();S.settings.token=document.getElementById('token').value.trim();save();toast('Settings saved ✓');};document.getElementById('syncSettings').onclick=syncAll;}
-
-function api(action,payload){if(!S.settings.url)return Promise.reject(new Error('No Apps Script URL. Open Settings first.'));var body=JSON.stringify(Object.assign({action:action,token:S.settings.token},payload||{}));return fetch(S.settings.url,{method:'POST',body:body,headers:{'Content-Type':'text/plain;charset=utf-8'},cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status+'. Check Apps Script deployment.');return r.text();}).then(function(txt){try{return JSON.parse(txt);}catch(e){throw new Error('Backend did not return valid JSON.');}}).then(function(j){if(!j.ok)throw new Error(j.error||'Unknown backend error');return j;});}
-function syncAll(){if(!S.settings.url){toast('⚠ Set Script URL in Settings');nav('settings');return;}document.getElementById('syncBtn').textContent='↻ Syncing…';api('getAll').then(function(r){['plan','portfolio','income','expenses','invest'].forEach(function(k){if(!r[k]||typeof r[k]!=='object')throw new Error('Invalid response: missing '+k);});S.plan=r.plan||{};S.income=r.income||{};S.expenses=r.expenses||{};S.invest=r.invest||{};S.portfolio=r.portfolio||{};S.transactions=r.transactions||[];S.meta.lastSync=r.lastSync||new Date().toISOString();S.meta.lastError=null;save();toast('Synced ✓');document.getElementById('syncBtn').textContent='↻ Sync';nav(S.page);}).catch(function(e){S.meta.lastError=e.message;save();toast('Error: '+e.message);document.getElementById('syncBtn').textContent='↻ Sync';nav(S.page);});}
+function renderCats(){var cats=modalType==='expense'?EXPENSE_CATS:INPUT_INCOME_CATS;modalCat=cats[0].key;document.getElementById('catGrid').innerHTML=cats.map(function(c,i){return '<button type="button" class="cat-chip '+(i===0?'active':'')+'" data-cat="'+c.key+'">'+c.label+'</button>';}).join('');document.querySelectorAll('.cat-chip').forEach(function(b){b.onclick=function(){modalCat=b.dataset.cat;document.querySelectorAll('.cat-chip').forEach(function(x){x.classList.remove('active');});b.classList.add('active');};});}
+function saveTxn(){var date=document.getElementById('txnDate').value,amount=num(document.getElementById('txnAmount').value),note=document.getElementById('txnNote').value.trim();if(!date||!amount||amount<=0){toast('Fill date and amount');return;}var txn={date:date,type:modalType,category:modalCat,amount:amount,note:note};addTransaction(txn).then(function(){document.getElementById('txnAmount').value='';document.getElementById('txnNote').value='';closeModal();});}
 
 document.querySelectorAll('.nav-item').forEach(function(b){b.addEventListener('click',function(){nav(b.dataset.page);});});
 document.getElementById('syncBtn').onclick=syncAll;
-
 document.getElementById('fab').onclick=openModal;
 document.getElementById('closeModal').onclick=closeModal;
 document.getElementById('typeExpense').onclick=function(){modalType='expense';document.getElementById('typeExpense').classList.add('active');document.getElementById('typeIncome').classList.remove('active');renderCats();};
 document.getElementById('typeIncome').onclick=function(){modalType='income';document.getElementById('typeIncome').classList.add('active');document.getElementById('typeExpense').classList.remove('active');renderCats();};
 document.getElementById('saveTxn').onclick=saveTxn;
-
 load();
 nav(S.page||'dashboard');
 if(S.settings.url)syncAll();
