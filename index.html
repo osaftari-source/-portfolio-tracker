@@ -41,6 +41,24 @@ button,input{font:inherit}button{cursor:pointer;border:none;background:none}.app
 .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;line-height:1.8}
 .not-connected{background:var(--orange-soft);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:#633806;display:flex;gap:10px;align-items:flex-start}
 @media(max-width:360px){.content{padding:10px 12px}.metric .val,.val{font-size:16px}.g3{gap:6px}}
+
+.fab{position:fixed;right:calc(50% - 220px);bottom:92px;width:54px;height:54px;border-radius:50%;background:var(--blue);color:#fff;font-size:30px;line-height:54px;text-align:center;box-shadow:0 6px 18px rgba(24,95,165,.35);z-index:25}
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:40;align-items:flex-end;justify-content:center}
+.modal{width:100%;max-width:480px;background:var(--bg);border-radius:18px 18px 0 0;padding:14px 16px 20px;max-height:92vh;overflow:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.modal-title{font-size:16px;font-weight:700}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}
+.seg button{padding:8px;border:.5px solid var(--line);border-radius:8px;color:#5f5e5a;background:#fff;font-size:13px}
+.seg button.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.chip-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.cat-chip{padding:6px 10px;border:.5px solid var(--line);border-radius:20px;font-size:12px;background:#fff;color:#5f5e5a}
+.cat-chip.active{background:var(--blue-soft);border-color:var(--blue);color:var(--blue);font-weight:700}
+.txn-item{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:.5px solid var(--line-soft)}
+.txn-main{font-size:13px}
+.txn-note{font-size:11px;color:var(--muted)}
+.delete-btn{color:var(--red);font-size:12px;padding:4px 6px}
+@media(max-width:480px){.fab{right:18px}}
+
 </style>
 </head>
 <body>
@@ -49,6 +67,26 @@ button,input{font:inherit}button{cursor:pointer;border:none;background:none}.app
   <div id="subBar"></div>
   <main class="content" id="pageContent"></main>
 </div>
+
+<button class="fab" id="fab">+</button>
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Add transaction</div>
+      <button id="closeModal" style="font-size:24px;color:#888780">×</button>
+    </div>
+    <div class="seg">
+      <button id="typeExpense" class="active">Expense</button>
+      <button id="typeIncome">Income</button>
+    </div>
+    <div class="settings-field"><label>Date</label><input type="date" id="txnDate"></div>
+    <div class="settings-field"><label>Category</label><div class="chip-grid" id="catGrid"></div></div>
+    <div class="settings-field"><label>Amount</label><input type="number" id="txnAmount" placeholder="Example: 50000" inputmode="numeric"></div>
+    <div class="settings-field"><label>Note</label><textarea id="txnNote" rows="2" placeholder="Optional note"></textarea></div>
+    <button class="primary-btn" id="saveTxn">Save transaction</button>
+  </div>
+</div>
+
 <nav class="bottomnav" aria-label="Bottom navigation">
   <button class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span><span>Dashboard</span></button>
   <button class="nav-item" data-page="monthly"><span class="nav-icon">📅</span><span>Monthly</span></button>
@@ -72,11 +110,12 @@ function fullLabel(mk){var i=MONTH_KEYS.indexOf(mk);return i>=0?new Date(TODAY.g
 function rolling(start,count){var a=[];for(var i=0;i<count;i++)a.push(addMk(start,i));return a;}
 function dim(){return new Date(TODAY.getFullYear(),TODAY.getMonth()+1,0).getDate();}
 function dleft(){return dim()-TODAY.getDate()+1;}
+function todayIso(){return new Date().toISOString().slice(0,10);}
+function monthFromDate(dateText){var d=new Date(dateText+'T00:00:00');return MONTH_KEYS[d.getMonth()];}
 var CURRENT_MK=currentMk(), LAST_ACTUAL=prevMk(CURRENT_MK), NAV_MONTHS=rolling(CURRENT_MK,6);
 
 var ASSUMPTIONS={
-  
-  deposito_net_rate:.022,rd_expected_return:.040,
+  rd_expected_return:.040,
   sr025_net_rate:.0531,        // 5.9% gross × (1 − 10% PPh)
   jmo_monthly_contrib:202667,
   bri_9189_monthly_contrib:202667,
@@ -94,6 +133,7 @@ var INCOME_CATS=[
  ['salary','Salary'],['rd_return','Reksa Dana return'],['deposito_return','Deposito return'],
  ['sr025_coupon','SR025 coupon'],['sppd','SPPD / Dinas'],['other_income','Other income']
 ].map(function(x){return{key:x[0],label:x[1]};});
+var INPUT_INCOME_CATS=INCOME_CATS.filter(function(c){return c.key==='sppd'||c.key==='other_income';});
 
 var INVEST_CATS=[
  ['rd','RD top-up'],['sr025','SR025 T5 – SBN'],['germany_invest','Germany fund / Life Goals']
@@ -110,13 +150,13 @@ var GRP_LABELS={liquid:'Liquid',fixed:'Fixed Income',market:'Market-linked',reti
 var GRP_COLORS={liquid:'#185fa5',fixed:'#3b6d11',market:'#ba7517',retire:'#73726c'};
 var FB_BUDGET={admin:110000,food:1100000,healthcare:200000,household:200000,installment:9090000,others:100000,shopping:300000,sport:300000,telecom:800000,topup:500000,transport:600000,withdraw:2000000,zakat:0,rizka:1200000,incidental:0};
 
-var S={page:'dashboard',mk:CURRENT_MK,settings:{url:'',token:''},meta:{lastSync:null,lastError:null},plan:{},income:{},expenses:{},invest:{},portfolio:{}};
+var S={page:'dashboard',mk:CURRENT_MK,settings:{url:'',token:''},meta:{lastSync:null,lastError:null},plan:{},income:{},expenses:{},invest:{},portfolio:{},transactions:[]};
 
 function load(){
   try{
     var old=localStorage.getItem(STORAGE_KEY)||localStorage.getItem('pt_clean_v1')||localStorage.getItem('ptv7')||localStorage.getItem('ptv6')||'{}';
     var d=JSON.parse(old);
-     S.settings=d.settings||S.settings; S.meta=d.meta||S.meta; S.plan=d.plan||{}; S.income=d.income||{}; S.expenses=d.expenses||{}; S.invest=d.invest||{}; S.portfolio=d.portfolio||{};
+     S.settings=d.settings||S.settings; S.meta=d.meta||S.meta; S.plan=d.plan||{}; S.income=d.income||{}; S.expenses=d.expenses||{}; S.invest=d.invest||{}; S.portfolio=d.portfolio||{}; S.transactions=d.transactions||[];
     if(d.page)S.page=d.page;
     if(d.mk)S.mk=d.mk;
   }catch(e){console.warn(e);}
@@ -131,8 +171,9 @@ function fmtDate(iso){if(!iso)return 'Never';try{return new Date(iso).toLocaleSt
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];});}
 
 function get(obj,mk,k){var v=((obj[mk]||{})[k]);return(v===null||v===undefined||v==='')?null:Number(v)||0;}
-function gExp(mk,k){return get(S.expenses,mk,k);}
-function gInc(mk,k){return get(S.income,mk,k);}
+function wb(mk,type,cat){return (S.transactions||[]).filter(function(t){return t.month===mk&&t.type===type&&t.category===cat;}).reduce(function(s,t){return s+num(t.amount);},0);}
+function gExp(mk,k){var base=get(S.expenses,mk,k),add=wb(mk,'expense',k);return base===null&&add===0?null:num(base)+add;}
+function gInc(mk,k){var base=get(S.income,mk,k),add=wb(mk,'income',k);return base===null&&add===0?null:num(base)+add;}
 function gInv(mk,k){return get(S.invest,mk,k);}
 function gBudget(k,mk){mk=mk||CURRENT_MK;var v=((S.plan.expenses||{})[k]||{})[mk];return v!==undefined&&v!==null?Number(v)||0:FB_BUDGET[k]||0;}
 function gPlanInc(mk,k){var v=((S.plan.income||{})[k]||{})[mk];return v!==undefined&&v!==null?Number(v)||0:0;}
@@ -174,7 +215,35 @@ function subEl(){return document.getElementById('subBar');}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(function(){t.classList.remove('show');},2200);}
 function note(){return connected()?'<div class="small-note">Last sync: <strong>'+fmtDate(S.meta.lastSync)+'</strong>'+(S.meta.lastError?' · Last error: '+esc(S.meta.lastError):'')+'</div>':'';}
 function notConnected(){return '<div class="not-connected"><span>🔌</span><div><strong>Not connected to Google Sheets.</strong><br>Go to Settings and enter Apps Script URL and token.</div></div>';}
-function nav(p){S.page=p;document.querySelectorAll('.nav-item').forEach(function(b){b.classList.toggle('active',b.dataset.page===p);});subEl().innerHTML='';if(p==='dashboard')renderDashboard();if(p==='monthly')renderMonthly();if(p==='portfolio')renderPortfolio();if(p==='settings')renderSettings();}
+function nav(p){S.page=p;
+function bindDeleteButtons(){document.querySelectorAll('.delete-btn').forEach(function(b){b.onclick=function(){deleteTransaction(b.dataset.id);};});}
+function addTransaction(txn){return api('addTransaction',{transaction:txn}).then(function(){toast('Saved ✓');return syncAll();});}
+function deleteTransaction(id){return api('deleteTransaction',{id:id}).then(function(){toast('Deleted ✓');return syncAll();}).catch(function(e){toast('Error: '+e.message);});}
+
+var modalType='expense',modalCat='food';
+function openModal(){
+ document.getElementById('modalBackdrop').style.display='flex';
+ document.getElementById('txnDate').value=todayIso();
+ modalType='expense';
+ document.getElementById('typeExpense').classList.add('active');
+ document.getElementById('typeIncome').classList.remove('active');
+ renderCats();
+}
+function closeModal(){document.getElementById('modalBackdrop').style.display='none';}
+function renderCats(){
+ var cats=modalType==='expense'?EXPENSE_CATS:INPUT_INCOME_CATS;
+ modalCat=cats[0].key;
+ document.getElementById('catGrid').innerHTML=cats.map(function(c,i){return '<button class="cat-chip '+(i===0?'active':'')+'" data-cat="'+c.key+'">'+c.label+'</button>';}).join('');
+ document.querySelectorAll('.cat-chip').forEach(function(b){b.onclick=function(){modalCat=b.dataset.cat;document.querySelectorAll('.cat-chip').forEach(function(x){x.classList.remove('active');});b.classList.add('active');};});
+}
+function saveTxn(){
+ var date=document.getElementById('txnDate').value,amount=num(document.getElementById('txnAmount').value),note=document.getElementById('txnNote').value.trim();
+ if(!date||!amount||amount<=0){toast('Fill date and amount');return;}
+ var txn={date:date,type:modalType,category:modalCat,amount:amount,note:note};
+ addTransaction(txn).then(function(){document.getElementById('txnAmount').value='';document.getElementById('txnNote').value='';closeModal();});
+}
+
+document.querySelectorAll('.nav-item').forEach(function(b){b.classList.toggle('active',b.dataset.page===p);});subEl().innerHTML='';if(p==='dashboard')renderDashboard();if(p==='monthly')renderMonthly();if(p==='portfolio')renderPortfolio();if(p==='settings')renderSettings();}
 function metric(lbl,val,sub,cls){return '<div class="metric"><div class="lbl">'+lbl+'</div><div class="val '+(cls||'')+'">'+val+'</div><div class="sub">'+(sub||'')+'</div></div>';}
 function keyMetrics(){
   var last=totPf(LAST_ACTUAL),cur=totPf(CURRENT_MK),mom=last>0?(cur-last)/last*100:0,ytd=last-totPf('start');
@@ -182,32 +251,15 @@ function keyMetrics(){
     +'<div class="g2">'+metric('Total ('+label(LAST_ACTUAL)+')',fmt(last),'last complete month')+metric(label(CURRENT_MK)+' forecast <span class="fc-badge">est.</span>',fmt(cur),connected()?fmtPct(mom)+' vs '+label(LAST_ACTUAL):'—','pos')+'</div>'
     +'<div class="g3">'+metric('YTD growth',fmt(ytd),'','pos')+metric('Blended yield',connected()?blendYield().toFixed(2)+'%':'—','net')+metric('Inv. income/yr',fmt(annIncome()),'','pos')+'</div>';
 }
-function annualIncomeByInstrument(key,mk){
-  var bal=pfBal(key,mk)||0;
-  if(bal<=0)return 0;
-  if(key==='bni_deposito'){
-    var actual=gInc(mk,'deposito_return');
-    var plan=gPlanInc(mk,'deposito_return');
-    if(actual!==null)return num(actual)*12;
-    if(num(plan)>0)return num(plan)*12;
-    return bal*ASSUMPTIONS.deposito_net_rate;
-  }
-  if(key==='bni_rd')return bal*ASSUMPTIONS.rd_expected_return;
-  if(key==='sr025')return bal*ASSUMPTIONS.sr025_net_rate;
-  return 0;
+function blendYield(){
+  var rates={bni_rd:ASSUMPTIONS.rd_expected_return,sr025:ASSUMPTIONS.sr025_net_rate},n=0,d=0;
+  PF.forEach(function(i){var b=pfBal(i.key,LAST_ACTUAL)||0;if(rates[i.key]){n+=b*rates[i.key];d+=b;}});
+  return d>0?n/d*100:0;
 }
-function yieldBaseForMonth(mk){
-  return ['bni_deposito','bni_rd','sr025'].reduce(function(s,k){return s+(pfBal(k,mk)||0);},0);
+function annIncome(){
+  var rates={bni_rd:ASSUMPTIONS.rd_expected_return,sr025:ASSUMPTIONS.sr025_net_rate};
+  return PF.reduce(function(s,i){return s+(rates[i.key]||0)*(pfBal(i.key,LAST_ACTUAL)||0);},0);
 }
-function annIncomeForMonth(mk){
-  return ['bni_deposito','bni_rd','sr025'].reduce(function(s,k){return s+annualIncomeByInstrument(k,mk);},0);
-}
-function blendYieldForMonth(mk){
-  var base=yieldBaseForMonth(mk);
-  return base>0?annIncomeForMonth(mk)/base*100:0;
-}
-function blendYield(){return blendYieldForMonth(CURRENT_MK);}
-function annIncome(){return annIncomeForMonth(CURRENT_MK);}
 function actualNet(mk){return totInc(mk)-totExp(mk)-totInv(mk);}
 function forecastNet(mk){return estIncome(mk)-totExp(mk)-estInvestByKey(mk,'rd')-estInvestByKey(mk,'germany_invest')-estInvestByKey(mk,'sr025');}
 
@@ -246,11 +298,24 @@ function renderMonthly(){
  var fnet=forecastNet(mk),anet=actualNet(mk);
  h+='<div class="section">'+fullLabel(mk)+' Summary</div><div class="g2">'+metric('Income <span class="fc-badge">partial</span>',fmt(totInc(mk),{showZero:connected()}),'est: '+fmt(estIncome(mk),{showZero:connected()}),'pos')+metric('Expenses',fmt(totExp(mk),{showZero:connected()}),'regular: '+fmt(regularExp(mk),{showZero:connected()}))+'</div><div class="g2">'+metric('Invested',fmt(totInv(mk),{showZero:connected()}),'planned/actual','pos')+metric('Net flow forecast',fmt(fnet,{showZero:connected()}),'actual: '+fmt(anet,{showZero:connected()}),fnet<0?'neg':'pos')+'</div>';
  if(connected())h+=expenseControl(mk);
+ h+='<div class="section">Recent transactions</div>'+transactions(mk);
  h+='<div class="section">Daily & weekly spending rate</div>'+spendingRate(mk);
  h+=breakdown('Expense breakdown',EXPENSE_CATS,function(c){return gExp(mk,c.key);},function(c){return gBudget(c.key,mk);},'budget');
  h+=breakdown('Income breakdown',INCOME_CATS,function(c){return gInc(mk,c.key);},function(c){return gPlanInc(mk,c.key);},'plan');
- h+=investments(mk)+reallocations(mk);pageEl().innerHTML=h;bindCollapses();
+ h+=investments(mk);pageEl().innerHTML=h;bindCollapses();bindDeleteButtons();
 }
+
+function transactions(mk){
+ var rows=(S.transactions||[]).filter(function(t){return t.month===mk;}).slice().reverse();
+ if(!rows.length)return '<div class="card"><div class="empty">No transactions from app yet.</div></div>';
+ var h='<div class="card">';
+ rows.forEach(function(t){
+  var cat=EXPENSE_CATS.concat(INCOME_CATS).find(function(c){return c.key===t.category;}),name=cat?cat.label:t.category;
+  h+='<div class="txn-item"><div><div class="txn-main"><strong>'+name+'</strong> <span class="badge '+(t.type==='expense'?'b-warn':'b-ok')+'">'+t.type+'</span></div><div class="txn-note">'+esc(t.date)+' · '+esc(t.note||'No note')+'</div></div><div style="text-align:right"><div class="row-val '+(t.type==='income'?'pos':'')+'">'+fmt(t.amount,{showZero:true})+'</div><button class="delete-btn" data-id="'+esc(t.id)+'">Delete</button></div></div>';
+ });
+ return h+'</div>';
+}
+
 function expenseControl(mk){var total=totExp(mk),reg=regularExp(mk),inc=incidentalExp(mk),bud=regularBudget(mk),rem=bud-reg,pct=bud>0?Math.min(100,reg/bud*100):0,col=reg>bud?'#a32d2d':pct>85?'#ba7517':'#3b6d11';return '<div class="section">Expense control</div><div class="card"><div style="padding:12px 14px"><div class="g2" style="margin-bottom:10px"><div><div class="lbl">Regular expenses</div><div class="val">'+fmt(reg,{showZero:true})+'</div><div class="sub">excluding incidental</div></div><div style="text-align:right"><div class="lbl">Remaining budget</div><div class="val" style="color:'+col+'">'+fmt(rem,{showZero:true})+'</div><div class="sub">budget: '+fmt(bud,{showZero:true})+'</div></div></div><div class="pbar" style="height:7px"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+col+'"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Regular spent: '+fmt(reg,{showZero:true})+'</span><span>'+pct.toFixed(0)+'% used</span></div></div><div class="row"><span class="row-label">Incidental expenses</span><div><div class="row-val warn-c">'+fmt(inc,{showZero:true})+'</div><div class="row-sub">non-recurring</div></div></div><div class="row"><span class="row-label">Total expenses</span><div><div class="row-val">'+fmt(total,{showZero:true})+'</div><div class="row-sub">regular + incidental</div></div></div></div>';}
 function spendingRate(mk){
  if(!connected())return '<div class="card"><div class="empty">Connect Google Sheets to see spending rate.</div></div>';
@@ -266,21 +331,6 @@ function investments(mk){
  var h='<div class="section">Investments</div><div class="card">',any=false;
  INVEST_CATS.forEach(function(c){var a=gInv(mk,c.key),p=gPlanInv(c.key,mk),av=num(a),done=p>0&&av>=p,pct=p>0?Math.min(100,av/p*100):0;if(a===null&&p===0)return;any=true;h+='<div style="padding:9px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span class="row-label">'+c.label+'</span><div style="text-align:right"><div class="row-val '+(done?'pos':'')+'">'+fmt(av,{showZero:a!==null})+(done?' ✓':'')+'</div><div class="row-sub">plan: '+fmt(p,{showZero:true})+'</div></div></div>'+(p>0?'<div class="pbar"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+(done?'#3b6d11':'#ba7517')+'"></div></div>':'')+'</div>';});
  if(!any)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">No investment data yet.</div>';return h+'</div>';
-}
-
-function pfLabel(k){var item=PF.find(function(i){return i.key===k;});return item?item.label:k;}
-function reallocations(mk){
- var r=S.plan.reallocation||{},rows=[];
- Object.keys(r).forEach(function(k){var v=gRealloc(k,mk);if(v!==0)rows.push({key:k,value:v});});
- if(!rows.length)return '';
- var h='<div class="section">Reallocation</div><div class="card">';
- rows.forEach(function(x){
-  h+='<div class="row"><span class="row-label">'+pfLabel(x.key)+'</span><div><div class="row-val '+(x.value>=0?'pos':'neg')+'">'+(x.value>=0?'+':'')+fmt(x.value,{showZero:true})+'</div><div class="row-sub">portfolio switch</div></div></div>';
- });
- var net=rows.reduce(function(s,x){return s+x.value;},0);
- h+='<div class="row"><span class="row-label"><strong>Net portfolio effect</strong></span><div><div class="row-val '+(net===0?'':'warn-c')+'">'+fmt(net,{showZero:true})+'</div><div class="row-sub">excluded from net flow</div></div></div>';
- h+='</div>';
- return h;
 }
 function bindCollapses(){document.querySelectorAll('.collapse-head').forEach(function(b){b.onclick=function(){var id=b.dataset.target,el=document.getElementById(id),ic=document.getElementById(id+'-icon'),open=el.style.display==='none';el.style.display=open?'block':'none';ic.textContent=open?'▴':'▾';};});}
 
@@ -311,13 +361,20 @@ function renderPortfolio(){
   pageEl().innerHTML=h;setTimeout(renderCharts,100);
 }
 
-function renderSettings(){subEl().innerHTML='';var h='<div class="section">Google Sheets connection</div><div class="card"><div class="settings-field"><label>Apps Script URL</label><input id="url" type="url" value="'+esc(S.settings.url)+'" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="settings-field"><label>Secret token</label><input id="token" type="text" value="'+esc(S.settings.token)+'" placeholder="your-secret-token"></div><div style="padding:10px 14px"><button class="primary-btn" id="saveSettings">Save settings</button></div></div><div class="section">Sync</div><div class="card"><div class="row"><span class="row-label">Sync all data</span><button class="secondary-btn" id="syncSettings">↻ Sync all</button></div><div class="row"><span class="row-label">Last sync</span><span>'+fmtDate(S.meta.lastSync)+'</span></div><div class="row"><span class="row-label">Connected</span><span class="badge '+(connected()?'b-ok':'b-danger')+'">'+(connected()?'Yes':'No')+'</span></div></div><div class="section">About</div><div class="card"><div class="row"><span class="row-label">Version</span><span>OS v6 Final</span></div><div class="row"><span class="row-label">Current month</span><span>'+fullLabel(CURRENT_MK)+' '+TODAY.getFullYear()+'</span></div></div>';pageEl().innerHTML=h;document.getElementById('saveSettings').onclick=function(){S.settings.url=document.getElementById('url').value.trim();S.settings.token=document.getElementById('token').value.trim();save();toast('Settings saved ✓');};document.getElementById('syncSettings').onclick=syncAll;}
+function renderSettings(){subEl().innerHTML='';var h='<div class="section">Google Sheets connection</div><div class="card"><div class="settings-field"><label>Apps Script URL</label><input id="url" type="url" value="'+esc(S.settings.url)+'" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="settings-field"><label>Secret token</label><input id="token" type="text" value="'+esc(S.settings.token)+'" placeholder="your-secret-token"></div><div style="padding:10px 14px"><button class="primary-btn" id="saveSettings">Save settings</button></div></div><div class="section">Sync</div><div class="card"><div class="row"><span class="row-label">Sync all data</span><button class="secondary-btn" id="syncSettings">↻ Sync all</button></div><div class="row"><span class="row-label">Last sync</span><span>'+fmtDate(S.meta.lastSync)+'</span></div><div class="row"><span class="row-label">Connected</span><span class="badge '+(connected()?'b-ok':'b-danger')+'">'+(connected()?'Yes':'No')+'</span></div></div><div class="section">About</div><div class="card"><div class="row"><span class="row-label">Version</span><span>OS v8 Input</span></div><div class="row"><span class="row-label">Current month</span><span>'+fullLabel(CURRENT_MK)+' '+TODAY.getFullYear()+'</span></div></div>';pageEl().innerHTML=h;document.getElementById('saveSettings').onclick=function(){S.settings.url=document.getElementById('url').value.trim();S.settings.token=document.getElementById('token').value.trim();save();toast('Settings saved ✓');};document.getElementById('syncSettings').onclick=syncAll;}
 
 function api(action,payload){if(!S.settings.url)return Promise.reject(new Error('No Apps Script URL. Open Settings first.'));var body=JSON.stringify(Object.assign({action:action,token:S.settings.token},payload||{}));return fetch(S.settings.url,{method:'POST',body:body,headers:{'Content-Type':'text/plain;charset=utf-8'},cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status+'. Check Apps Script deployment.');return r.text();}).then(function(txt){try{return JSON.parse(txt);}catch(e){throw new Error('Backend did not return valid JSON.');}}).then(function(j){if(!j.ok)throw new Error(j.error||'Unknown backend error');return j;});}
-function syncAll(){if(!S.settings.url){toast('⚠ Set Script URL in Settings');nav('settings');return;}document.getElementById('syncBtn').textContent='↻ Syncing…';api('getAll').then(function(r){['plan','portfolio','income','expenses','invest'].forEach(function(k){if(!r[k]||typeof r[k]!=='object')throw new Error('Invalid response: missing '+k);});S.plan=r.plan||{};S.income=r.income||{};S.expenses=r.expenses||{};S.invest=r.invest||{};S.portfolio=r.portfolio||{};S.meta.lastSync=r.lastSync||new Date().toISOString();S.meta.lastError=null;save();toast('Synced ✓');document.getElementById('syncBtn').textContent='↻ Sync';nav(S.page);}).catch(function(e){S.meta.lastError=e.message;save();toast('Error: '+e.message);document.getElementById('syncBtn').textContent='↻ Sync';nav(S.page);});}
+function syncAll(){if(!S.settings.url){toast('⚠ Set Script URL in Settings');nav('settings');return;}document.getElementById('syncBtn').textContent='↻ Syncing…';api('getAll').then(function(r){['plan','portfolio','income','expenses','invest'].forEach(function(k){if(!r[k]||typeof r[k]!=='object')throw new Error('Invalid response: missing '+k);});S.plan=r.plan||{};S.income=r.income||{};S.expenses=r.expenses||{};S.invest=r.invest||{};S.portfolio=r.portfolio||{};S.transactions=r.transactions||[];S.meta.lastSync=r.lastSync||new Date().toISOString();S.meta.lastError=null;save();toast('Synced ✓');document.getElementById('syncBtn').textContent='↻ Sync';nav(S.page);}).catch(function(e){S.meta.lastError=e.message;save();toast('Error: '+e.message);document.getElementById('syncBtn').textContent='↻ Sync';nav(S.page);});}
 
 document.querySelectorAll('.nav-item').forEach(function(b){b.addEventListener('click',function(){nav(b.dataset.page);});});
 document.getElementById('syncBtn').onclick=syncAll;
+
+document.getElementById('fab').onclick=openModal;
+document.getElementById('closeModal').onclick=closeModal;
+document.getElementById('typeExpense').onclick=function(){modalType='expense';document.getElementById('typeExpense').classList.add('active');document.getElementById('typeIncome').classList.remove('active');renderCats();};
+document.getElementById('typeIncome').onclick=function(){modalType='income';document.getElementById('typeIncome').classList.add('active');document.getElementById('typeExpense').classList.remove('active');renderCats();};
+document.getElementById('saveTxn').onclick=saveTxn;
+
 load();
 nav(S.page||'dashboard');
 if(S.settings.url)syncAll();
