@@ -317,6 +317,20 @@ function totInc(mk){return total(INCOME_CATS,function(c){return gInc(mk,c.key);}
 function totInv(mk){return total(INVEST_CATS,function(c){return gInv(mk,c.key);});}
 function totBudget(mk){return total(EXPENSE_CATS,function(c){return gBudget(c.key,mk);});}
 function totPlanInc(mk){return total(INCOME_CATS,function(c){return gPlanInc(mk,c.key);});}
+
+function incidentalExp(mk){return num(gExp(mk,'incidental'));}
+function regularExp(mk){
+  return EXPENSE_CATS.reduce(function(s,c){
+    return c.key==='incidental'?s:s+num(gExp(mk,c.key));
+  },0);
+}
+function regularBudget(mk){
+  return EXPENSE_CATS.reduce(function(s,c){
+    return c.key==='incidental'?s:s+num(gBudget(c.key,mk));
+  },0);
+}
+function regularRemaining(mk){return regularBudget(mk)-regularExp(mk);}
+
 function controlledExpenseCats(){return EXPENSE_CATS.filter(function(c){return c.key!=='incidental';});}
 function totControlledExp(mk){return total(controlledExpenseCats(),function(c){return gExp(mk,c.key);});}
 function totControlledBudget(mk){return total(controlledExpenseCats(),function(c){return gBudget(c.key,mk);});}
@@ -497,6 +511,8 @@ function renderMonthly(){
   h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(tE>pE&&pE>0?'neg':'')+'">'+fmt(tE,{showZero:con})+'</div><div class="sub">'+(pE!==null?'budget: '+fmt(pE,{showZero:true}):'—')+'</div></div></div>';
   h+='<div class="g2"><div class="metric"><div class="lbl">Invested</div><div class="val pos">'+fmt(tV,{showZero:con})+'</div></div>';
   h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(tI>0?(net<0?'neg':'pos'):'')+'">'+fmt(net,{showZero:con})+'</div><div class="sub">'+(tI>0?(net<0?'from savings':'surplus'):'')+'</div></div></div>';
+  if(con)h+=renderExpenseControl(mk);
+  if(con)h+=renderExpenseControl(mk);
   h+='<div class="section">Daily & weekly spending rate</div>';
   if(!con)h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">Connect Google Sheets to see spending rate.</div></div>';
   else if(!isCur)h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">📅 Rate only available for current month.<br><span style="font-size:12px">Switch to <strong>'+labelFromMk(amk)+'</strong>.</span></div></div>';
@@ -507,12 +523,32 @@ function renderMonthly(){
   h+=renderInvestments(mk);
   set(h);
 }
+
+function renderExpenseControl(mk){
+  var total=totExp(mk),regular=regularExp(mk),inc=incidentalExp(mk),budget=regularBudget(mk),remain=regularRemaining(mk);
+  var pct=budget>0?Math.min(100,regular/budget*100):0;
+  var col=regular>budget&&budget>0?'#a32d2d':pct>85?'#ba7517':'#3b6d11';
+  var h='<div class="section">Expense control</div>';
+  h+='<div class="card"><div style="padding:12px 14px">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px">';
+  h+='<div><div style="font-size:12px;color:#888780">Regular expenses</div><div style="font-size:19px;font-weight:650">'+fmt(regular,{showZero:true})+'</div><div style="font-size:11px;color:#888780">excluding incidental</div></div>';
+  h+='<div style="text-align:right"><div style="font-size:12px;color:#888780">Remaining budget</div><div style="font-size:19px;font-weight:650;color:'+col+'">'+fmt(remain,{showZero:true})+'</div><div style="font-size:11px;color:#888780">budget: '+fmt(budget,{showZero:true})+'</div></div>';
+  h+='</div>';
+  h+='<div class="pbar" style="height:7px"><div class="pfill" style="width:'+Math.min(100,pct).toFixed(0)+'%;background:'+col+'"></div></div>';
+  h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Regular spent: '+fmt(regular,{showZero:true})+'</span><span>'+pct.toFixed(0)+'% used</span></div>';
+  h+='</div>';
+  h+='<div class="row"><span class="row-label">Incidental expenses</span><div><div class="row-val warn-c">'+fmt(inc,{showZero:true})+'</div><div class="row-sub">non-recurring</div></div></div>';
+  h+='<div class="row"><span class="row-label">Total expenses</span><div><div class="row-val">'+fmt(total,{showZero:true})+'</div><div class="row-sub">regular + incidental</div></div></div>';
+  h+='</div>';
+  return h;
+}
+
 function renderSpendingRate(mk,dl,dim,dp){
   var h='<div style="font-size:12px;color:#888780;margin-bottom:8px">'+dl+' days left · '+dp+' of '+dim+' days gone</div>';
   var ovR=0,ovB=0;
   RATE_CATS.forEach(function(k){ovB+=num(gBudget(k,mk));ovR+=Math.max(0,num(gBudget(k,mk))-num(gExp(mk,k)));});
   var ovD=dl>0?ovR/dl:0,ovW=ovD*7,ovPct=ovB>0?(ovB-ovR)/ovB*100:0,ovC=ovPct>90?'#a32d2d':ovPct>70?'#ba7517':'#3b6d11';
-  h+='<div class="card"><div style="padding:12px 14px"><div style="font-size:13px;font-weight:600;margin-bottom:10px">All tracked categories</div>';
+  h+='<div class="card"><div style="padding:12px 14px"><div style="font-size:13px;font-weight:600;margin-bottom:10px">Controllable categories</div><div style="font-size:11px;color:#888780;margin-top:-6px;margin-bottom:10px">Daily-use categories only; excludes incidental and fixed bills.</div>';
   h+='<div style="display:flex;gap:8px;margin-bottom:10px"><div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val" style="color:'+ovC+'">'+fmt(ovD,{showZero:true})+'</div><div class="rb-unit">/day</div></div>';
   h+='<div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val" style="color:'+ovC+'">'+fmt(ovW,{showZero:true})+'</div><div class="rb-unit">/week</div></div></div>';
   h+='<div class="pbar" style="height:7px"><div class="pfill" style="width:'+Math.min(100,ovPct).toFixed(0)+'%;background:'+ovC+'"></div></div>';
