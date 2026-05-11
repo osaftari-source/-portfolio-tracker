@@ -106,7 +106,7 @@ button{cursor:pointer}
 'use strict';
 
 /* ============================================================
-   Portfolio Tracker — Clean No-Offline Frontend
+   Portfolio Tracker — Clean No-Offline Frontend v2
    - Vanilla JS
    - Dynamic month handling
    - Google Sheets via Apps Script
@@ -151,7 +151,8 @@ var EXPENSE_CATS=[
   {key:'transport',label:'Transportation'},
   {key:'withdraw',label:'Withdraw'},
   {key:'zakat',label:'Zakat'},
-  {key:'rizka',label:'Rizka'}
+  {key:'rizka',label:'Rizka'},
+  {key:'incidental',label:'Incidental'}
 ];
 
 var INCOME_CATS=[
@@ -175,23 +176,41 @@ var PF_INSTRUMENTS=[
   {key:'bni_saving',label:'BNI Saving',group:'liquid'},
   {key:'bni_lifegoals',label:'Life Goals',group:'liquid'},
   {key:'bsi_ops',label:'BSI Operational',group:'liquid'},
-  {key:'bni_deposito',label:'BNI Deposito',group:'fixed',rate:'2.20% net',grossRate:0.0275,taxRate:0.20},
+  {key:'bni_deposito',label:'BNI Deposito',group:'fixed',rate:'principal only'},
   {key:'bni_sbn',label:'SBN (existing)',group:'fixed'},
   {key:'sr025',label:'SR025 T5',group:'fixed',rate:'5.31% net'},
-  {key:'bni_rd',label:'BNI Reksa Dana',group:'market',rate:'5.50% net',netRate:0.055},
+  {key:'bni_rd',label:'BNI Reksa Dana',group:'market',rate:'5.50% net'},
   {key:'mandiri_rd',label:'Mandiri RD',group:'market'},
   {key:'mandiri_saham',label:'Mandiri Saham',group:'market'},
   {key:'bsi_gold',label:'BSI Gold',group:'market'},
-  {key:'jmo',label:'JMO',group:'retire',contrib:202667},
-  {key:'bri_9189',label:'BRI-9189',group:'retire',contrib:202667},
-  {key:'bri_8628',label:'BRI-8628',group:'retire',contrib:202666}
+  {key:'jmo',label:'JMO',group:'retire'},
+  {key:'bri_9189',label:'BRI-9189',group:'retire'},
+  {key:'bri_8628',label:'BRI-8628',group:'retire'}
 ];
 
 var GRP_LABELS={liquid:'Liquid',fixed:'Fixed Income',market:'Market-linked',retire:'Retirement'};
 var GRP_COLORS={liquid:'#185fa5',fixed:'#3b6d11',market:'#ba7517',retire:'#73726c'};
 
+// Centralized forecast assumptions.
+// Keep these here for now. Later they can be moved to a Google Sheets Assumptions tab.
+var ASSUMPTIONS={
+  deposito_gross_rate:0.0275,
+  deposito_tax_rate:0.20,
+  rd_expected_return:0.055,
+  sr025_net_rate:0.0531,
+  jmo_monthly_contrib:202667,
+  bri_9189_monthly_contrib:202667,
+  bri_8628_monthly_contrib:202666
+};
+
+function assumption(key,fallback){
+  var v=ASSUMPTIONS[key];
+  return (v===null||v===undefined||v==='')?fallback:v;
+}
+
+
 // fallback budget/plan used only when connected but Plan sheet line is missing
-var FB_BUDGET={admin:110000,food:1100000,healthcare:200000,household:200000,installment:9090000,others:100000,shopping:300000,sport:300000,telecom:800000,topup:500000,transport:600000,withdraw:2000000,zakat:0,rizka:1200000};
+var FB_BUDGET={admin:110000,food:1100000,healthcare:200000,household:200000,installment:9090000,others:100000,shopping:300000,sport:300000,telecom:800000,topup:500000,transport:600000,withdraw:2000000,zakat:0,rizka:1200000,incidental:0};
 var FB_INC={
   salary:{may:17440701,jun:17440701,jul:17440701,aug:17440701,sep:17440701,oct:17440701},
   rd_return:{may:454627,jun:531332,jul:608324,aug:666855,sep:856856,oct:878819},
@@ -212,14 +231,14 @@ var S={
 
 function load(){
   try{
-    var d=JSON.parse(localStorage.getItem('ptv7')||localStorage.getItem('ptv6')||'{}');
+    var d=JSON.parse(localStorage.getItem('ptv8')||localStorage.getItem('ptv7')||localStorage.getItem('ptv6')||'{}');
     S.plan=d.plan||{};S.income=d.income||{};S.expenses=d.expenses||{};S.invest=d.invest||{};S.portfolio=d.portfolio||{};
     S.settings=d.settings||{url:'',token:''};S.meta=d.meta||{lastSync:null,lastError:null};
     if(!MONTH_KEYS.includes(S.mk))S.mk=CURRENT_MK;
   }catch(e){console.warn('Load failed',e);}
 }
 function save(){
-  localStorage.setItem('ptv7',JSON.stringify({plan:S.plan,income:S.income,expenses:S.expenses,invest:S.invest,portfolio:S.portfolio,settings:S.settings,meta:S.meta}));
+  localStorage.setItem('ptv8',JSON.stringify({plan:S.plan,income:S.income,expenses:S.expenses,invest:S.invest,portfolio:S.portfolio,settings:S.settings,meta:S.meta}));
 }
 function connected(){
   return !!S.settings.url && (hasKeys(S.plan)||hasKeys(S.income)||hasKeys(S.expenses)||hasKeys(S.portfolio)||hasKeys(S.invest));
@@ -298,6 +317,19 @@ function totInc(mk){return total(INCOME_CATS,function(c){return gInc(mk,c.key);}
 function totInv(mk){return total(INVEST_CATS,function(c){return gInv(mk,c.key);});}
 function totBudget(mk){return total(EXPENSE_CATS,function(c){return gBudget(c.key,mk);});}
 function totPlanInc(mk){return total(INCOME_CATS,function(c){return gPlanInc(mk,c.key);});}
+function controlledExpenseCats(){return EXPENSE_CATS.filter(function(c){return c.key!=='incidental';});}
+function totControlledExp(mk){return total(controlledExpenseCats(),function(c){return gExp(mk,c.key);});}
+function totControlledBudget(mk){return total(controlledExpenseCats(),function(c){return gBudget(c.key,mk);});}
+function estIncome(mk){
+  return total(INCOME_CATS,function(c){
+    var actual=gInc(mk,c.key), plan=gPlanInc(mk,c.key);
+    return actual!==null?actual:plan;
+  });
+}
+function estInvestByKey(mk,key){
+  var actual=gInv(mk,key), plan=gPlanInv(key,mk);
+  return num(actual!==null?actual:plan);
+}
 function hasExpData(mk){return connected()&&EXPENSE_CATS.some(function(c){return gExp(mk,c.key)!==null;});}
 function hasMonthData(mk){return connected()&&(INCOME_CATS.some(function(c){return gInc(mk,c.key)!==null;})||EXPENSE_CATS.some(function(c){return gExp(mk,c.key)!==null;}));}
 
@@ -310,17 +342,34 @@ function pfActual(key,period){
 function pfForecast(instr,prev,mk){
   if(prev===null||prev===undefined)return null;
   mk=mk||CURRENT_MK;
-  if(instr.key==='bni_deposito')return prev+prev*instr.grossRate*(1-instr.taxRate)/12;
-  if(instr.key==='bni_rd')return prev+prev*(instr.netRate||0)/12+num(gInv(mk,'rd')!==null?gInv(mk,'rd'):gPlanInv('rd',mk));
-  if(instr.key==='sr025')return prev+num(gInv(mk,'sr025')!==null?gInv(mk,'sr025'):gPlanInv('sr025',mk));
-  if(instr.key==='bni_lifegoals')return prev+num(gInv(mk,'germany_invest')!==null?gInv(mk,'germany_invest'):gPlanInv('germany_invest',mk));
-  if(instr.key==='bni_saving'){
-    var rdOut=num(gInv(mk,'rd')!==null?gInv(mk,'rd'):gPlanInv('rd',mk));
-    var lgOut=num(gInv(mk,'germany_invest')!==null?gInv(mk,'germany_invest'):gPlanInv('germany_invest',mk));
-    var inc=totInc(mk)||totPlanInc(mk), exp=totExp(mk)||totBudget(mk);
-    return prev+(inc-exp)-rdOut-lgOut;
+
+  // Deposito value is principal only. Interest is handled as income via deposito_return.
+  if(instr.key==='bni_deposito')return prev;
+
+  // Conservative RD forecast: previous balance earns estimated return; top-up is added separately.
+  if(instr.key==='bni_rd'){
+    var rdTopup=estInvestByKey(mk,'rd');
+    var rdRate=assumption('rd_expected_return',0.055);
+    return prev+prev*rdRate/12+rdTopup;
   }
-  if(instr.group==='retire')return prev+(instr.contrib||0);
+
+  if(instr.key==='sr025')return prev+estInvestByKey(mk,'sr025');
+  if(instr.key==='bni_lifegoals')return prev+estInvestByKey(mk,'germany_invest');
+
+  if(instr.key==='bni_saving'){
+    var rdOut=estInvestByKey(mk,'rd');
+    var lgOut=estInvestByKey(mk,'germany_invest');
+    var srOut=estInvestByKey(mk,'sr025');
+    var inc=estIncome(mk);
+    var exp=totExp(mk); // actual expenses only, including incidental
+    return prev+inc-exp-rdOut-lgOut-srOut;
+  }
+
+  if(instr.key==='jmo')return prev+assumption('jmo_monthly_contrib',202667);
+  if(instr.key==='bri_9189')return prev+assumption('bri_9189_monthly_contrib',202667);
+  if(instr.key==='bri_8628')return prev+assumption('bri_8628_monthly_contrib',202666);
+
+  // Default method for market/manual assets: carry forward previous month.
   return prev;
 }
 function pfBal(key,period){
@@ -336,13 +385,21 @@ function totPf(period){return PF_INSTRUMENTS.reduce(function(s,i){return s+num(p
 function grpTot(g,period){return PF_INSTRUMENTS.filter(function(i){return i.group===g;}).reduce(function(s,i){return s+num(pfBal(i.key,period));},0);}
 function blendYield(){
   if(!connected())return 0;
-  var rates={bni_deposito:0.022,bni_rd:0.055,sr025:0.0531},n=0,d=0;
+  var rates={
+    bni_deposito:assumption('deposito_gross_rate',0.0275)*(1-assumption('deposito_tax_rate',0.20)),
+    bni_rd:assumption('rd_expected_return',0.055),
+    sr025:assumption('sr025_net_rate',0.0531)
+  },n=0,d=0;
   PF_INSTRUMENTS.forEach(function(i){var b=pfBal(i.key,LAST_ACTUAL)||0;if(rates[i.key]){n+=b*rates[i.key];d+=b;}});
   return d>0?n/d*100:0;
 }
 function annIncome(){
   if(!connected())return 0;
-  var rates={bni_deposito:0.022,bni_rd:0.055,sr025:0.0531};
+  var rates={
+    bni_deposito:assumption('deposito_gross_rate',0.0275)*(1-assumption('deposito_tax_rate',0.20)),
+    bni_rd:assumption('rd_expected_return',0.055),
+    sr025:assumption('sr025_net_rate',0.0531)
+  };
   return PF_INSTRUMENTS.reduce(function(s,i){return s+(rates[i.key]||0)*(pfBal(i.key,LAST_ACTUAL)||0);},0);
 }
 function emFund(){
@@ -552,7 +609,7 @@ function toggleTable(){var w=document.getElementById('tbl-wrap'),t=document.getE
 function renderSettings(){
   var h='<div class="section">Google Sheets connection</div><div class="card"><div class="settings-field"><label>Apps Script URL</label><input type="url" id="cfg_url" value="'+escapeHtml(S.settings.url)+'" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="settings-field"><label>Secret token</label><input type="text" id="cfg_tok" value="'+escapeHtml(S.settings.token)+'" placeholder="your-secret-token"></div><div style="padding:10px 14px"><button onclick="saveCfg()" class="primary-btn">Save settings</button></div></div>';
   h+='<div class="section">Sync</div><div class="card"><div class="row"><span class="row-label">Sync all data</span><button onclick="syncAll()" class="secondary-btn">↻ Sync all</button></div><div class="row"><span class="row-label">Portfolio only</span><button onclick="syncPf()" class="secondary-btn">Pull</button></div><div class="row"><span class="row-label">Last sync</span><span>'+fmtDateTime(S.meta.lastSync)+'</span></div></div>';
-  h+='<div class="section">About</div><div class="card"><div class="row"><span class="row-label">Version</span><span>Clean v1 — No Offline</span></div><div class="row"><span class="row-label">Current month</span><span>'+fullLabelFromMk(CURRENT_MK)+' '+TODAY.getFullYear()+'</span></div><div class="row"><span class="row-label">Last complete</span><span>'+fullLabelFromMk(LAST_ACTUAL)+' '+TODAY.getFullYear()+'</span></div><div class="row"><span class="row-label">Data source</span><span>Google Sheets</span></div><div class="row"><span class="row-label">Connected</span><span class="badge '+(connected()?'b-ok':'b-danger')+'">'+(connected()?'Yes':'No')+'</span></div></div>';
+  h+='<div class="section">About</div><div class="card"><div class="row"><span class="row-label">Version</span><span>Clean v2 — No Offline</span></div><div class="row"><span class="row-label">Current month</span><span>'+fullLabelFromMk(CURRENT_MK)+' '+TODAY.getFullYear()+'</span></div><div class="row"><span class="row-label">Last complete</span><span>'+fullLabelFromMk(LAST_ACTUAL)+' '+TODAY.getFullYear()+'</span></div><div class="row"><span class="row-label">Data source</span><span>Google Sheets</span></div><div class="row"><span class="row-label">Connected</span><span class="badge '+(connected()?'b-ok':'b-danger')+'">'+(connected()?'Yes':'No')+'</span></div></div>';
   h+='<div class="section">Note</div><div class="card"><div class="small-note">This version does not use a service worker, so it avoids browser cache issues. It still works well as a mobile web app through GitHub Pages.</div></div>';
   set(h);
 }
@@ -560,11 +617,13 @@ function saveCfg(){S.settings.url=document.getElementById('cfg_url').value.trim(
 
 // ── ALERTS ────────────────────────────────────────────────────
 function buildAlerts(mk){
-  var a=[],tE=totExp(mk),pE=totBudget(mk);
+  var a=[],tE=totControlledExp(mk),pE=totControlledBudget(mk);
   if(!connected())return[{t:'info',m:'Connect Google Sheets in Settings to see alerts.'}];
-  if(tE>0&&tE>pE)a.push({t:'danger',m:'<strong>Over budget by '+fmtFull(tE-pE)+'</strong> this month.'});
-  EXPENSE_CATS.forEach(function(c){var act=num(gExp(mk,c.key)),bud=num(gBudget(c.key,mk));if(bud>0&&act>bud*1.15)a.push({t:'warn',m:'<strong>'+c.label+'</strong> over budget by '+fmtFull(act-bud)+'.'});});
+  if(tE>0&&tE>pE)a.push({t:'danger',m:'<strong>Regular expenses over budget by '+fmtFull(tE-pE)+'</strong> this month.'});
+  controlledExpenseCats().forEach(function(c){var act=num(gExp(mk,c.key)),bud=num(gBudget(c.key,mk));if(bud>0&&act>bud*1.15)a.push({t:'warn',m:'<strong>'+c.label+'</strong> over budget by '+fmtFull(act-bud)+'.'});});
+  if(num(gExp(mk,'incidental'))>0)a.push({t:'info',m:'<strong>Incidental expense recorded:</strong> '+fmtFull(gExp(mk,'incidental'))+'. This is included in netflow but excluded from daily spending rate.'});
   if(gInv(mk,'sr025')===null && num(gPlanInv('sr025',mk))>0)a.push({t:'warn',m:'<strong>SR025 planned but not recorded</strong> for '+labelFromMk(mk)+'.'});
+  if(mk==='dec')a.push({t:'info',m:'<strong>Year-end reminder.</strong> In early January, archive this tracker, copy December closing balances into Start, then clear monthly actual columns.'});
   if(!a.length)a.push({t:'ok',m:'<strong>All clear.</strong> Update Google Sheets and sync to see latest.'});
   return a;
 }
