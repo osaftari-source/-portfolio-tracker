@@ -75,7 +75,8 @@ function dleft(){return dim()-TODAY.getDate()+1;}
 var CURRENT_MK=currentMk(), LAST_ACTUAL=prevMk(CURRENT_MK), NAV_MONTHS=rolling(CURRENT_MK,6);
 
 var ASSUMPTIONS={
-  rd_expected_return:.040,
+  
+  deposito_net_rate:.022,rd_expected_return:.040,
   sr025_net_rate:.0531,        // 5.9% gross × (1 − 10% PPh)
   jmo_monthly_contrib:202667,
   bri_9189_monthly_contrib:202667,
@@ -181,15 +182,32 @@ function keyMetrics(){
     +'<div class="g2">'+metric('Total ('+label(LAST_ACTUAL)+')',fmt(last),'last complete month')+metric(label(CURRENT_MK)+' forecast <span class="fc-badge">est.</span>',fmt(cur),connected()?fmtPct(mom)+' vs '+label(LAST_ACTUAL):'—','pos')+'</div>'
     +'<div class="g3">'+metric('YTD growth',fmt(ytd),'','pos')+metric('Blended yield',connected()?blendYield().toFixed(2)+'%':'—','net')+metric('Inv. income/yr',fmt(annIncome()),'','pos')+'</div>';
 }
-function blendYield(){
-  var rates={bni_rd:ASSUMPTIONS.rd_expected_return,sr025:ASSUMPTIONS.sr025_net_rate},n=0,d=0;
-  PF.forEach(function(i){var b=pfBal(i.key,LAST_ACTUAL)||0;if(rates[i.key]){n+=b*rates[i.key];d+=b;}});
-  return d>0?n/d*100:0;
+function annualIncomeByInstrument(key,mk){
+  var bal=pfBal(key,mk)||0;
+  if(bal<=0)return 0;
+  if(key==='bni_deposito'){
+    var actual=gInc(mk,'deposito_return');
+    var plan=gPlanInc(mk,'deposito_return');
+    if(actual!==null)return num(actual)*12;
+    if(num(plan)>0)return num(plan)*12;
+    return bal*ASSUMPTIONS.deposito_net_rate;
+  }
+  if(key==='bni_rd')return bal*ASSUMPTIONS.rd_expected_return;
+  if(key==='sr025')return bal*ASSUMPTIONS.sr025_net_rate;
+  return 0;
 }
-function annIncome(){
-  var rates={bni_rd:ASSUMPTIONS.rd_expected_return,sr025:ASSUMPTIONS.sr025_net_rate};
-  return PF.reduce(function(s,i){return s+(rates[i.key]||0)*(pfBal(i.key,LAST_ACTUAL)||0);},0);
+function yieldBaseForMonth(mk){
+  return ['bni_deposito','bni_rd','sr025'].reduce(function(s,k){return s+(pfBal(k,mk)||0);},0);
 }
+function annIncomeForMonth(mk){
+  return ['bni_deposito','bni_rd','sr025'].reduce(function(s,k){return s+annualIncomeByInstrument(k,mk);},0);
+}
+function blendYieldForMonth(mk){
+  var base=yieldBaseForMonth(mk);
+  return base>0?annIncomeForMonth(mk)/base*100:0;
+}
+function blendYield(){return blendYieldForMonth(CURRENT_MK);}
+function annIncome(){return annIncomeForMonth(CURRENT_MK);}
 function actualNet(mk){return totInc(mk)-totExp(mk)-totInv(mk);}
 function forecastNet(mk){return estIncome(mk)-totExp(mk)-estInvestByKey(mk,'rd')-estInvestByKey(mk,'germany_invest')-estInvestByKey(mk,'sr025');}
 
