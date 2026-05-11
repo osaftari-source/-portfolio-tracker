@@ -136,6 +136,7 @@ function gInv(mk,k){return get(S.invest,mk,k);}
 function gBudget(k,mk){mk=mk||CURRENT_MK;var v=((S.plan.expenses||{})[k]||{})[mk];return v!==undefined&&v!==null?Number(v)||0:FB_BUDGET[k]||0;}
 function gPlanInc(mk,k){var v=((S.plan.income||{})[k]||{})[mk];return v!==undefined&&v!==null?Number(v)||0:0;}
 function gPlanInv(k,mk){var v=((S.plan.investments||{})[k]||{})[mk];return v!==undefined&&v!==null?Number(v)||0:0;}
+function gRealloc(k,mk){var v=((S.plan.reallocation||{})[k]||{})[mk];return v!==undefined&&v!==null?Number(v)||0:0;}
 function sum(cats,fn){return cats.reduce(function(s,c){return s+num(fn(c));},0);}
 function totExp(mk){return sum(EXPENSE_CATS,function(c){return gExp(mk,c.key);});}
 function totInc(mk){return sum(INCOME_CATS,function(c){return gInc(mk,c.key);});}
@@ -150,7 +151,19 @@ function estInvestByKey(mk,key){var a=gInv(mk,key);return num(a!==null?a:gPlanIn
 
 function pfActual(key,period){var d=S.portfolio[key];if(!d)return null;var v=d[period];return(v===null||v===undefined||v==='')?null:Number(v)||0;}
 function pfBal(key,period){var a=pfActual(key,period);if(a!==null)return a;if(period===CURRENT_MK){var ins=PF.find(function(i){return i.key===key;});return forecast(ins,pfActual(key,LAST_ACTUAL),period);}return 0;}
-function forecast(ins,prev,mk){if(!ins||prev===null||prev===undefined)return 0;if(ins.key==='bni_deposito')return prev;if(ins.key==='bni_rd')return prev+prev*ASSUMPTIONS.rd_expected_return/12+estInvestByKey(mk,'rd');if(ins.key==='sr025')return prev+estInvestByKey(mk,'sr025');if(ins.key==='bni_lifegoals')return prev+estInvestByKey(mk,'germany_invest');if(ins.key==='bni_saving')return prev+estIncome(mk)-totExp(mk)-estInvestByKey(mk,'rd')-estInvestByKey(mk,'germany_invest')-estInvestByKey(mk,'sr025');if(ins.key==='jmo')return prev+ASSUMPTIONS.jmo_monthly_contrib;if(ins.key==='bri_9189')return prev+ASSUMPTIONS.bri_9189_monthly_contrib;if(ins.key==='bri_8628')return prev+ASSUMPTIONS.bri_8628_monthly_contrib;return prev;}
+function forecast(ins,prev,mk){if(!ins||prev===null||prev===undefined)return 0;if(ins.key==='bni_deposito')
+  return prev + gRealloc('bni_deposito', mk);
+
+if(ins.key==='bni_rd')
+  return prev
+    + prev * ASSUMPTIONS.rd_expected_return / 12
+    + estInvestByKey(mk,'rd')
+    + gRealloc('rd', mk);
+
+if(ins.key==='sr025')
+  return prev
+    + estInvestByKey(mk,'sr025')
+    + gRealloc('sr025', mk);if(ins.key==='bni_lifegoals')return prev+estInvestByKey(mk,'germany_invest');if(ins.key==='bni_saving')return prev+estIncome(mk)-totExp(mk)-estInvestByKey(mk,'rd')-estInvestByKey(mk,'germany_invest')-estInvestByKey(mk,'sr025');if(ins.key==='jmo')return prev+ASSUMPTIONS.jmo_monthly_contrib;if(ins.key==='bri_9189')return prev+ASSUMPTIONS.bri_9189_monthly_contrib;if(ins.key==='bri_8628')return prev+ASSUMPTIONS.bri_8628_monthly_contrib;return prev;}
 function totPf(p){return PF.reduce(function(s,i){return s+num(pfBal(i.key,p));},0);}
 function grpTot(g,p){return PF.filter(function(i){return i.group===g;}).reduce(function(s,i){return s+num(pfBal(i.key,p));},0);}
 function emFund(){var liq=num(pfBal('bni_saving',LAST_ACTUAL))+num(pfBal('bsi_ops',LAST_ACTUAL));return regularBudget(CURRENT_MK)>0?liq/regularBudget(CURRENT_MK):0;}
