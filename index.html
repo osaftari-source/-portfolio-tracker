@@ -2,72 +2,83 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#185fa5">
 <title>Portfolio Tracker</title>
 <link rel="manifest" href="manifest.json">
 <style>
+:root{
+  --blue:#185fa5;--blue-soft:#e6f1fb;--bg:#f5f5f0;--card:#fff;--text:#1a1a18;
+  --muted:#888780;--line:#e0ddd4;--line-soft:#f1efe8;--green:#3b6d11;
+  --green-soft:#eaf3de;--orange:#854f0b;--orange-soft:#faeeda;
+  --red:#a32d2d;--red-soft:#fcebeb;--shadow:0 1px 2px rgba(0,0,0,.02)
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a18;font-size:15px;line-height:1.5;min-height:100vh}
-.app{max-width:480px;margin:0 auto;padding-bottom:80px}
-.topbar{background:#fff;border-bottom:0.5px solid #e0ddd4;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.topbar h1{font-size:16px;font-weight:500}
-.sync-btn{font-size:13px;color:#185fa5;background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:7px}
-.sync-btn:active{background:#e6f1fb}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;min-height:100vh}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{max-width:480px;margin:0 auto;padding-bottom:84px}
+.topbar{background:var(--card);border-bottom:.5px solid var(--line);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar h1{font-size:16px;font-weight:600}
+.sync-btn{font-size:13px;color:var(--blue);background:none;border:none;padding:6px 10px;border-radius:8px}
+.sync-btn:active{background:var(--blue-soft)}
 .content{padding:12px 16px}
-.sl{font-size:11px;font-weight:500;color:#888780;letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px}
-.sl:first-child{margin-top:0}
+.section{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px}
+.section:first-child{margin-top:0}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
-.metric{background:#fff;border-radius:10px;padding:12px;border:0.5px solid #e0ddd4}
-.metric .lbl{font-size:11px;color:#888780;margin-bottom:3px}
-.metric .val{font-size:18px;font-weight:500}
-.metric .sub{font-size:11px;color:#888780;margin-top:2px}
-.card{background:#fff;border-radius:10px;border:0.5px solid #e0ddd4;margin-bottom:10px;overflow:hidden}
-.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px}
-.b-ok{background:#eaf3de;color:#3b6d11}
-.b-warn{background:#faeeda;color:#854f0b}
-.b-danger{background:#fcebeb;color:#a32d2d}
-.b-info{background:#e6f1fb;color:#185fa5}
-.fc-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;background:#faeeda;color:#854f0b;font-weight:500;margin-left:4px;vertical-align:middle}
-.row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:0.5px solid #f1efe8;font-size:13px}
+.metric{background:var(--card);border-radius:12px;padding:12px;border:.5px solid var(--line);box-shadow:var(--shadow)}
+.metric .lbl{font-size:11px;color:var(--muted);margin-bottom:3px}
+.metric .val{font-size:18px;font-weight:600;letter-spacing:-.01em}
+.metric .sub{font-size:11px;color:var(--muted);margin-top:2px}
+.card{background:var(--card);border-radius:12px;border:.5px solid var(--line);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 14px;border-bottom:.5px solid var(--line-soft);font-size:13px}
 .row:last-child{border-bottom:none}
 .row-label{color:#5f5e5a}
-.row-val{font-weight:500;text-align:right}
-.row-sub{font-size:11px;color:#888780;text-align:right;margin-top:1px}
-.alert-item{display:flex;gap:10px;padding:10px 14px;border-bottom:0.5px solid #f1efe8;align-items:flex-start}
+.row-val{font-weight:600;text-align:right}
+.row-sub{font-size:11px;color:var(--muted);text-align:right;margin-top:1px}
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.b-ok{background:var(--green-soft);color:var(--green)}
+.b-warn{background:var(--orange-soft);color:var(--orange)}
+.b-danger{background:var(--red-soft);color:var(--red)}
+.b-info{background:var(--blue-soft);color:var(--blue)}
+.fc-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;background:var(--orange-soft);color:var(--orange);font-weight:600;margin-left:4px;vertical-align:middle}
+.alert-item{display:flex;gap:10px;padding:10px 14px;border-bottom:.5px solid var(--line-soft);align-items:flex-start}
 .alert-item:last-child{border-bottom:none}
 .alert-text{font-size:13px;color:#5f5e5a;line-height:1.5}
-.alert-text strong{color:#1a1a18}
-.pbar{height:5px;background:#f1efe8;border-radius:3px;overflow:hidden;margin-top:4px}
+.alert-text strong{color:var(--text)}
+.pbar{height:5px;background:var(--line-soft);border-radius:3px;overflow:hidden;margin-top:4px}
 .pfill{height:100%;border-radius:3px}
-.pf-grp{padding:5px 14px;font-size:11px;font-weight:500;color:#888780;background:#f8f7f3;border-bottom:0.5px solid #e0ddd4}
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#2c2c2a;color:#f1efe8;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.pf-grp{padding:6px 14px;font-size:11px;font-weight:600;color:var(--muted);background:#f8f7f3;border-bottom:.5px solid var(--line)}
+.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#2c2c2a;color:#f1efe8;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:999;white-space:nowrap;max-width:92vw;text-overflow:ellipsis;overflow:hidden}
 .toast.show{opacity:1}
-.bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:0.5px solid #e0ddd4;display:flex;padding:6px 0 env(safe-area-inset-bottom)}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border:none;background:none;cursor:pointer;color:#888780;font-size:10px}
-.nav-item.active{color:#185fa5}
+.bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--card);border-top:.5px solid var(--line);display:flex;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:100}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border:none;background:none;color:var(--muted);font-size:10px}
+.nav-item.active{color:var(--blue);font-weight:600}
 .nav-icon{font-size:20px;line-height:1}
-.mo-scroll{display:flex;gap:6px;padding:10px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:#fff;border-bottom:0.5px solid #e0ddd4}
+.mo-scroll{display:flex;gap:6px;padding:10px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:var(--card);border-bottom:.5px solid var(--line)}
 .mo-scroll::-webkit-scrollbar{display:none}
-.mo-chip{padding:5px 13px;border-radius:20px;border:0.5px solid #e0ddd4;background:none;font-size:13px;color:#5f5e5a;cursor:pointer;white-space:nowrap;flex-shrink:0}
-.mo-chip.active{background:#185fa5;border-color:#185fa5;color:#fff;font-weight:500}
-.settings-field{padding:12px 14px;border-bottom:0.5px solid #f1efe8}
-.settings-field label{font-size:12px;color:#888780;display:block;margin-bottom:6px}
-.settings-field input{width:100%;padding:8px 10px;border:0.5px solid #e0ddd4;border-radius:7px;font-size:13px;background:#fff;color:#1a1a18;outline:none}
-.settings-field input:focus{border-color:#185fa5}
-.empty{text-align:center;padding:40px 20px;color:#888780;font-size:14px;line-height:1.8}
+.mo-chip{padding:5px 13px;border-radius:20px;border:.5px solid var(--line);background:none;font-size:13px;color:#5f5e5a;white-space:nowrap;flex-shrink:0}
+.mo-chip.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+.settings-field{padding:12px 14px;border-bottom:.5px solid var(--line-soft)}
+.settings-field label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+.settings-field input{width:100%;padding:9px 10px;border:.5px solid var(--line);border-radius:8px;font-size:13px;background:var(--card);color:var(--text);outline:none}
+.settings-field input:focus{border-color:var(--blue)}
+.primary-btn{width:100%;padding:10px;border-radius:8px;font-size:14px;font-weight:600;border:none;background:var(--blue);color:#fff}
+.secondary-btn{padding:6px 14px;border-radius:8px;border:.5px solid var(--line);background:none;font-size:13px}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;line-height:1.8}
 .rate-box{flex:1;background:#f8f7f3;border-radius:8px;padding:9px;text-align:center}
-.rate-box .rb-lbl{font-size:10px;color:#888780;margin-bottom:2px}
-.rate-box .rb-val{font-size:15px;font-weight:500}
-.rate-box .rb-unit{font-size:10px;color:#888780}
-.not-connected{background:#faeeda;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:#633806;display:flex;gap:10px;align-items:flex-start}
-/* Fixed-height chart containers */
+.rate-box .rb-lbl{font-size:10px;color:var(--muted);margin-bottom:2px}
+.rate-box .rb-val{font-size:15px;font-weight:600}
+.rate-box .rb-unit{font-size:10px;color:var(--muted)}
+.not-connected{background:var(--orange-soft);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:#633806;display:flex;gap:10px;align-items:flex-start}
 .chart-box{position:relative;height:220px;width:100%;overflow:hidden}
 .chart-box canvas{position:absolute!important;top:0!important;left:0!important;width:100%!important;height:100%!important}
-.pos{color:#3b6d11}.neg{color:#a32d2d}.warn-c{color:#854f0b}
+.pos{color:var(--green)}.neg{color:var(--red)}.warn-c{color:var(--orange)}
+.small-note{font-size:12px;color:var(--muted);padding:8px 14px}
+@media (max-width:360px){.metric .val{font-size:16px}.g3{gap:6px}.content{padding:10px 12px}}
 </style>
 </head>
 <body>
@@ -81,6 +92,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="empty">⚙️ Go to <strong>Settings</strong> to connect Google Sheets.</div>
   </div>
 </div>
+
 <div class="bottomnav">
   <button class="nav-item active" onclick="nav('dashboard')" id="nav-dashboard"><span class="nav-icon">📊</span><span>Dashboard</span></button>
   <button class="nav-item" onclick="nav('monthly')" id="nav-monthly"><span class="nav-icon">📅</span><span>Monthly</span></button>
@@ -88,36 +100,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <button class="nav-item" onclick="nav('settings')" id="nav-settings"><span class="nav-icon">⚙️</span><span>Settings</span></button>
 </div>
 <div class="toast" id="toast"></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ── CONSTANTS ────────────────────────────────────────────────
-var MONTHS=['May','Jun','Jul','Aug','Sep','Oct'];
-var MKS=['may','jun','jul','aug','sep','oct'];
-var CURRENT_MK='may';
-var LAST_ACTUAL='apr';
-var HIST_PERIODS=['start','jan','feb','mar','apr'];
-var HIST_LABELS=['Start','Jan','Feb','Mar','Apr'];
+'use strict';
 
-// Fallback budgets — used only when Plan sheet not yet synced
-var FB_BUDGET={admin:110000,food:1100000,healthcare:200000,household:200000,installment:9090000,others:100000,shopping:300000,sport:300000,telecom:800000,topup:500000,transport:600000,withdraw:2000000,zakat:0,rizka:1200000};
+/* ============================================================
+   Portfolio Tracker — Clean No-Offline Frontend
+   - Vanilla JS
+   - Dynamic month handling
+   - Google Sheets via Apps Script
+   - localStorage cache
+   ============================================================ */
 
-// Fallback income plan — used only when Plan sheet not yet synced
-var FB_INC={
-  salary:{may:17440701,jun:17440701,jul:17440701,aug:17440701,sep:17440701,oct:17440701},
-  rd_return:{may:454627,jun:531332,jul:608324,aug:666855,sep:856856,oct:878819},
-  deposito_return:{may:540000,jun:540000,jul:540000,aug:540000,sep:0,oct:0},
-  sr025_coupon:{may:0,jun:0,jul:0,aug:0,sep:1106250,oct:1106250},
-  sppd:{may:0,jun:0,jul:0,aug:0,sep:0,oct:0},
-  other_income:{may:0,jun:0,jul:0,aug:0,sep:0,oct:0}
-};
+// ── CALENDAR ─────────────────────────────────────────────────
+var MONTH_KEYS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+var MONTH_LABELS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var TODAY=new Date();
 
-// Fallback investment plan — used only when Plan sheet not yet synced
-var FB_INV={
-  rd:{may:20000000,jun:20000000,jul:20000000,aug:15000000,sep:50000000,oct:5000000},
-  sr025:{may:0,jun:0,jul:0,aug:0,sep:250000000,oct:0},
-  germany_invest:{may:10000000,jun:10000000,jul:10000000,aug:10000000,sep:10000000,oct:10000000}
-};
+function mkFromDate(d){return MONTH_KEYS[d.getMonth()];}
+function labelFromMk(mk){var i=MONTH_KEYS.indexOf(mk);return i>=0?MONTH_LABELS[i]:mk.toUpperCase();}
+function fullLabelFromMk(mk){var i=MONTH_KEYS.indexOf(mk);return i>=0?new Date(TODAY.getFullYear(),i,1).toLocaleString('en-US',{month:'long'}):mk;}
+function addMonthsKey(mk,n){var i=MONTH_KEYS.indexOf(mk);return MONTH_KEYS[(i+n+1200)%12];}
+function prevMk(mk){return addMonthsKey(mk,-1);}
+function currentMk(){return mkFromDate(TODAY);}
+function rollingMonths(startMk,count){var a=[];for(var i=0;i<count;i++)a.push(addMonthsKey(startMk,i));return a;}
+function daysLeft(){var n=new Date(),last=new Date(n.getFullYear(),n.getMonth()+1,0).getDate();return last-n.getDate()+1;}
+function daysInMonth(){var n=new Date();return new Date(n.getFullYear(),n.getMonth()+1,0).getDate();}
+function actualMK(){return currentMk();}
 
+// NOTE: prevMk('jan') returns 'dec' (prior calendar year). Month keys are year-agnostic.
+// If this app crosses a year boundary, 'dec' will look up the same year's portfolio data.
+// Year tracking is not yet implemented — to be addressed in a future version.
+var CURRENT_MK=currentMk();
+var LAST_ACTUAL=prevMk(CURRENT_MK);
+var NAV_MONTHS=rollingMonths(CURRENT_MK,6);
+
+// ── CATEGORIES AND ASSUMPTIONS ───────────────────────────────
 var EXPENSE_CATS=[
   {key:'admin',label:'Admin'},
   {key:'food',label:'Food & Drinks'},
@@ -158,7 +177,7 @@ var PF_INSTRUMENTS=[
   {key:'bsi_ops',label:'BSI Operational',group:'liquid'},
   {key:'bni_deposito',label:'BNI Deposito',group:'fixed',rate:'2.20% net',grossRate:0.0275,taxRate:0.20},
   {key:'bni_sbn',label:'SBN (existing)',group:'fixed'},
-  {key:'sr025',label:'SR025 T5 (new Sep)',group:'fixed',rate:'5.31% net'},
+  {key:'sr025',label:'SR025 T5',group:'fixed',rate:'5.31% net'},
   {key:'bni_rd',label:'BNI Reksa Dana',group:'market',rate:'5.50% net',netRate:0.055},
   {key:'mandiri_rd',label:'Mandiri RD',group:'market'},
   {key:'mandiri_saham',label:'Mandiri Saham',group:'market'},
@@ -171,132 +190,134 @@ var PF_INSTRUMENTS=[
 var GRP_LABELS={liquid:'Liquid',fixed:'Fixed Income',market:'Market-linked',retire:'Retirement'};
 var GRP_COLORS={liquid:'#185fa5',fixed:'#3b6d11',market:'#ba7517',retire:'#73726c'};
 
+// fallback budget/plan used only when connected but Plan sheet line is missing
+var FB_BUDGET={admin:110000,food:1100000,healthcare:200000,household:200000,installment:9090000,others:100000,shopping:300000,sport:300000,telecom:800000,topup:500000,transport:600000,withdraw:2000000,zakat:0,rizka:1200000};
+var FB_INC={
+  salary:{may:17440701,jun:17440701,jul:17440701,aug:17440701,sep:17440701,oct:17440701},
+  rd_return:{may:454627,jun:531332,jul:608324,aug:666855,sep:856856,oct:878819},
+  deposito_return:{may:540000,jun:540000,jul:540000,aug:540000,sep:0,oct:0},
+  sr025_coupon:{sep:1106250,oct:1106250},
+  sppd:{}, other_income:{}
+};
+var FB_INV={rd:{may:20000000,jun:20000000,jul:20000000,aug:15000000,sep:50000000,oct:5000000},sr025:{sep:250000000},germany_invest:{may:10000000,jun:10000000,jul:10000000,aug:10000000,sep:10000000,oct:10000000}};
+
 // ── STATE ─────────────────────────────────────────────────────
 var S={
-  page:'dashboard',mk:'may',
+  page:'dashboard',
+  mk:CURRENT_MK,
   plan:{},income:{},expenses:{},invest:{},portfolio:{},
+  meta:{lastSync:null,lastError:null},
   settings:{url:'',token:''}
 };
 
 function load(){
   try{
-    var d=JSON.parse(localStorage.getItem('ptv6')||'{}');
-    S.plan=d.plan||{};S.income=d.income||{};S.expenses=d.expenses||{};
-    S.invest=d.invest||{};S.portfolio=d.portfolio||{};
-    S.settings=d.settings||{url:'',token:''};
-  }catch(e){}
+    var d=JSON.parse(localStorage.getItem('ptv7')||localStorage.getItem('ptv6')||'{}');
+    S.plan=d.plan||{};S.income=d.income||{};S.expenses=d.expenses||{};S.invest=d.invest||{};S.portfolio=d.portfolio||{};
+    S.settings=d.settings||{url:'',token:''};S.meta=d.meta||{lastSync:null,lastError:null};
+    if(!MONTH_KEYS.includes(S.mk))S.mk=CURRENT_MK;
+  }catch(e){console.warn('Load failed',e);}
 }
 function save(){
-  localStorage.setItem('ptv6',JSON.stringify({
-    plan:S.plan,income:S.income,expenses:S.expenses,
-    invest:S.invest,portfolio:S.portfolio,settings:S.settings
-  }));
+  localStorage.setItem('ptv7',JSON.stringify({plan:S.plan,income:S.income,expenses:S.expenses,invest:S.invest,portfolio:S.portfolio,settings:S.settings,meta:S.meta}));
 }
-
-// ── CONNECTION CHECK ──────────────────────────────────────────
-// True only when URL is set AND data has been pulled at least once
 function connected(){
-  return S.settings.url!=='' && (
-    Object.keys(S.plan).length>0||
-    Object.keys(S.income).length>0||
-    Object.keys(S.expenses).length>0||
-    Object.keys(S.portfolio).length>0
-  );
+  return !!S.settings.url && (hasKeys(S.plan)||hasKeys(S.income)||hasKeys(S.expenses)||hasKeys(S.portfolio)||hasKeys(S.invest));
 }
-
-function notConnectedBanner(){
-  return '<div class="not-connected"><span style="font-size:16px;flex-shrink:0">🔌</span>'
-    +'<div><strong>Not connected to Google Sheets.</strong><br>'
-    +'Go to Settings and enter your Apps Script URL and token to see your data.</div></div>';
-}
+function hasKeys(o){return o&&Object.keys(o).length>0;}
 
 // ── FORMAT ────────────────────────────────────────────────────
-function fmt(n){
-  if(n===null||n===undefined||isNaN(n)||n===0)return'—';
+function fmt(n,opts){
+  opts=opts||{};
+  if(n===null||n===undefined||isNaN(Number(n)))return '—';
+  n=Number(n);
+  if(n===0&&!opts.showZero)return '—';
   var a=Math.abs(Math.round(n)),s;
   if(a>=1000000000)s=(a/1000000000).toFixed(2)+'B';
   else if(a>=1000000)s=(a/1000000).toFixed(1)+'M';
   else if(a>=1000)s=Math.round(a/1000)+'K';
-  else s=a.toLocaleString();
-  return(n<0?'−':'')+'Rp '+s;
+  else s=a.toLocaleString('id-ID');
+  return (n<0?'−':'')+'Rp '+s;
 }
-function fmtFull(n){return'Rp '+Math.round(Math.abs(n||0)).toLocaleString('id-ID');}
+function fmtFull(n){
+  if(n===null||n===undefined||isNaN(Number(n)))return '—';
+  return 'Rp '+Math.round(Math.abs(Number(n))).toLocaleString('id-ID');
+}
+function fmtPct(n){return isFinite(n)?(n>=0?'+':'')+n.toFixed(2)+'%':'—';}
+function fmtDateTime(iso){
+  if(!iso)return 'Never';
+  try{return new Date(iso).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+  catch(e){return iso;}
+}
 function toast(m){
-  var t=document.getElementById('toast');
-  t.textContent=m;t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},2500);
+  var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');
+  clearTimeout(t._timer);t._timer=setTimeout(function(){t.classList.remove('show');},2600);
 }
+function set(h){document.getElementById('pageContent').innerHTML=h;}
+function notConnectedBanner(){
+  return '<div class="not-connected"><span style="font-size:16px;flex-shrink:0">🔌</span><div><strong>Not connected to Google Sheets.</strong><br>Go to Settings and enter Apps Script URL and token.</div></div>';
+}
+function dataNote(){
+  return '<div class="small-note">Last sync: <strong>'+fmtDateTime(S.meta.lastSync)+'</strong>'+(S.meta.lastError?' · Last error: '+escapeHtml(S.meta.lastError):'')+'</div>';
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];});}
 
 // ── DATA ACCESSORS ────────────────────────────────────────────
-// Actuals — return 0 if not connected
-function gExp(mk,k){
-  if(!connected())return 0;
-  var v=((S.expenses[mk]||{})[k]);
-  return(v===null||v===undefined)?0:Number(v)||0;
+function valueAt(obj,mk,k){
+  if(!connected())return null;
+  var v=((obj[mk]||{})[k]);
+  return (v===null||v===undefined||v==='')?null:Number(v)||0;
 }
-function gInc(mk,k){
-  if(!connected())return 0;
-  var v=((S.income[mk]||{})[k]);
-  return(v===null||v===undefined)?0:Number(v)||0;
-}
-function gInv(mk,k){
-  if(!connected())return 0;
-  var v=((S.invest[mk]||{})[k]);
-  return(v===null||v===undefined)?0:Number(v)||0;
-}
+function gExp(mk,k){return valueAt(S.expenses,mk,k);}
+function gInc(mk,k){return valueAt(S.income,mk,k);}
+function gInv(mk,k){return valueAt(S.invest,mk,k);}
+function num(v){return v===null||v===undefined||isNaN(Number(v))?0:Number(v);}
 
-// Plan values — prefer Plan sheet, fall back to hardcoded, zero if not connected
-function gBudget(k){
-  if(!connected())return 0;
-  var fromSheet=((S.plan.expenses||{})[k]||{})[CURRENT_MK];
+function gBudget(k,mk){
+  mk=mk||CURRENT_MK;
+  if(!connected())return null;
+  var fromSheet=((S.plan.expenses||{})[k]||{})[mk];
   if(fromSheet!==undefined&&fromSheet!==null)return Number(fromSheet)||0;
   return FB_BUDGET[k]||0;
 }
 function gPlanInc(mk,k){
-  if(!connected())return 0;
+  if(!connected())return null;
   var fromSheet=((S.plan.income||{})[k]||{})[mk];
   if(fromSheet!==undefined&&fromSheet!==null)return Number(fromSheet)||0;
-  return(FB_INC[k]||{})[mk]||0;
+  return ((FB_INC[k]||{})[mk]||0);
 }
 function gPlanInv(k,mk){
-  if(!connected())return 0;
+  if(!connected())return null;
   var fromSheet=((S.plan.investments||{})[k]||{})[mk];
   if(fromSheet!==undefined&&fromSheet!==null)return Number(fromSheet)||0;
-  return(FB_INV[k]||{})[mk]||0;
+  return ((FB_INV[k]||{})[mk]||0);
 }
+function total(list,fn){return list.reduce(function(s,c){return s+num(fn(c));},0);}
+function totExp(mk){return total(EXPENSE_CATS,function(c){return gExp(mk,c.key);});}
+function totInc(mk){return total(INCOME_CATS,function(c){return gInc(mk,c.key);});}
+function totInv(mk){return total(INVEST_CATS,function(c){return gInv(mk,c.key);});}
+function totBudget(mk){return total(EXPENSE_CATS,function(c){return gBudget(c.key,mk);});}
+function totPlanInc(mk){return total(INCOME_CATS,function(c){return gPlanInc(mk,c.key);});}
+function hasExpData(mk){return connected()&&EXPENSE_CATS.some(function(c){return gExp(mk,c.key)!==null;});}
+function hasMonthData(mk){return connected()&&(INCOME_CATS.some(function(c){return gInc(mk,c.key)!==null;})||EXPENSE_CATS.some(function(c){return gExp(mk,c.key)!==null;}));}
 
-// Totals
-function totExp(mk){return EXPENSE_CATS.reduce(function(s,c){return s+gExp(mk,c.key);},0);}
-function totInc(mk){return INCOME_CATS.reduce(function(s,c){return s+gInc(mk,c.key);},0);}
-function totInv(mk){return INVEST_CATS.reduce(function(s,c){return s+gInv(mk,c.key);},0);}
-function totBudget(){return EXPENSE_CATS.reduce(function(s,c){return s+gBudget(c.key);},0);}
-function totPlanInc(mk){return INCOME_CATS.reduce(function(s,c){return s+gPlanInc(mk,c.key);},0);}
-function hasExpData(mk){return connected()&&EXPENSE_CATS.some(function(c){return gExp(mk,c.key)>0;});}
-function hasMonthData(mk){return connected()&&(INCOME_CATS.some(function(c){return gInc(mk,c.key)>0;})||EXPENSE_CATS.some(function(c){return gExp(mk,c.key)>0;}));}
-
-// ── DATE HELPERS ──────────────────────────────────────────────
-function daysLeft(){var n=new Date(),l=new Date(n.getFullYear(),n.getMonth()+1,0).getDate();return l-n.getDate()+1;}
-function daysInMonth(){var n=new Date();return new Date(n.getFullYear(),n.getMonth()+1,0).getDate();}
-function actualMK(){return['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'][new Date().getMonth()];}
-
-// ── PORTFOLIO ─────────────────────────────────────────────────
+// ── PORTFOLIO AND FORECAST ───────────────────────────────────
 function pfActual(key,period){
   if(!connected())return null;
   var d=S.portfolio[key];if(!d)return null;
-  var v=d[period];return(v===null||v===undefined)?null:Number(v);
+  var v=d[period];return(v===null||v===undefined||v==='')?null:Number(v)||0;
 }
-function pfForecast(instr,prev){
-  if(prev===null)return null;
-  var mk=CURRENT_MK;
+function pfForecast(instr,prev,mk){
+  if(prev===null||prev===undefined)return null;
+  mk=mk||CURRENT_MK;
   if(instr.key==='bni_deposito')return prev+prev*instr.grossRate*(1-instr.taxRate)/12;
-  if(instr.key==='bni_rd')return prev+prev*(instr.netRate||0)/12+(gInv(mk,'rd')||gPlanInv('rd',mk));
-  if(instr.key==='sr025')return prev+(mk==='sep'?(gInv(mk,'sr025')||250000000):0);
-  if(instr.key==='bni_lifegoals')return prev+(gInv(mk,'germany_invest')||gPlanInv('germany_invest',mk));
+  if(instr.key==='bni_rd')return prev+prev*(instr.netRate||0)/12+num(gInv(mk,'rd')!==null?gInv(mk,'rd'):gPlanInv('rd',mk));
+  if(instr.key==='sr025')return prev+num(gInv(mk,'sr025')!==null?gInv(mk,'sr025'):gPlanInv('sr025',mk));
+  if(instr.key==='bni_lifegoals')return prev+num(gInv(mk,'germany_invest')!==null?gInv(mk,'germany_invest'):gPlanInv('germany_invest',mk));
   if(instr.key==='bni_saving'){
-    var rdOut=gInv(mk,'rd')||gPlanInv('rd',mk);
-    var lgOut=gInv(mk,'germany_invest')||gPlanInv('germany_invest',mk);
-    var inc=totInc(mk)||totPlanInc(mk);
-    var exp=totExp(mk)||totBudget();
+    var rdOut=num(gInv(mk,'rd')!==null?gInv(mk,'rd'):gPlanInv('rd',mk));
+    var lgOut=num(gInv(mk,'germany_invest')!==null?gInv(mk,'germany_invest'):gPlanInv('germany_invest',mk));
+    var inc=totInc(mk)||totPlanInc(mk), exp=totExp(mk)||totBudget(mk);
     return prev+(inc-exp)-rdOut-lgOut;
   }
   if(instr.group==='retire')return prev+(instr.contrib||0);
@@ -307,13 +328,12 @@ function pfBal(key,period){
   var a=pfActual(key,period);if(a!==null)return a;
   if(period===CURRENT_MK){
     var ins=PF_INSTRUMENTS.find(function(i){return i.key===key;});
-    if(ins)return pfForecast(ins,pfActual(key,LAST_ACTUAL));
+    if(ins)return pfForecast(ins,pfActual(key,LAST_ACTUAL),period);
   }
   return 0;
 }
-function totPf(period){return PF_INSTRUMENTS.reduce(function(s,i){return s+(pfBal(i.key,period)||0);},0);}
-function grpTot(g,period){return PF_INSTRUMENTS.filter(function(i){return i.group===g;}).reduce(function(s,i){return s+(pfBal(i.key,period)||0);},0);}
-
+function totPf(period){return PF_INSTRUMENTS.reduce(function(s,i){return s+num(pfBal(i.key,period));},0);}
+function grpTot(g,period){return PF_INSTRUMENTS.filter(function(i){return i.group===g;}).reduce(function(s,i){return s+num(pfBal(i.key,period));},0);}
 function blendYield(){
   if(!connected())return 0;
   var rates={bni_deposito:0.022,bni_rd:0.055,sr025:0.0531},n=0,d=0;
@@ -328,38 +348,35 @@ function annIncome(){
 function emFund(){
   if(!connected())return 0;
   var liq=(pfBal('bni_saving',LAST_ACTUAL)||0)+(pfBal('bsi_ops',LAST_ACTUAL)||0);
-  return totBudget()>0?liq/totBudget():0;
+  return totBudget(CURRENT_MK)>0?liq/totBudget(CURRENT_MK):0;
 }
 
-// ── CHART HELPER ──────────────────────────────────────────────
+// ── CHARTS ────────────────────────────────────────────────────
 function mkChart(id,cfg){
-  var el=document.getElementById(id);if(!el)return;
+  var el=document.getElementById(id);if(!el||typeof Chart==='undefined')return;
   if(el._ch){el._ch.destroy();el._ch=null;}
-  cfg.options=cfg.options||{};
-  cfg.options.responsive=true;
-  cfg.options.maintainAspectRatio=false;
+  cfg.options=cfg.options||{};cfg.options.responsive=true;cfg.options.maintainAspectRatio=false;
   el._ch=new Chart(el,cfg);
 }
+function deepMerge(t,s){
+  Object.keys(s).forEach(function(k){
+    if(s[k]&&typeof s[k]==='object'&&!Array.isArray(s[k])&&t[k]&&typeof t[k]==='object')deepMerge(t[k],s[k]);
+    else t[k]=s[k];
+  });
+  return t;
+}
 function chartOpts(extra){
-  var o={
-    plugins:{
-      legend:{labels:{color:'#888780',font:{size:11},boxWidth:10,boxHeight:10}},
-      tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fmt(c.raw);}}}
-    },
-    scales:{
-      x:{ticks:{color:'#888780'},grid:{display:false}},
-      y:{ticks:{color:'#888780',callback:function(v){return'Rp '+(v/1000000000).toFixed(2)+'B';}},grid:{color:'rgba(0,0,0,0.05)'}}
-    }
-  };
-  if(extra)Object.assign(o,extra);
+  var o={plugins:{legend:{labels:{color:'#888780',font:{size:11},boxWidth:10,boxHeight:10}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fmt(c.raw,{showZero:true});}}}},
+    scales:{x:{ticks:{color:'#888780'},grid:{display:false}},y:{ticks:{color:'#888780',callback:function(v){return'Rp '+(v/1000000000).toFixed(2)+'B';}},grid:{color:'rgba(0,0,0,0.05)'}}}};
+  if(extra)deepMerge(o,extra);
   return o;
 }
 
-// ── NAV ───────────────────────────────────────────────────────
+// ── NAVIGATION ────────────────────────────────────────────────
 function nav(page){
   S.page=page;
   ['dashboard','monthly','portfolio','settings'].forEach(function(p){
-    document.getElementById('nav-'+p).classList.toggle('active',p===page);
+    var el=document.getElementById('nav-'+p);if(el)el.classList.toggle('active',p===page);
   });
   document.getElementById('subBar').innerHTML='';
   if(page==='dashboard')renderDashboard();
@@ -370,358 +387,222 @@ function nav(page){
 
 // ── DASHBOARD ─────────────────────────────────────────────────
 function renderDashboard(){
-  var con=connected();
-  var aprT=totPf(LAST_ACTUAL),mayT=totPf(CURRENT_MK),startT=totPf('start');
-  var mom=aprT>0?(mayT-aprT)/aprT*100:0;
-  var ef=emFund(),ai=annIncome(),ey=blendYield();
-  var curE=totExp(CURRENT_MK),curI=totInc(CURRENT_MK),curV=totInv(CURRENT_MK);
-  var net=curI-curE-curV,eb=totBudget();
+  var con=connected(), aprT=totPf(LAST_ACTUAL), curT=totPf(CURRENT_MK), startT=totPf('start');
+  var mom=aprT>0?(curT-aprT)/aprT*100:0, ef=emFund(), ai=annIncome(), ey=blendYield();
+  var curE=totExp(CURRENT_MK),curI=totInc(CURRENT_MK),curV=totInv(CURRENT_MK),net=curI-curE-curV,eb=totBudget(CURRENT_MK);
   var h='';
-  if(!con)h+=notConnectedBanner();
-  h+='<div class="sl">Portfolio — April actual / May forecast</div>';
-  h+='<div class="g2">';
-  h+='<div class="metric"><div class="lbl">Total (Apr)</div><div class="val">'+fmt(aprT)+'</div><div class="sub">last complete month</div></div>';
-  h+='<div class="metric"><div class="lbl">May forecast <span class="fc-badge">est.</span></div><div class="val '+(con?'pos':'')+'">'+fmt(mayT)+'</div><div class="sub">'+(con?(mom>=0?'+':'')+mom.toFixed(2)+'% vs Apr':'—')+'</div></div>';
-  h+='</div><div class="g3">';
-  h+='<div class="metric"><div class="lbl">YTD growth</div><div class="val '+(con?'pos':'')+'">'+fmt(aprT-startT)+'</div></div>';
+  if(!con)h+=notConnectedBanner(); else h+=dataNote();
+  h+='<div class="section">Portfolio — '+labelFromMk(LAST_ACTUAL)+' actual / '+labelFromMk(CURRENT_MK)+' forecast</div>';
+  h+='<div class="g2"><div class="metric"><div class="lbl">Total ('+labelFromMk(LAST_ACTUAL)+')</div><div class="val">'+fmt(aprT)+'</div><div class="sub">last complete month</div></div>';
+  h+='<div class="metric"><div class="lbl">'+labelFromMk(CURRENT_MK)+' forecast <span class="fc-badge">est.</span></div><div class="val '+(con?'pos':'')+'">'+fmt(curT)+'</div><div class="sub">'+(con?fmtPct(mom)+' vs '+labelFromMk(LAST_ACTUAL):'—')+'</div></div></div>';
+  h+='<div class="g3"><div class="metric"><div class="lbl">YTD growth</div><div class="val '+(con?'pos':'')+'">'+fmt(aprT-startT)+'</div></div>';
   h+='<div class="metric"><div class="lbl">Blended yield</div><div class="val">'+(con?ey.toFixed(2)+'%':'—')+'</div><div class="sub">net</div></div>';
-  h+='<div class="metric"><div class="lbl">Inv. income/yr</div><div class="val '+(con?'pos':'')+'">'+fmt(ai)+'</div></div>';
-  h+='</div>';
-  h+='<div class="sl">Emergency fund (Apr)</div>';
-  h+='<div class="card"><div style="padding:12px 14px">';
-  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
-  h+='<span style="font-size:13px">'+(con?ef.toFixed(1)+'× months covered':'—')+'</span>';
+  h+='<div class="metric"><div class="lbl">Inv. income/yr</div><div class="val '+(con?'pos':'')+'">'+fmt(ai)+'</div></div></div>';
+  h+='<div class="section">Emergency fund ('+labelFromMk(LAST_ACTUAL)+')</div><div class="card"><div style="padding:12px 14px">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:13px">'+(con?ef.toFixed(1)+'× months covered':'—')+'</span>';
   if(con)h+='<span class="badge '+(ef>=6?'b-ok':ef>=3?'b-warn':'b-danger')+'">'+(ef>=6?'Healthy':ef>=3?'Low':'Critical')+'</span>';
-  h+='</div>';
-  h+='<div class="pbar" style="height:8px"><div class="pfill" style="width:'+(con?Math.min(100,ef/6*100).toFixed(0):0)+'%;background:'+(ef>=6?'#3b6d11':ef>=3?'#ba7517':'#a32d2d')+'"></div></div>';
-  h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>0×</span><span>Target 6×</span></div>';
-  h+='</div></div>';
-  h+='<div class="sl">May 2026 — current month</div>';
+  h+='</div><div class="pbar" style="height:8px"><div class="pfill" style="width:'+(con?Math.min(100,ef/6*100).toFixed(0):0)+'%;background:'+(ef>=6?'#3b6d11':ef>=3?'#ba7517':'#a32d2d')+'"></div></div>';
+  h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>0×</span><span>Target 6×</span></div></div></div>';
+  h+='<div class="section">'+fullLabelFromMk(CURRENT_MK)+' '+TODAY.getFullYear()+' — current month</div>';
   if(con&&hasMonthData(CURRENT_MK)){
-    h+='<div class="g2"><div class="metric"><div class="lbl">Income <span class="fc-badge">partial</span></div><div class="val pos">'+fmt(curI)+'</div><div class="sub">plan: '+fmt(totPlanInc(CURRENT_MK))+'</div></div>';
-    h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(curE>eb?'neg':'')+'">'+fmt(curE)+'</div><div class="sub">budget: '+fmt(eb)+'</div></div></div>';
-    h+='<div class="g2"><div class="metric"><div class="lbl">Invested</div><div class="val pos">'+fmt(curV)+'</div></div>';
-    h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(net<0?'neg':'pos')+'">'+fmt(net)+'</div><div class="sub">'+(net<0?'from savings':'surplus')+'</div></div></div>';
+    h+='<div class="g2"><div class="metric"><div class="lbl">Income <span class="fc-badge">partial</span></div><div class="val pos">'+fmt(curI,{showZero:true})+'</div><div class="sub">plan: '+fmt(totPlanInc(CURRENT_MK),{showZero:true})+'</div></div>';
+    h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(curE>eb?'neg':'')+'">'+fmt(curE,{showZero:true})+'</div><div class="sub">budget: '+fmt(eb,{showZero:true})+'</div></div></div>';
+    h+='<div class="g2"><div class="metric"><div class="lbl">Invested</div><div class="val pos">'+fmt(curV,{showZero:true})+'</div></div>';
+    h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(net<0?'neg':'pos')+'">'+fmt(net,{showZero:true})+'</div><div class="sub">'+(net<0?'from savings':'surplus')+'</div></div></div>';
   }else{
-    h+='<div class="card"><div style="padding:14px;font-size:13px;color:#888780">'+(con?'No May data yet. Update Google Sheets and tap ↻ Sync.':'Connect Google Sheets to see data.')+'</div></div>';
+    h+='<div class="card"><div style="padding:14px;font-size:13px;color:#888780">'+(con?'No '+labelFromMk(CURRENT_MK)+' data yet. Update Google Sheets and tap ↻ Sync.':'Connect Google Sheets to see data.')+'</div></div>';
   }
-  h+='<div class="sl">Alerts</div><div class="card">';
+  h+='<div class="section">Alerts</div><div class="card">';
   buildAlerts(CURRENT_MK).forEach(function(a){h+='<div class="alert-item"><span>'+aIcon(a.t)+'</span><div class="alert-text">'+a.m+'</div></div>';});
   h+='</div>';
-  h+='<div class="sl">Asset allocation (Apr)</div><div class="card">';
-  var grps={liquid:0,fixed:0,market:0,retire:0};
-  PF_INSTRUMENTS.forEach(function(i){grps[i.group]+=(pfBal(i.key,LAST_ACTUAL)||0);});
-  Object.keys(grps).forEach(function(g){
-    var pct=aprT>0?grps[g]/aprT*100:0;
-    h+='<div style="padding:8px 14px;border-bottom:0.5px solid #f1efe8">';
-    h+='<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">';
+  h+='<div class="section">Asset allocation ('+labelFromMk(LAST_ACTUAL)+')</div><div class="card">';
+  Object.keys(GRP_LABELS).forEach(function(g){
+    var amount=grpTot(g,LAST_ACTUAL),pct=aprT>0?amount/aprT*100:0;
+    h+='<div style="padding:8px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">';
     h+='<span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:'+GRP_COLORS[g]+';display:inline-block"></span>'+GRP_LABELS[g]+'</span>';
-    h+='<span><strong>'+fmt(grps[g])+'</strong> <span style="color:#888780;font-size:12px">'+(con?pct.toFixed(1):'—')+'%</span></span></div>';
+    h+='<span><strong>'+fmt(amount)+'</strong> <span style="color:#888780;font-size:12px">'+(con?pct.toFixed(1):'—')+'%</span></span></div>';
     h+='<div class="pbar"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+GRP_COLORS[g]+'"></div></div></div>';
   });
   h+='</div>';
   set(h);
 }
 
-// ── MONTHLY ───────────────────────────────────────────────────
+// ── MONTHLY PAGE ──────────────────────────────────────────────
 function renderMonthly(){
   var bar='<div class="mo-scroll">';
-  MONTHS.forEach(function(m,i){var mk=MKS[i];bar+='<button class="mo-chip'+(mk===S.mk?' active':'')+'" onclick="selMo(\''+mk+'\')">'+m+'</button>';});
-  bar+='</div>';
-  document.getElementById('subBar').innerHTML=bar;
-  var con=connected();
-  var mk=S.mk,tI=totInc(mk),tE=totExp(mk),tV=totInv(mk);
-  var pI=totPlanInc(mk),pE=totBudget(),net=tI-tE-tV;
-  var dl=daysLeft(),dim=daysInMonth(),dp=dim-dl+1;
-  var amk=actualMK(),isCur=(mk===amk),hasExp=hasExpData(mk);
-  var h='';
-  h+='<div class="sl">Summary</div><div class="g2">';
-  h+='<div class="metric"><div class="lbl">Income'+(mk===CURRENT_MK?'<span class="fc-badge">partial</span>':'')+'</div><div class="val '+(tI>0?'pos':'')+'">'+(tI>0?fmt(tI):'—')+'</div><div class="sub">'+(pI>0?'plan: '+fmt(pI):'—')+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(tE>pE&&pE>0?'neg':tE>0?'':'')+'\">'+(tE>0?fmt(tE):'—')+'</div><div class="sub">'+(pE>0?'budget: '+fmt(pE):'—')+'</div></div>';
-  h+='</div><div class="g2">';
-  h+='<div class="metric"><div class="lbl">Invested</div><div class="val pos">'+(tV>0?fmt(tV):'—')+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(tI>0?(net<0?'neg':'pos'):'')+'">'+(tI>0?fmt(net):'—')+'</div><div class="sub">'+(tI>0?(net<0?'from savings':'surplus'):'')+'</div></div>';
-  h+='</div>';
-  h+='<div class="sl">Daily & weekly spending rate</div>';
-  if(!con){
-    h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">Connect Google Sheets to see spending rate.</div></div>';
-  }else if(!isCur){
-    var aLabel=MKS.indexOf(amk)>=0?MONTHS[MKS.indexOf(amk)]:amk;
-    h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">📅 Rate only available for current month.<br><span style="font-size:12px">Switch to <strong>'+aLabel+'</strong>.</span></div></div>';
-  }else if(!hasExp){
-    h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">No expense data for '+MONTHS[MKS.indexOf(mk)]+' yet.<br><span style="font-size:12px">Update ExpenseActuals sheet and tap ↻ Sync.</span></div></div>';
-  }else{
-    h+='<div style="font-size:12px;color:#888780;margin-bottom:8px">'+dl+' days left · '+dp+' of '+dim+' days gone</div>';
-    var ovR=0,ovB=0;
-    RATE_CATS.forEach(function(k){ovB+=gBudget(k);ovR+=Math.max(0,gBudget(k)-gExp(mk,k));});
-    var ovD=dl>0?ovR/dl:0,ovW=ovD*7,ovPct=ovB>0?(ovB-ovR)/ovB*100:0,ovC=ovPct>90?'#a32d2d':ovPct>70?'#ba7517':'#3b6d11';
-    h+='<div class="card" style="margin-bottom:8px"><div style="padding:12px 14px">';
-    h+='<div style="font-size:13px;font-weight:500;margin-bottom:10px">All tracked categories</div>';
-    h+='<div style="display:flex;gap:8px;margin-bottom:10px">';
-    h+='<div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val" style="color:'+ovC+'">'+fmt(ovD)+'</div><div class="rb-unit">/day</div></div>';
-    h+='<div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val" style="color:'+ovC+'">'+fmt(ovW)+'</div><div class="rb-unit">/week</div></div>';
-    h+='</div><div class="pbar" style="height:7px"><div class="pfill" style="width:'+Math.min(100,ovPct).toFixed(0)+'%;background:'+ovC+'"></div></div>';
-    h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Spent: '+fmt(ovB-ovR)+'</span><span>Remaining: '+fmt(ovR)+'</span></div>';
-    h+='</div></div>';
-    RATE_CATS.forEach(function(k){
-      var cat=EXPENSE_CATS.find(function(c){return c.key===k;});if(!cat)return;
-      var bud=gBudget(k),spent=gExp(mk,k),rem=bud-spent,over=rem<0;
-      var daily=dl>0&&!over?rem/dl:0,weekly=daily*7,pct=bud>0?Math.min(100,spent/bud*100):0;
-      var bc=over?'#a32d2d':pct>85?'#ba7517':'#3b6d11',rc=over?'#a32d2d':pct>85?'#ba7517':'#1a1a18';
-      h+='<div class="card" style="margin-bottom:8px"><div style="padding:11px 14px">';
-      h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
-      h+='<span style="font-size:13px;font-weight:500">'+cat.label+'</span>';
-      h+='<span class="badge '+(over?'b-danger':pct>85?'b-warn':'b-ok')+'">'+(over?'Over budget':pct.toFixed(0)+'% used')+'</span></div>';
-      if(!over){
-        h+='<div style="display:flex;gap:8px;margin-bottom:10px">';
-        h+='<div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val" style="color:'+rc+'">'+fmt(daily)+'</div><div class="rb-unit">/day</div></div>';
-        h+='<div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val" style="color:'+rc+'">'+fmt(weekly)+'</div><div class="rb-unit">/week</div></div>';
-        h+='<div class="rate-box"><div class="rb-lbl">Left</div><div class="rb-val">'+fmt(rem)+'</div><div class="rb-unit">of '+fmt(bud)+'</div></div>';
-        h+='</div>';
-      }else{
-        h+='<div style="background:#fcebeb;border-radius:7px;padding:8px 10px;font-size:12px;color:#a32d2d;margin-bottom:10px">Over by <strong>'+fmt(Math.abs(rem))+'</strong></div>';
-      }
-      h+='<div class="pbar" style="height:5px"><div class="pfill" style="width:'+Math.min(100,pct).toFixed(0)+'%;background:'+bc+'"></div></div>';
-      h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Spent: '+fmt(spent)+'</span><span>Budget: '+fmt(bud)+'</span></div>';
-      h+='</div></div>';
-    });
-  }
-  h+='<div class="sl">Expense breakdown</div><div class="card">';
-  var anyE=false;
-  EXPENSE_CATS.forEach(function(c){
-    var a=gExp(mk,c.key),b=gBudget(c.key);
-    if(!a&&!b)return;anyE=true;
-    var ov=a>b&&b>0,df=b-a;
-    h+='<div class="row"><span class="row-label" style="'+(ov?'color:#a32d2d':'')+'">'+c.label+(ov?' ▲':'')+'</span>';
-    h+='<div><div class="row-val '+(ov?'neg':'')+'">'+(a>0?fmt(a):'—')+'</div>';
-    if(b>0)h+='<div class="row-sub" style="color:'+(ov?'#a32d2d':df<b*0.1?'#888780':'#3b6d11')+'">'+(a>0?(df>=0?'−':'+')+''+fmt(Math.abs(df))+' vs budget':'budget: '+fmt(b))+'</div>';
-    h+='</div></div>';
-  });
-  if(!anyE)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(con?'No expense data yet.':'Connect Google Sheets to see data.')+'</div>';
-  h+='</div>';
-  h+='<div class="sl">Income breakdown</div><div class="card">';
-  var anyI=false;
-  INCOME_CATS.forEach(function(c){
-    var a=gInc(mk,c.key),p=gPlanInc(mk,c.key);
-    if(!a&&!p)return;anyI=true;
-    var df=a-p;
-    h+='<div class="row"><span class="row-label">'+c.label+'</span>';
-    h+='<div><div class="row-val '+(a>0?'pos':'')+'">'+(a>0?fmt(a):'—')+'</div>';
-    if(p>0)h+='<div class="row-sub">'+(a>0?(df>=0?'+':'')+fmt(df)+' vs plan':'plan: '+fmt(p))+'</div>';
-    h+='</div></div>';
-  });
-  if(!anyI)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(con?'No income data yet.':'Connect Google Sheets to see data.')+'</div>';
-  h+='</div>';
-  h+='<div class="sl">Investments</div><div class="card">';
-  var anyV=false;
-  INVEST_CATS.forEach(function(c){
-    var a=gInv(mk,c.key),p=gPlanInv(c.key,mk);
-    if(!p&&!a)return;anyV=true;
-    var pct=p>0?Math.min(100,Math.round(a/p*100)):0,col=pct>=100?'#3b6d11':pct>0?'#ba7517':'#d3d1c7';
-    h+='<div style="padding:9px 14px;border-bottom:0.5px solid #f1efe8">';
-    h+='<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">';
-    h+='<span class="row-label">'+c.label+'</span>';
-    h+='<div><div class="row-val '+(a>=p&&a>0?'pos':'')+'">'+(a>0?fmt(a):'—')+'</div><div class="row-sub">plan: '+fmt(p)+'</div></div></div>';
-    if(p>0)h+='<div class="pbar"><div class="pfill" style="width:'+pct+'%;background:'+col+'"></div></div>';
-    h+='</div>';
-  });
-  if(!anyV)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(con?'No investment data yet.':'Connect Google Sheets to see data.')+'</div>';
-  h+='</div>';
+  NAV_MONTHS.forEach(function(mk){bar+='<button class="mo-chip'+(mk===S.mk?' active':'')+'" onclick="selMo(\''+mk+'\')">'+labelFromMk(mk)+'</button>';});
+  bar+='</div>';document.getElementById('subBar').innerHTML=bar;
+  var con=connected(),mk=S.mk,tI=totInc(mk),tE=totExp(mk),tV=totInv(mk),pI=totPlanInc(mk),pE=totBudget(mk),net=tI-tE-tV;
+  var dl=daysLeft(),dim=daysInMonth(),dp=dim-dl+1,amk=actualMK(),isCur=(mk===amk),hasExp=hasExpData(mk);
+  var h=''; if(con)h+=dataNote();
+  h+='<div class="section">'+fullLabelFromMk(mk)+' Summary</div><div class="g2">';
+  h+='<div class="metric"><div class="lbl">Income'+(mk===CURRENT_MK?'<span class="fc-badge">partial</span>':'')+'</div><div class="val '+(tI>0?'pos':'')+'">'+fmt(tI,{showZero:con})+'</div><div class="sub">'+(pI!==null?'plan: '+fmt(pI,{showZero:true}):'—')+'</div></div>';
+  h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(tE>pE&&pE>0?'neg':'')+'">'+fmt(tE,{showZero:con})+'</div><div class="sub">'+(pE!==null?'budget: '+fmt(pE,{showZero:true}):'—')+'</div></div></div>';
+  h+='<div class="g2"><div class="metric"><div class="lbl">Invested</div><div class="val pos">'+fmt(tV,{showZero:con})+'</div></div>';
+  h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(tI>0?(net<0?'neg':'pos'):'')+'">'+fmt(net,{showZero:con})+'</div><div class="sub">'+(tI>0?(net<0?'from savings':'surplus'):'')+'</div></div></div>';
+  h+='<div class="section">Daily & weekly spending rate</div>';
+  if(!con)h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">Connect Google Sheets to see spending rate.</div></div>';
+  else if(!isCur)h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">📅 Rate only available for current month.<br><span style="font-size:12px">Switch to <strong>'+labelFromMk(amk)+'</strong>.</span></div></div>';
+  else if(!hasExp)h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">No expense data for '+labelFromMk(mk)+' yet.<br><span style="font-size:12px">Update ExpenseActuals sheet and tap ↻ Sync.</span></div></div>';
+  else h+=renderSpendingRate(mk,dl,dim,dp);
+  h+=renderBreakdown('Expense breakdown',EXPENSE_CATS,function(c){return gExp(mk,c.key);},function(c){return gBudget(c.key,mk);},'budget');
+  h+=renderBreakdown('Income breakdown',INCOME_CATS,function(c){return gInc(mk,c.key);},function(c){return gPlanInc(mk,c.key);},'plan');
+  h+=renderInvestments(mk);
   set(h);
+}
+function renderSpendingRate(mk,dl,dim,dp){
+  var h='<div style="font-size:12px;color:#888780;margin-bottom:8px">'+dl+' days left · '+dp+' of '+dim+' days gone</div>';
+  var ovR=0,ovB=0;
+  RATE_CATS.forEach(function(k){ovB+=num(gBudget(k,mk));ovR+=Math.max(0,num(gBudget(k,mk))-num(gExp(mk,k)));});
+  var ovD=dl>0?ovR/dl:0,ovW=ovD*7,ovPct=ovB>0?(ovB-ovR)/ovB*100:0,ovC=ovPct>90?'#a32d2d':ovPct>70?'#ba7517':'#3b6d11';
+  h+='<div class="card"><div style="padding:12px 14px"><div style="font-size:13px;font-weight:600;margin-bottom:10px">All tracked categories</div>';
+  h+='<div style="display:flex;gap:8px;margin-bottom:10px"><div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val" style="color:'+ovC+'">'+fmt(ovD,{showZero:true})+'</div><div class="rb-unit">/day</div></div>';
+  h+='<div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val" style="color:'+ovC+'">'+fmt(ovW,{showZero:true})+'</div><div class="rb-unit">/week</div></div></div>';
+  h+='<div class="pbar" style="height:7px"><div class="pfill" style="width:'+Math.min(100,ovPct).toFixed(0)+'%;background:'+ovC+'"></div></div>';
+  h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Spent: '+fmt(ovB-ovR,{showZero:true})+'</span><span>Remaining: '+fmt(ovR,{showZero:true})+'</span></div></div></div>';
+  RATE_CATS.forEach(function(k){
+    var cat=EXPENSE_CATS.find(function(c){return c.key===k;}),bud=num(gBudget(k,mk)),spent=num(gExp(mk,k)),rem=bud-spent,over=rem<0,daily=dl>0&&!over?rem/dl:0,weekly=daily*7,pct=bud>0?Math.min(100,spent/bud*100):0,bc=over?'#a32d2d':pct>85?'#ba7517':'#3b6d11';
+    h+='<div class="card"><div style="padding:11px 14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:13px;font-weight:600">'+cat.label+'</span><span class="badge '+(over?'b-danger':pct>85?'b-warn':'b-ok')+'">'+(over?'Over budget':pct.toFixed(0)+'% used')+'</span></div>';
+    if(!over)h+='<div style="display:flex;gap:8px;margin-bottom:10px"><div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val">'+fmt(daily,{showZero:true})+'</div><div class="rb-unit">/day</div></div><div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val">'+fmt(weekly,{showZero:true})+'</div><div class="rb-unit">/week</div></div><div class="rate-box"><div class="rb-lbl">Left</div><div class="rb-val">'+fmt(rem,{showZero:true})+'</div><div class="rb-unit">of '+fmt(bud,{showZero:true})+'</div></div></div>';
+    else h+='<div style="background:#fcebeb;border-radius:7px;padding:8px 10px;font-size:12px;color:#a32d2d;margin-bottom:10px">Over by <strong>'+fmt(Math.abs(rem),{showZero:true})+'</strong></div>';
+    h+='<div class="pbar"><div class="pfill" style="width:'+Math.min(100,pct).toFixed(0)+'%;background:'+bc+'"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Spent: '+fmt(spent,{showZero:true})+'</span><span>Budget: '+fmt(bud,{showZero:true})+'</span></div></div></div>';
+  });
+  return h;
+}
+function renderBreakdown(title,cats,actualFn,planFn,label){
+  var h='<div class="section">'+title+'</div><div class="card">',any=false;
+  cats.forEach(function(c){
+    var a=actualFn(c),p=planFn(c);
+    if(a===null&&p===null)return;any=true;
+    var av=num(a),pv=num(p),over=label==='budget'&&pv>0&&av>pv,df=av-pv;
+    h+='<div class="row"><span class="row-label" style="'+(over?'color:#a32d2d':'')+'">'+c.label+(over?' ▲':'')+'</span><div><div class="row-val '+(over?'neg':av>0&&label==='plan'?'pos':'')+'">'+fmt(av,{showZero:a!==null})+'</div>';
+    if(p!==null)h+='<div class="row-sub" style="color:'+(over?'#a32d2d':label==='budget'&&pv-av>pv*.1?'#3b6d11':'#888780')+'">'+(a!==null?(df>=0?'+':'')+fmt(df,{showZero:true})+' vs '+label:label+': '+fmt(pv,{showZero:true}))+'</div>';
+    h+='</div></div>';
+  });
+  if(!any)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(connected()?'No data yet.':'Connect Google Sheets to see data.')+'</div>';
+  return h+'</div>';
+}
+function renderInvestments(mk){
+  var h='<div class="section">Investments</div><div class="card">',any=false;
+  INVEST_CATS.forEach(function(c){
+    var a=gInv(mk,c.key),p=gPlanInv(c.key,mk);if(a===null&&p===null)return;any=true;
+    var av=num(a),pv=num(p),pct=pv>0?Math.min(100,Math.round(av/pv*100)):0,col=pct>=100?'#3b6d11':pct>0?'#ba7517':'#d3d1c7';
+    h+='<div style="padding:9px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span class="row-label">'+c.label+'</span><div><div class="row-val '+(av>=pv&&av>0?'pos':'')+'">'+fmt(av,{showZero:a!==null})+'</div><div class="row-sub">plan: '+fmt(pv,{showZero:true})+'</div></div></div>';
+    if(pv>0)h+='<div class="pbar"><div class="pfill" style="width:'+pct+'%;background:'+col+'"></div></div>';h+='</div>';
+  });
+  if(!any)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(connected()?'No investment data yet.':'Connect Google Sheets to see data.')+'</div>';
+  return h+'</div>';
 }
 function selMo(mk){S.mk=mk;renderMonthly();}
 
-// ── PORTFOLIO ─────────────────────────────────────────────────
+// ── PORTFOLIO PAGE ────────────────────────────────────────────
 function renderPortfolio(){
-  document.getElementById('subBar').innerHTML='';
-  var con=connected();
-  var aprT=totPf(LAST_ACTUAL),mayT=totPf(CURRENT_MK),startT=totPf('start');
-  var mom=aprT>0?(mayT-aprT)/aprT*100:0;
-  var h='';
-  if(!con)h+=notConnectedBanner();
-  h+='<div class="sl">Key metrics</div><div class="g2">';
-  h+='<div class="metric"><div class="lbl">Portfolio (Apr)</div><div class="val">'+fmt(aprT)+'</div><div class="sub">last complete month</div></div>';
-  h+='<div class="metric"><div class="lbl">May forecast <span class="fc-badge">est.</span></div><div class="val '+(con?'pos':'')+'">'+fmt(mayT)+'</div><div class="sub">'+(con?(mom>=0?'+':'')+mom.toFixed(2)+'% vs Apr':'—')+'</div></div>';
-  h+='</div><div class="g3">';
-  h+='<div class="metric"><div class="lbl">YTD growth</div><div class="val '+(con?'pos':'')+'">'+fmt(aprT-startT)+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Blended yield</div><div class="val">'+(con?blendYield().toFixed(2)+'%':'—')+'</div><div class="sub">net</div></div>';
-  h+='<div class="metric"><div class="lbl">Inv. income/yr</div><div class="val '+(con?'pos':'')+'">'+fmt(annIncome())+'</div></div>';
+  var con=connected(), aprT=totPf(LAST_ACTUAL),curT=totPf(CURRENT_MK),startT=totPf('start'),mom=aprT>0?(curT-aprT)/aprT*100:0;
+  var histPeriods=['start']; for(var i=0;i<=MONTH_KEYS.indexOf(LAST_ACTUAL);i++)histPeriods.push(MONTH_KEYS[i]);
+  var histLabels=histPeriods.map(function(p){return p==='start'?'Start':labelFromMk(p);});
+  var h=''; if(!con)h+=notConnectedBanner(); else h+=dataNote();
+  h+='<div class="section">Key metrics</div><div class="g2"><div class="metric"><div class="lbl">Portfolio ('+labelFromMk(LAST_ACTUAL)+')</div><div class="val">'+fmt(aprT)+'</div><div class="sub">last complete month</div></div>';
+  h+='<div class="metric"><div class="lbl">'+labelFromMk(CURRENT_MK)+' forecast <span class="fc-badge">est.</span></div><div class="val '+(con?'pos':'')+'">'+fmt(curT)+'</div><div class="sub">'+(con?fmtPct(mom)+' vs '+labelFromMk(LAST_ACTUAL):'—')+'</div></div></div>';
+  h+='<div class="g3"><div class="metric"><div class="lbl">YTD growth</div><div class="val '+(con?'pos':'')+'">'+fmt(aprT-startT)+'</div></div><div class="metric"><div class="lbl">Blended yield</div><div class="val">'+(con?blendYield().toFixed(2)+'%':'—')+'</div><div class="sub">net</div></div><div class="metric"><div class="lbl">Inv. income/yr</div><div class="val '+(con?'pos':'')+'">'+fmt(annIncome())+'</div></div></div>';
+  // Month-on-month growth table — built dynamically from histPeriods
+  h+='<div class="section">Month-on-month growth</div><div class="card">';
+  for(var pi=0;pi<histPeriods.length-1;pi++){
+    var pp=histPeriods[pi],cp=histPeriods[pi+1];
+    var ppV=totPf(pp),cpV=totPf(cp),chgM=cpV-ppV,pctM=ppV>0?chgM/ppV*100:0;
+    var momLbl=(pp==='start'?'Start':labelFromMk(pp))+' → '+labelFromMk(cp);
+    h+='<div class="row"><span class="row-label">'+momLbl+'</span>';
+    h+='<div style="text-align:right"><div class="row-val '+(chgM>=0?'pos':'neg')+'">'+(con?(chgM>=0?'+':'')+fmt(chgM):'—')+'</div>';
+    h+='<div class="row-sub" style="color:'+(pctM>=0?'#3b6d11':'#a32d2d')+'">'+(con?fmtPct(pctM):'—')+'</div></div></div>';
+  }
+  var chgF=curT-aprT,pctF=aprT>0?chgF/aprT*100:0;
+  h+='<div class="row"><span class="row-label">'+labelFromMk(LAST_ACTUAL)+' → '+labelFromMk(CURRENT_MK)+' <span class="fc-badge">est.</span></span>';
+  h+='<div style="text-align:right"><div class="row-val '+(chgF>=0?'pos':'neg')+'">'+(con?(chgF>=0?'+':'')+fmt(chgF)+'<span class="fc-badge">est.</span>':'—')+'</div>';
+  h+='<div class="row-sub" style="color:'+(pctF>=0?'#3b6d11':'#a32d2d')+'">'+(con?fmtPct(pctF):'—')+'</div></div></div>';
   h+='</div>';
-  // MoM growth
-  h+='<div class="sl">Month-on-month growth</div><div class="card">';
-  var momPairs=[
-    {label:'Start → Jan',cur:'jan',prev:'start'},
-    {label:'Jan → Feb',cur:'feb',prev:'jan'},
-    {label:'Feb → Mar',cur:'mar',prev:'feb'},
-    {label:'Mar → Apr',cur:'apr',prev:'mar'},
-    {label:'Apr → May (est.)',cur:'may',prev:'apr',fc:true}
-  ];
-  momPairs.forEach(function(p){
-    var cur=totPf(p.cur),prev=totPf(p.prev),chg=cur-prev,pct=prev>0?chg/prev*100:0;
-    h+='<div class="row"><span class="row-label">'+p.label+'</span>';
-    h+='<div style="text-align:right"><div class="row-val '+(chg>=0?'pos':'neg')+'">'+(con?(chg>=0?'+':'')+fmt(chg)+(p.fc?'<span class="fc-badge">est.</span>':''):'—')+'</div>';
-    h+='<div class="row-sub" style="color:'+(pct>=0?'#3b6d11':'#a32d2d')+'">'+(con?(pct>=0?'+':'')+pct.toFixed(2)+'%':'—')+'</div></div></div>';
-  });
-  h+='</div>';
-  // Growth chart
-  h+='<div class="sl">Growth over time</div>';
-  h+='<div class="card" style="padding:14px"><div class="chart-box"><canvas id="gc"></canvas></div></div>';
-  // Holdings
-  h+='<div class="sl">Holdings — Apr actual / May est.</div><div class="card">';
-  var cg='';
-  PF_INSTRUMENTS.forEach(function(i){
+  h+='<div class="section">Growth over time</div><div class="card" style="padding:14px"><div class="chart-box"><canvas id="gc"></canvas></div></div>';
+  h+='<div class="section">Holdings — '+labelFromMk(LAST_ACTUAL)+' actual / '+labelFromMk(CURRENT_MK)+' est.</div><div class="card">';
+  var cg='';PF_INSTRUMENTS.forEach(function(i){
     if(i.group!==cg){h+='<div class="pf-grp">'+GRP_LABELS[i.group]+'</div>';cg=i.group;}
-    var ab=pfBal(i.key,LAST_ACTUAL)||0,mb=pfBal(i.key,CURRENT_MK)||0;
-    var isFC=pfActual(i.key,CURRENT_MK)===null,df=mb-ab;
-    h+='<div class="row"><div><div style="font-size:13px">'+i.label+'</div>'+(i.rate?'<div style="font-size:11px;color:#888780">'+i.rate+'</div>':'')+'</div>';
-    h+='<div style="text-align:right"><div class="row-val">'+(mb>0?fmt(mb):'—')+(isFC&&mb>0?'<span class="fc-badge">est.</span>':'')+'</div>';
-    h+='<div class="row-sub" style="color:'+(df>0?'#3b6d11':df<0?'#a32d2d':'#888780')+'">'+(df!==0&&con?(df>0?'+':'')+fmt(df)+' vs Apr':'Apr: '+fmt(ab))+'</div></div></div>';
+    var ab=pfBal(i.key,LAST_ACTUAL)||0,mb=pfBal(i.key,CURRENT_MK)||0,isFC=pfActual(i.key,CURRENT_MK)===null,df=mb-ab;
+    h+='<div class="row"><div><div style="font-size:13px">'+i.label+'</div>'+(i.rate?'<div style="font-size:11px;color:#888780">'+i.rate+'</div>':'')+'</div><div style="text-align:right"><div class="row-val">'+fmt(mb)+(isFC&&mb>0?'<span class="fc-badge">est.</span>':'')+'</div><div class="row-sub" style="color:'+(df>0?'#3b6d11':df<0?'#a32d2d':'#888780')+'">'+(df!==0&&con?(df>0?'+':'')+fmt(df)+' vs '+labelFromMk(LAST_ACTUAL):labelFromMk(LAST_ACTUAL)+': '+fmt(ab))+'</div></div></div>';
   });
-  var td=mayT-aprT;
-  h+='<div class="row" style="border-top:0.5px solid #e0ddd4"><span style="font-weight:500">Total</span>';
-  h+='<div><div class="row-val">'+fmt(mayT)+(con?'<span class="fc-badge">est.</span>':'')+'</div>';
-  h+='<div class="row-sub '+(td>=0?'pos':'neg')+'">'+(con?(td>=0?'+':'')+fmt(td)+' vs Apr':'—')+'</div></div></div></div>';
-  // History charts
-  h+='<div class="sl">Balance history — by group</div>';
-  h+='<div class="card" style="padding:14px;margin-bottom:10px">';
-  h+='<div style="font-size:13px;font-weight:500;margin-bottom:6px">Total portfolio (stacked)</div>';
-  h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;font-size:11px">';
+  var td=curT-aprT;h+='<div class="row" style="border-top:.5px solid #e0ddd4"><span style="font-weight:600">Total</span><div><div class="row-val">'+fmt(curT)+(con?'<span class="fc-badge">est.</span>':'')+'</div><div class="row-sub '+(td>=0?'pos':'neg')+'">'+(con?(td>=0?'+':'')+fmt(td)+' vs '+labelFromMk(LAST_ACTUAL):'—')+'</div></div></div></div>';
+  h+='<div class="section">Balance history — by group</div><div class="card" style="padding:14px;margin-bottom:10px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">Total portfolio (stacked)</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;font-size:11px">';
   Object.keys(GRP_LABELS).forEach(function(g){h+='<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:'+GRP_COLORS[g]+';display:inline-block"></span>'+GRP_LABELS[g]+'</span>';});
-  h+='</div><div class="chart-box"><canvas id="hbar"></canvas></div></div>';
-  h+='<div class="card" style="padding:14px;margin-bottom:10px">';
-  h+='<div style="font-size:13px;font-weight:500;margin-bottom:10px">Group trends (line)</div>';
-  h+='<div class="chart-box"><canvas id="hline"></canvas></div></div>';
-  // Collapsible table
-  h+='<div class="card" style="margin-bottom:10px">';
-  h+='<div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTable()">';
-  h+='<span style="font-size:13px;font-weight:500">Detailed numbers</span><span id="tbl-toggle" style="font-size:12px;color:#185fa5">Show ▾</span></div>';
-  h+='<div id="tbl-wrap" style="display:none;overflow-x:auto;padding:0 0 10px">';
-  h+='<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:360px"><thead><tr>';
-  h+='<th style="text-align:left;padding:6px 14px;color:#888780;font-weight:500;border-bottom:0.5px solid #e0ddd4">Instrument</th>';
-  HIST_LABELS.forEach(function(l){h+='<th style="text-align:right;padding:6px 8px;color:#888780;font-weight:500;border-bottom:0.5px solid #e0ddd4">'+l+'</th>';});
+  h+='</div><div class="chart-box"><canvas id="hbar"></canvas></div></div><div class="card" style="padding:14px;margin-bottom:10px"><div style="font-size:13px;font-weight:600;margin-bottom:10px">Group trends (line)</div><div class="chart-box"><canvas id="hline"></canvas></div></div>';
+  h+='<div class="card"><div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTable()"><span style="font-size:13px;font-weight:600">Detailed numbers</span><span id="tbl-toggle" style="font-size:12px;color:#185fa5">Show ▾</span></div><div id="tbl-wrap" style="display:none;overflow-x:auto;padding:0 0 10px"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:360px"><thead><tr><th style="text-align:left;padding:6px 14px;color:#888780;font-weight:600;border-bottom:.5px solid #e0ddd4">Instrument</th>';
+  histLabels.forEach(function(l){h+='<th style="text-align:right;padding:6px 8px;color:#888780;font-weight:600;border-bottom:.5px solid #e0ddd4">'+l+'</th>';});
   h+='</tr></thead><tbody>';
-  PF_INSTRUMENTS.forEach(function(i){
-    h+='<tr><td style="padding:4px 14px;color:#5f5e5a;white-space:nowrap">'+i.label+'</td>';
-    HIST_PERIODS.forEach(function(p){var v=pfBal(i.key,p);h+='<td style="text-align:right;padding:4px 8px">'+(v>0?fmt(v):'—')+'</td>';});
-    h+='</tr>';
-  });
-  h+='<tr style="font-weight:500;border-top:0.5px solid #e0ddd4"><td style="padding:6px 14px">Total</td>';
-  HIST_PERIODS.forEach(function(p){h+='<td style="text-align:right;padding:6px 8px">'+fmt(totPf(p))+'</td>';});
-  h+='</tr></tbody></table></div></div>';
+  PF_INSTRUMENTS.forEach(function(i){h+='<tr><td style="padding:4px 14px;color:#5f5e5a;white-space:nowrap">'+i.label+'</td>';histPeriods.forEach(function(p){h+='<td style="text-align:right;padding:4px 8px">'+fmt(pfBal(i.key,p))+'</td>';});h+='</tr>';});
+  h+='<tr style="font-weight:600;border-top:.5px solid #e0ddd4"><td style="padding:6px 14px">Total</td>';histPeriods.forEach(function(p){h+='<td style="text-align:right;padding:6px 8px">'+fmt(totPf(p))+'</td>';});h+='</tr></tbody></table></div></div>';
   set(h);
   setTimeout(function(){
-    var grpKeys=Object.keys(GRP_LABELS);
-    // Growth chart — 6 points, actual solid, forecast dashed bridging Apr→May
-    mkChart('gc',{
-      type:'line',
-      data:{
-        labels:['Start','Jan','Feb','Mar','Apr','May (est.)'],
-        datasets:[
-          {label:'Actual',data:[totPf('start'),totPf('jan'),totPf('feb'),totPf('mar'),totPf('apr'),null],
-           borderColor:'#185fa5',backgroundColor:'rgba(24,95,165,0.07)',fill:true,tension:0.3,pointRadius:4,borderWidth:2,spanGaps:false},
-          {label:'Forecast',data:[null,null,null,null,totPf('apr'),totPf('may')],
-           borderColor:'#ba7517',backgroundColor:'transparent',borderDash:[6,4],tension:0.3,pointRadius:4,borderWidth:2,spanGaps:false}
-        ]
-      },
-      options:chartOpts()
-    });
-    // Stacked bar — legend hidden (HTML legend above chart already shows it)
-    mkChart('hbar',{
-      type:'bar',
-      data:{
-        labels:HIST_LABELS,
-        datasets:grpKeys.map(function(g){return{label:GRP_LABELS[g],data:HIST_PERIODS.map(function(p){return grpTot(g,p);}),backgroundColor:GRP_COLORS[g],borderWidth:0};})
-      },
-      options:chartOpts({
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fmt(c.raw);}}}},
-        scales:{x:{stacked:true,ticks:{color:'#888780'},grid:{display:false}},y:{stacked:true,ticks:{color:'#888780',callback:function(v){return'Rp '+(v/1000000000).toFixed(2)+'B';}},grid:{color:'rgba(0,0,0,0.05)'}}}
-      })
-    });
-    // Line per group
-    mkChart('hline',{
-      type:'line',
-      data:{
-        labels:HIST_LABELS,
-        datasets:grpKeys.map(function(g){return{label:GRP_LABELS[g],data:HIST_PERIODS.map(function(p){return grpTot(g,p);}),borderColor:GRP_COLORS[g],backgroundColor:'transparent',tension:0.3,pointRadius:3,borderWidth:2,pointBackgroundColor:GRP_COLORS[g]};})
-      },
-      options:chartOpts()
-    });
-  },150);
+    var gp=Object.keys(GRP_LABELS),lineActual=histPeriods.map(function(p){return totPf(p);});
+    mkChart('gc',{type:'line',data:{labels:histLabels.concat([labelFromMk(CURRENT_MK)+' (est.)']),datasets:[
+      {label:'Actual',data:lineActual.concat([null]),borderColor:'#185fa5',backgroundColor:'rgba(24,95,165,0.07)',fill:true,tension:.3,pointRadius:4,borderWidth:2,spanGaps:false},
+      {label:'Forecast',data:Array(histPeriods.length-1).fill(null).concat([totPf(LAST_ACTUAL),totPf(CURRENT_MK)]),borderColor:'#ba7517',backgroundColor:'transparent',borderDash:[6,4],tension:.3,pointRadius:4,borderWidth:2,spanGaps:false}
+    ]},options:chartOpts()});
+    mkChart('hbar',{type:'bar',data:{labels:histLabels,datasets:gp.map(function(g){return{label:GRP_LABELS[g],data:histPeriods.map(function(p){return grpTot(g,p);}),backgroundColor:GRP_COLORS[g],borderWidth:0};})},options:chartOpts({plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fmt(c.raw,{showZero:true});}}}},scales:{x:{stacked:true,ticks:{color:'#888780'},grid:{display:false}},y:{stacked:true,ticks:{color:'#888780',callback:function(v){return'Rp '+(v/1000000000).toFixed(2)+'B';}},grid:{color:'rgba(0,0,0,.05)'}}}})});
+    mkChart('hline',{type:'line',data:{labels:histLabels,datasets:gp.map(function(g){return{label:GRP_LABELS[g],data:histPeriods.map(function(p){return grpTot(g,p);}),borderColor:GRP_COLORS[g],backgroundColor:'transparent',tension:.3,pointRadius:3,borderWidth:2,pointBackgroundColor:GRP_COLORS[g]};})},options:chartOpts()});
+  },100);
 }
+function toggleTable(){var w=document.getElementById('tbl-wrap'),t=document.getElementById('tbl-toggle');if(!w||!t)return;var open=w.style.display==='none';w.style.display=open?'block':'none';t.textContent=open?'Hide ▴':'Show ▾';}
 
 // ── SETTINGS ──────────────────────────────────────────────────
 function renderSettings(){
-  document.getElementById('subBar').innerHTML='';
-  var h='<div class="sl">Google Sheets connection</div><div class="card">';
-  h+='<div class="settings-field"><label>Apps Script URL</label><input type="url" id="cfg_url" value="'+S.settings.url+'" placeholder="https://script.google.com/macros/s/.../exec"></div>';
-  h+='<div class="settings-field"><label>Secret token</label><input type="text" id="cfg_tok" value="'+S.settings.token+'" placeholder="your-secret-token"></div>';
-  h+='<div style="padding:10px 14px"><button onclick="saveCfg()" style="width:100%;padding:10px;border-radius:7px;font-size:14px;font-weight:500;border:none;background:#185fa5;color:#fff;cursor:pointer">Save settings</button></div></div>';
-  h+='<div class="sl">Sync</div><div class="card">';
-  h+='<div class="row"><span class="row-label">Sync all data</span><button onclick="syncAll()" style="padding:6px 14px;border-radius:7px;border:0.5px solid #e0ddd4;background:none;font-size:13px;cursor:pointer">↻ Sync all</button></div>';
-  h+='<div class="row"><span class="row-label">Portfolio only</span><button onclick="syncPf()" style="padding:6px 14px;border-radius:7px;border:0.5px solid #e0ddd4;background:none;font-size:13px;cursor:pointer">Pull</button></div></div>';
-  h+='<div class="sl">About</div><div class="card">';
-  h+='<div class="row"><span class="row-label">Version</span><span>4.0 — May 2026</span></div>';
-  h+='<div class="row"><span class="row-label">Current month</span><span>May 2026</span></div>';
-  h+='<div class="row"><span class="row-label">Last complete</span><span>April 2026</span></div>';
-  h+='<div class="row"><span class="row-label">Data source</span><span>Google Sheets (read-only)</span></div>';
-  h+='<div class="row"><span class="row-label">Connected</span><span class="badge '+(connected()?'b-ok':'b-danger')+'">'+(connected()?'Yes':'No')+'</span></div></div>';
+  var h='<div class="section">Google Sheets connection</div><div class="card"><div class="settings-field"><label>Apps Script URL</label><input type="url" id="cfg_url" value="'+escapeHtml(S.settings.url)+'" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="settings-field"><label>Secret token</label><input type="text" id="cfg_tok" value="'+escapeHtml(S.settings.token)+'" placeholder="your-secret-token"></div><div style="padding:10px 14px"><button onclick="saveCfg()" class="primary-btn">Save settings</button></div></div>';
+  h+='<div class="section">Sync</div><div class="card"><div class="row"><span class="row-label">Sync all data</span><button onclick="syncAll()" class="secondary-btn">↻ Sync all</button></div><div class="row"><span class="row-label">Portfolio only</span><button onclick="syncPf()" class="secondary-btn">Pull</button></div><div class="row"><span class="row-label">Last sync</span><span>'+fmtDateTime(S.meta.lastSync)+'</span></div></div>';
+  h+='<div class="section">About</div><div class="card"><div class="row"><span class="row-label">Version</span><span>Clean v1 — No Offline</span></div><div class="row"><span class="row-label">Current month</span><span>'+fullLabelFromMk(CURRENT_MK)+' '+TODAY.getFullYear()+'</span></div><div class="row"><span class="row-label">Last complete</span><span>'+fullLabelFromMk(LAST_ACTUAL)+' '+TODAY.getFullYear()+'</span></div><div class="row"><span class="row-label">Data source</span><span>Google Sheets</span></div><div class="row"><span class="row-label">Connected</span><span class="badge '+(connected()?'b-ok':'b-danger')+'">'+(connected()?'Yes':'No')+'</span></div></div>';
+  h+='<div class="section">Note</div><div class="card"><div class="small-note">This version does not use a service worker, so it avoids browser cache issues. It still works well as a mobile web app through GitHub Pages.</div></div>';
   set(h);
 }
-function saveCfg(){
-  S.settings.url=document.getElementById('cfg_url').value.trim();
-  S.settings.token=document.getElementById('cfg_tok').value.trim();
-  save();toast('Settings saved ✓');
-}
+function saveCfg(){S.settings.url=document.getElementById('cfg_url').value.trim();S.settings.token=document.getElementById('cfg_tok').value.trim();save();toast('Settings saved ✓');}
 
 // ── ALERTS ────────────────────────────────────────────────────
 function buildAlerts(mk){
-  var a=[],tE=totExp(mk),pE=totBudget();
-  if(!connected()){return[{t:'info',m:'Connect Google Sheets in Settings to see alerts.'}];}
+  var a=[],tE=totExp(mk),pE=totBudget(mk);
+  if(!connected())return[{t:'info',m:'Connect Google Sheets in Settings to see alerts.'}];
   if(tE>0&&tE>pE)a.push({t:'danger',m:'<strong>Over budget by '+fmtFull(tE-pE)+'</strong> this month.'});
-  EXPENSE_CATS.forEach(function(c){var act=gExp(mk,c.key),bud=gBudget(c.key);if(bud>0&&act>bud*1.15)a.push({t:'warn',m:'<strong>'+c.label+'</strong> over budget by '+fmtFull(act-bud)+'.'});});
-  if(mk==='sep'&&gInv(mk,'sr025')===0)a.push({t:'warn',m:'<strong>SR025 not recorded.</strong> Window closes 16 Sep 2026.'});
-  if(mk==='aug'||mk==='sep')a.push({t:'info',m:'SR025 window: <strong>21 Aug – 16 Sep 2026.</strong>'});
+  EXPENSE_CATS.forEach(function(c){var act=num(gExp(mk,c.key)),bud=num(gBudget(c.key,mk));if(bud>0&&act>bud*1.15)a.push({t:'warn',m:'<strong>'+c.label+'</strong> over budget by '+fmtFull(act-bud)+'.'});});
+  if(gInv(mk,'sr025')===null && num(gPlanInv('sr025',mk))>0)a.push({t:'warn',m:'<strong>SR025 planned but not recorded</strong> for '+labelFromMk(mk)+'.'});
   if(!a.length)a.push({t:'ok',m:'<strong>All clear.</strong> Update Google Sheets and sync to see latest.'});
   return a;
 }
 function aIcon(t){return t==='danger'?'🔴':t==='warn'?'🟡':t==='ok'?'🟢':'🔵';}
 
-// ── TABLE TOGGLE ──────────────────────────────────────────────
-function toggleTable(){
-  var w=document.getElementById('tbl-wrap'),t=document.getElementById('tbl-toggle');
-  if(!w||!t)return;
-  var open=w.style.display==='none';
-  w.style.display=open?'block':'none';
-  t.textContent=open?'Hide ▴':'Show ▾';
-}
-
-// ── API ───────────────────────────────────────────────────────
+// ── API AND VALIDATION ────────────────────────────────────────
 function api(action,payload){
-  var url=S.settings.url;
-  if(!url)return Promise.reject(new Error('No URL'));
+  var url=S.settings.url;if(!url)return Promise.reject(new Error('No Apps Script URL. Open Settings first.'));
   var body=JSON.stringify(Object.assign({action:action,token:S.settings.token},payload||{}));
-  return fetch(url,{method:'POST',body:body,headers:{'Content-Type':'text/plain'}})
-    .then(function(r){return r.json();})
-    .then(function(j){if(!j.ok)throw new Error(j.error||'Error');return j;});
+  return fetch(url,{method:'POST',body:body,headers:{'Content-Type':'text/plain;charset=utf-8'},cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status+'. Check Apps Script deployment.');return r.text();})
+    .then(function(txt){try{return JSON.parse(txt);}catch(e){throw new Error('Backend did not return valid JSON. Check Apps Script permissions/deployment.');}})
+    .then(function(j){if(!j.ok)throw new Error(j.error||'Unknown backend error');return j;});
+}
+function validateAll(r){
+  var required=['plan','portfolio','income','expenses','invest'];
+  required.forEach(function(k){if(!r[k]||typeof r[k]!=='object')throw new Error('Invalid response: missing '+k);});
+  PF_INSTRUMENTS.forEach(function(i){if(!r.portfolio[i.key])console.warn('Portfolio key missing:',i.key);});
+  return true;
 }
 function syncAll(){
   if(!S.settings.url){toast('⚠ Set Script URL in Settings');nav('settings');return;}
-  document.getElementById('syncBtn').textContent='↻ Syncing…';
+  var btn=document.getElementById('syncBtn');if(btn)btn.textContent='↻ Syncing…';
   api('getAll').then(function(r){
-    S.plan=r.plan||{};S.income=r.income||{};S.expenses=r.expenses||{};
-    S.invest=r.invest||{};S.portfolio=r.portfolio||{};
-    save();toast('Synced ✓');
-    document.getElementById('syncBtn').textContent='↻ Sync';
-    nav(S.page);
-  }).catch(function(e){toast('Error: '+e.message);document.getElementById('syncBtn').textContent='↻ Sync';});
+    validateAll(r);
+    S.plan=r.plan||{};S.income=r.income||{};S.expenses=r.expenses||{};S.invest=r.invest||{};S.portfolio=r.portfolio||{};
+    S.meta.lastSync=r.lastSync||new Date().toISOString();S.meta.lastError=null;
+    save();toast('Synced ✓');if(btn)btn.textContent='↻ Sync';nav(S.page);
+  }).catch(function(e){
+    S.meta.lastError=e.message;save();toast('Error: '+e.message);if(btn)btn.textContent='↻ Sync';nav(S.page);
+  });
 }
 function syncPf(){
-  api('getPortfolio').then(function(r){S.portfolio=r.portfolio||{};save();toast('Portfolio loaded ✓');})
-  .catch(function(e){toast('Error: '+e.message);});
+  api('getPortfolio').then(function(r){
+    if(!r.portfolio||typeof r.portfolio!=='object')throw new Error('Invalid portfolio response.');
+    S.portfolio=r.portfolio;S.meta.lastSync=r.lastSync||new Date().toISOString();S.meta.lastError=null;save();toast('Portfolio loaded ✓');nav(S.page);
+  }).catch(function(e){S.meta.lastError=e.message;save();toast('Error: '+e.message);});
 }
-
-// ── UTILS ─────────────────────────────────────────────────────
-function set(h){document.getElementById('pageContent').innerHTML=h;}
 
 // ── INIT ──────────────────────────────────────────────────────
 load();
