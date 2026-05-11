@@ -231,7 +231,7 @@ function renderMonthly(){
  h+='<div class="section">Daily & weekly spending rate</div>'+spendingRate(mk);
  h+=breakdown('Expense breakdown',EXPENSE_CATS,function(c){return gExp(mk,c.key);},function(c){return gBudget(c.key,mk);},'budget');
  h+=breakdown('Income breakdown',INCOME_CATS,function(c){return gInc(mk,c.key);},function(c){return gPlanInc(mk,c.key);},'plan');
- h+=investments(mk);pageEl().innerHTML=h;bindCollapses();
+ h+=investments(mk)+reallocations(mk);pageEl().innerHTML=h;bindCollapses();
 }
 function expenseControl(mk){var total=totExp(mk),reg=regularExp(mk),inc=incidentalExp(mk),bud=regularBudget(mk),rem=bud-reg,pct=bud>0?Math.min(100,reg/bud*100):0,col=reg>bud?'#a32d2d':pct>85?'#ba7517':'#3b6d11';return '<div class="section">Expense control</div><div class="card"><div style="padding:12px 14px"><div class="g2" style="margin-bottom:10px"><div><div class="lbl">Regular expenses</div><div class="val">'+fmt(reg,{showZero:true})+'</div><div class="sub">excluding incidental</div></div><div style="text-align:right"><div class="lbl">Remaining budget</div><div class="val" style="color:'+col+'">'+fmt(rem,{showZero:true})+'</div><div class="sub">budget: '+fmt(bud,{showZero:true})+'</div></div></div><div class="pbar" style="height:7px"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+col+'"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Regular spent: '+fmt(reg,{showZero:true})+'</span><span>'+pct.toFixed(0)+'% used</span></div></div><div class="row"><span class="row-label">Incidental expenses</span><div><div class="row-val warn-c">'+fmt(inc,{showZero:true})+'</div><div class="row-sub">non-recurring</div></div></div><div class="row"><span class="row-label">Total expenses</span><div><div class="row-val">'+fmt(total,{showZero:true})+'</div><div class="row-sub">regular + incidental</div></div></div></div>';}
 function spendingRate(mk){
@@ -248,6 +248,21 @@ function investments(mk){
  var h='<div class="section">Investments</div><div class="card">',any=false;
  INVEST_CATS.forEach(function(c){var a=gInv(mk,c.key),p=gPlanInv(c.key,mk),av=num(a),done=p>0&&av>=p,pct=p>0?Math.min(100,av/p*100):0;if(a===null&&p===0)return;any=true;h+='<div style="padding:9px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span class="row-label">'+c.label+'</span><div style="text-align:right"><div class="row-val '+(done?'pos':'')+'">'+fmt(av,{showZero:a!==null})+(done?' ✓':'')+'</div><div class="row-sub">plan: '+fmt(p,{showZero:true})+'</div></div></div>'+(p>0?'<div class="pbar"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+(done?'#3b6d11':'#ba7517')+'"></div></div>':'')+'</div>';});
  if(!any)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">No investment data yet.</div>';return h+'</div>';
+}
+
+function pfLabel(k){var item=PF.find(function(i){return i.key===k;});return item?item.label:k;}
+function reallocations(mk){
+ var r=S.plan.reallocation||{},rows=[];
+ Object.keys(r).forEach(function(k){var v=gRealloc(k,mk);if(v!==0)rows.push({key:k,value:v});});
+ if(!rows.length)return '';
+ var h='<div class="section">Reallocation</div><div class="card">';
+ rows.forEach(function(x){
+  h+='<div class="row"><span class="row-label">'+pfLabel(x.key)+'</span><div><div class="row-val '+(x.value>=0?'pos':'neg')+'">'+(x.value>=0?'+':'')+fmt(x.value,{showZero:true})+'</div><div class="row-sub">portfolio switch</div></div></div>';
+ });
+ var net=rows.reduce(function(s,x){return s+x.value;},0);
+ h+='<div class="row"><span class="row-label"><strong>Net portfolio effect</strong></span><div><div class="row-val '+(net===0?'':'warn-c')+'">'+fmt(net,{showZero:true})+'</div><div class="row-sub">excluded from net flow</div></div></div>';
+ h+='</div>';
+ return h;
 }
 function bindCollapses(){document.querySelectorAll('.collapse-head').forEach(function(b){b.onclick=function(){var id=b.dataset.target,el=document.getElementById(id),ic=document.getElementById(id+'-icon'),open=el.style.display==='none';el.style.display=open?'block':'none';ic.textContent=open?'▴':'▾';};});}
 
