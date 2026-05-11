@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#185fa5">
@@ -12,723 +12,199 @@
 :root{
   --blue:#185fa5;--blue-soft:#e6f1fb;--bg:#f5f5f0;--card:#fff;--text:#1a1a18;
   --muted:#888780;--line:#e0ddd4;--line-soft:#f1efe8;--green:#3b6d11;
-  --green-soft:#eaf3de;--orange:#854f0b;--orange-soft:#faeeda;
-  --red:#a32d2d;--red-soft:#fcebeb;--shadow:0 1px 2px rgba(0,0,0,.02)
+  --green-soft:#eaf3de;--orange:#854f0b;--orange-soft:#faeeda;--red:#a32d2d;--red-soft:#fcebeb;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;min-height:100vh}
-button,input{font:inherit}
-button{cursor:pointer}
-.app{max-width:480px;margin:0 auto;padding-bottom:84px}
-.topbar{background:var(--card);border-bottom:.5px solid var(--line);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.topbar h1{font-size:16px;font-weight:600}
-.sync-btn{font-size:13px;color:var(--blue);background:none;border:none;padding:6px 10px;border-radius:8px}
-.sync-btn:active{background:var(--blue-soft)}
-.content{padding:12px 16px}
-.section{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px}
-.section:first-child{margin-top:0}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
-.metric{background:var(--card);border-radius:12px;padding:12px;border:.5px solid var(--line);box-shadow:var(--shadow)}
-.metric .lbl{font-size:11px;color:var(--muted);margin-bottom:3px}
-.metric .val{font-size:18px;font-weight:600;letter-spacing:-.01em}
-.metric .sub{font-size:11px;color:var(--muted);margin-top:2px}
-.card{background:var(--card);border-radius:12px;border:.5px solid var(--line);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)}
-.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 14px;border-bottom:.5px solid var(--line-soft);font-size:13px}
-.row:last-child{border-bottom:none}
-.row-label{color:#5f5e5a}
-.row-val{font-weight:600;text-align:right}
-.row-sub{font-size:11px;color:var(--muted);text-align:right;margin-top:1px}
-.badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
-.b-ok{background:var(--green-soft);color:var(--green)}
-.b-warn{background:var(--orange-soft);color:var(--orange)}
-.b-danger{background:var(--red-soft);color:var(--red)}
-.b-info{background:var(--blue-soft);color:var(--blue)}
-.fc-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;background:var(--orange-soft);color:var(--orange);font-weight:600;margin-left:4px;vertical-align:middle}
-.alert-item{display:flex;gap:10px;padding:10px 14px;border-bottom:.5px solid var(--line-soft);align-items:flex-start}
-.alert-item:last-child{border-bottom:none}
-.alert-text{font-size:13px;color:#5f5e5a;line-height:1.5}
-.alert-text strong{color:var(--text)}
-.pbar{height:5px;background:var(--line-soft);border-radius:3px;overflow:hidden;margin-top:4px}
-.pfill{height:100%;border-radius:3px}
-.pf-grp{padding:6px 14px;font-size:11px;font-weight:600;color:var(--muted);background:#f8f7f3;border-bottom:.5px solid var(--line)}
-.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#2c2c2a;color:#f1efe8;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:999;white-space:nowrap;max-width:92vw;text-overflow:ellipsis;overflow:hidden}
-.toast.show{opacity:1}
-.bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--card);border-top:.5px solid var(--line);display:flex;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:100}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border:none;background:none;color:var(--muted);font-size:10px}
-.nav-item.active{color:var(--blue);font-weight:600}
-.nav-icon{font-size:20px;line-height:1}
-.mo-scroll{display:flex;gap:6px;padding:10px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:var(--card);border-bottom:.5px solid var(--line)}
-.mo-scroll::-webkit-scrollbar{display:none}
-.mo-chip{padding:5px 13px;border-radius:20px;border:.5px solid var(--line);background:none;font-size:13px;color:#5f5e5a;white-space:nowrap;flex-shrink:0}
-.mo-chip.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
-.settings-field{padding:12px 14px;border-bottom:.5px solid var(--line-soft)}
-.settings-field label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
-.settings-field input{width:100%;padding:9px 10px;border:.5px solid var(--line);border-radius:8px;font-size:13px;background:var(--card);color:var(--text);outline:none}
-.settings-field input:focus{border-color:var(--blue)}
-.primary-btn{width:100%;padding:10px;border-radius:8px;font-size:14px;font-weight:600;border:none;background:var(--blue);color:#fff}
-.secondary-btn{padding:6px 14px;border-radius:8px;border:.5px solid var(--line);background:none;font-size:13px}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer;border:none;background:none}.app{max-width:480px;margin:0 auto;padding-bottom:88px}
+.topbar{height:58px;background:var(--card);border-bottom:.5px solid var(--line);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.topbar h1{font-size:17px;font-weight:700;letter-spacing:-.01em}.sync-btn{font-size:13px;color:var(--blue);padding:6px 10px;border-radius:8px}.sync-btn:active{background:var(--blue-soft)}
+.content{padding:12px 16px}.section{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin:16px 0 8px}.section:first-child{margin-top:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.metric,.card{background:var(--card);border:.5px solid var(--line);border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.02)}.metric{padding:12px}.card{margin-bottom:10px;overflow:hidden}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:3px}.val{font-size:18px;font-weight:700;letter-spacing:-.01em}.sub{font-size:11px;color:var(--muted);margin-top:2px}.small-note{font-size:12px;color:var(--muted);padding:8px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 14px;border-bottom:.5px solid var(--line-soft);font-size:13px}.row:last-child{border-bottom:none}.row-label{color:#5f5e5a}.row-val{font-weight:700;text-align:right}.row-sub{font-size:11px;color:var(--muted);text-align:right;margin-top:1px}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}.b-ok{background:var(--green-soft);color:var(--green)}.b-warn{background:var(--orange-soft);color:var(--orange)}.b-danger{background:var(--red-soft);color:var(--red)}.b-info{background:var(--blue-soft);color:var(--blue)}
+.fc-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;background:var(--orange-soft);color:var(--orange);font-weight:700;margin-left:4px;vertical-align:middle}
+.pbar{height:5px;background:var(--line-soft);border-radius:3px;overflow:hidden;margin-top:4px}.pfill{height:100%;border-radius:3px}.pos{color:var(--green)}.neg{color:var(--red)}.warn-c{color:var(--orange)}
+.alert-item{display:flex;gap:10px;padding:10px 14px;border-bottom:.5px solid var(--line-soft);align-items:flex-start}.alert-item:last-child{border-bottom:none}.alert-text{font-size:13px;color:#5f5e5a}.alert-text strong{color:var(--text)}
+.mo-scroll{display:flex;gap:6px;padding:10px 16px;overflow-x:auto;background:var(--card);border-bottom:.5px solid var(--line);scrollbar-width:none}.mo-scroll::-webkit-scrollbar{display:none}.mo-chip{padding:5px 13px;border-radius:20px;border:.5px solid var(--line);font-size:13px;color:#5f5e5a;white-space:nowrap;flex-shrink:0}.mo-chip.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.rate-box{flex:1;background:#f8f7f3;border-radius:8px;padding:9px;text-align:center}.rb-lbl{font-size:10px;color:var(--muted);margin-bottom:2px}.rb-val{font-size:15px;font-weight:700}.rb-unit{font-size:10px;color:var(--muted)}
+.pf-grp{padding:6px 14px;font-size:11px;font-weight:700;color:var(--muted);background:#f8f7f3;border-bottom:.5px solid var(--line)}
+.settings-field{padding:12px 14px;border-bottom:.5px solid var(--line-soft)}.settings-field label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}.settings-field input{width:100%;padding:9px 10px;border:.5px solid var(--line);border-radius:8px;background:#fff;color:var(--text);outline:none}.settings-field input:focus{border-color:var(--blue)}
+.primary-btn{width:100%;padding:10px;border-radius:8px;font-size:14px;font-weight:700;background:var(--blue);color:#fff}.secondary-btn{padding:6px 14px;border-radius:8px;border:.5px solid var(--line);font-size:13px;color:var(--text)}
+.bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--card);border-top:.5px solid var(--line);display:flex;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:20}.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;color:var(--muted);font-size:10px}.nav-item.active{color:var(--blue);font-weight:700}.nav-icon{font-size:20px;line-height:1}
+.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#2c2c2a;color:#f1efe8;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:99;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}.toast.show{opacity:1}
+.chart-simple{height:140px;display:flex;align-items:end;gap:8px;padding:12px;background:#fff}.bar{flex:1;background:var(--blue);border-radius:5px 5px 0 0;min-height:8px;opacity:.85}.bar.est{background:#ba7517;opacity:.85}.chart-labels{display:flex;gap:8px;padding:0 12px 12px;color:var(--muted);font-size:10px}.chart-labels span{flex:1;text-align:center}
 .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;line-height:1.8}
-.rate-box{flex:1;background:#f8f7f3;border-radius:8px;padding:9px;text-align:center}
-.rate-box .rb-lbl{font-size:10px;color:var(--muted);margin-bottom:2px}
-.rate-box .rb-val{font-size:15px;font-weight:600}
-.rate-box .rb-unit{font-size:10px;color:var(--muted)}
 .not-connected{background:var(--orange-soft);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:#633806;display:flex;gap:10px;align-items:flex-start}
-.chart-box{position:relative;height:220px;width:100%;overflow:hidden}
-.chart-box canvas{position:absolute!important;top:0!important;left:0!important;width:100%!important;height:100%!important}
-.pos{color:var(--green)}.neg{color:var(--red)}.warn-c{color:var(--orange)}
-.small-note{font-size:12px;color:var(--muted);padding:8px 14px}
-@media (max-width:360px){.metric .val{font-size:16px}.g3{gap:6px}.content{padding:10px 12px}}
+@media(max-width:360px){.content{padding:10px 12px}.metric .val,.val{font-size:16px}.g3{gap:6px}}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="topbar">
-    <h1>💼 Portfolio Tracker</h1>
-    <button class="sync-btn" onclick="syncAll()" id="syncBtn">↻ Sync</button>
-  </div>
+  <div class="topbar"><h1>💼 Portfolio Tracker</h1><button class="sync-btn" id="syncBtn">↻ Sync</button></div>
   <div id="subBar"></div>
-  <div class="content" id="pageContent">
-    <div class="empty">⚙️ Go to <strong>Settings</strong> to connect Google Sheets.</div>
-  </div>
+  <main class="content" id="pageContent"></main>
 </div>
-
-<div class="bottomnav">
-  <button class="nav-item active" onclick="nav('dashboard')" id="nav-dashboard"><span class="nav-icon">📊</span><span>Dashboard</span></button>
-  <button class="nav-item" onclick="nav('monthly')" id="nav-monthly"><span class="nav-icon">📅</span><span>Monthly</span></button>
-  <button class="nav-item" onclick="nav('portfolio')" id="nav-portfolio"><span class="nav-icon">💼</span><span>Portfolio</span></button>
-  <button class="nav-item" onclick="nav('settings')" id="nav-settings"><span class="nav-icon">⚙️</span><span>Settings</span></button>
-</div>
+<nav class="bottomnav" aria-label="Bottom navigation">
+  <button class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span><span>Dashboard</span></button>
+  <button class="nav-item" data-page="monthly"><span class="nav-icon">📅</span><span>Monthly</span></button>
+  <button class="nav-item" data-page="portfolio"><span class="nav-icon">💼</span><span>Portfolio</span></button>
+  <button class="nav-item" data-page="settings"><span class="nav-icon">⚙️</span><span>Settings</span></button>
+</nav>
 <div class="toast" id="toast"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+(function(){
 'use strict';
 
-/* ============================================================
-   Portfolio Tracker — Clean No-Offline Frontend v2
-   - Vanilla JS
-   - Dynamic month handling
-   - Google Sheets via Apps Script
-   - localStorage cache
-   ============================================================ */
-
-// ── CALENDAR ─────────────────────────────────────────────────
+var STORAGE_KEY='portfolio_tracker_os_v5';
 var MONTH_KEYS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 var MONTH_LABELS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var TODAY=new Date();
+function currentMk(){return MONTH_KEYS[TODAY.getMonth()];}
+function addMk(mk,n){var i=MONTH_KEYS.indexOf(mk);if(i<0)i=TODAY.getMonth();return MONTH_KEYS[(i+n+1200)%12];}
+function prevMk(mk){return addMk(mk,-1);}
+function label(mk){var i=MONTH_KEYS.indexOf(mk);return i>=0?MONTH_LABELS[i]:String(mk||'').toUpperCase();}
+function fullLabel(mk){var i=MONTH_KEYS.indexOf(mk);return i>=0?new Date(TODAY.getFullYear(),i,1).toLocaleString('en-US',{month:'long'}):mk;}
+function rolling(start,count){var a=[];for(var i=0;i<count;i++)a.push(addMk(start,i));return a;}
+function dim(){return new Date(TODAY.getFullYear(),TODAY.getMonth()+1,0).getDate();}
+function dleft(){return dim()-TODAY.getDate()+1;}
+var CURRENT_MK=currentMk(), LAST_ACTUAL=prevMk(CURRENT_MK), NAV_MONTHS=rolling(CURRENT_MK,6);
 
-function mkFromDate(d){return MONTH_KEYS[d.getMonth()];}
-function labelFromMk(mk){var i=MONTH_KEYS.indexOf(mk);return i>=0?MONTH_LABELS[i]:mk.toUpperCase();}
-function fullLabelFromMk(mk){var i=MONTH_KEYS.indexOf(mk);return i>=0?new Date(TODAY.getFullYear(),i,1).toLocaleString('en-US',{month:'long'}):mk;}
-function addMonthsKey(mk,n){var i=MONTH_KEYS.indexOf(mk);return MONTH_KEYS[(i+n+1200)%12];}
-function prevMk(mk){return addMonthsKey(mk,-1);}
-function currentMk(){return mkFromDate(TODAY);}
-function rollingMonths(startMk,count){var a=[];for(var i=0;i<count;i++)a.push(addMonthsKey(startMk,i));return a;}
-function daysLeft(){var n=new Date(),last=new Date(n.getFullYear(),n.getMonth()+1,0).getDate();return last-n.getDate()+1;}
-function daysInMonth(){var n=new Date();return new Date(n.getFullYear(),n.getMonth()+1,0).getDate();}
-function actualMK(){return currentMk();}
-
-// NOTE: prevMk('jan') returns 'dec' (prior calendar year). Month keys are year-agnostic.
-// If this app crosses a year boundary, 'dec' will look up the same year's portfolio data.
-// Year tracking is not yet implemented — to be addressed in a future version.
-var CURRENT_MK=currentMk();
-var LAST_ACTUAL=prevMk(CURRENT_MK);
-var NAV_MONTHS=rollingMonths(CURRENT_MK,6);
-
-// ── CATEGORIES AND ASSUMPTIONS ───────────────────────────────
-var EXPENSE_CATS=[
-  {key:'admin',label:'Admin'},
-  {key:'food',label:'Food & Drinks'},
-  {key:'healthcare',label:'Healthcare'},
-  {key:'household',label:'Household'},
-  {key:'installment',label:'Installment'},
-  {key:'others',label:'Others'},
-  {key:'shopping',label:'Shopping'},
-  {key:'sport',label:'Sport & Ent'},
-  {key:'telecom',label:'Telecom'},
-  {key:'topup',label:'Top Up'},
-  {key:'transport',label:'Transportation'},
-  {key:'withdraw',label:'Withdraw'},
-  {key:'zakat',label:'Zakat'},
-  {key:'rizka',label:'Rizka'},
-  {key:'incidental',label:'Incidental'}
-];
-
-var INCOME_CATS=[
-  {key:'salary',label:'Salary'},
-  {key:'rd_return',label:'Reksa Dana return'},
-  {key:'deposito_return',label:'Deposito return'},
-  {key:'sr025_coupon',label:'SR025 coupon'},
-  {key:'sppd',label:'SPPD / Dinas'},
-  {key:'other_income',label:'Other income'}
-];
-
-var INVEST_CATS=[
-  {key:'rd',label:'RD top-up'},
-  {key:'sr025',label:'SR025 T5 – SBN'},
-  {key:'germany_invest',label:'Germany fund (Life Goals)'}
-];
-
-var RATE_CATS=['food','household','shopping','sport','topup','withdraw'];
-
-var PF_INSTRUMENTS=[
-  {key:'bni_saving',label:'BNI Saving',group:'liquid'},
-  {key:'bni_lifegoals',label:'Life Goals',group:'liquid'},
-  {key:'bsi_ops',label:'BSI Operational',group:'liquid'},
-  {key:'bni_deposito',label:'BNI Deposito',group:'fixed',rate:'principal only'},
-  {key:'bni_sbn',label:'SBN (existing)',group:'fixed'},
-  {key:'sr025',label:'SR025 T5',group:'fixed',rate:'5.31% net'},
-  {key:'bni_rd',label:'BNI Reksa Dana',group:'market',rate:'5.50% net'},
-  {key:'mandiri_rd',label:'Mandiri RD',group:'market'},
-  {key:'mandiri_saham',label:'Mandiri Saham',group:'market'},
-  {key:'bsi_gold',label:'BSI Gold',group:'market'},
-  {key:'jmo',label:'JMO',group:'retire'},
-  {key:'bri_9189',label:'BRI-9189',group:'retire'},
-  {key:'bri_8628',label:'BRI-8628',group:'retire'}
-];
-
-var GRP_LABELS={liquid:'Liquid',fixed:'Fixed Income',market:'Market-linked',retire:'Retirement'};
-var GRP_COLORS={liquid:'#185fa5',fixed:'#3b6d11',market:'#ba7517',retire:'#73726c'};
-
-// Centralized forecast assumptions.
-// Keep these here for now. Later they can be moved to a Google Sheets Assumptions tab.
 var ASSUMPTIONS={
-  deposito_gross_rate:0.0275,
-  deposito_tax_rate:0.20,
-  rd_expected_return:0.055,
-  sr025_net_rate:0.0531,
+  rd_expected_return:.055,
   jmo_monthly_contrib:202667,
   bri_9189_monthly_contrib:202667,
   bri_8628_monthly_contrib:202666
 };
 
-function assumption(key,fallback){
-  var v=ASSUMPTIONS[key];
-  return (v===null||v===undefined||v==='')?fallback:v;
-}
+var EXPENSE_CATS=[
+ ['admin','Admin'],['food','Food & Drinks'],['healthcare','Healthcare'],['household','Household'],
+ ['installment','Installment'],['others','Others'],['shopping','Shopping'],['sport','Sport & Ent'],
+ ['telecom','Telecom'],['topup','Top Up'],['transport','Transportation'],['withdraw','Withdraw'],
+ ['zakat','Zakat'],['rizka','Rizka'],['incidental','Incidental']
+].map(function(x){return{key:x[0],label:x[1]};});
 
+var INCOME_CATS=[
+ ['salary','Salary'],['rd_return','Reksa Dana return'],['deposito_return','Deposito return'],
+ ['sr025_coupon','SR025 coupon'],['sppd','SPPD / Dinas'],['other_income','Other income']
+].map(function(x){return{key:x[0],label:x[1]};});
 
-// fallback budget/plan used only when connected but Plan sheet line is missing
+var INVEST_CATS=[
+ ['rd','RD top-up'],['sr025','SR025 T5 – SBN'],['germany_invest','Germany fund / Life Goals']
+].map(function(x){return{key:x[0],label:x[1]};});
+
+var RATE_CATS=['food','household','shopping','sport','topup','withdraw'];
+var PF=[
+ {key:'bni_saving',label:'BNI Saving',group:'liquid'}, {key:'bni_lifegoals',label:'Life Goals',group:'liquid'}, {key:'bsi_ops',label:'BSI Operational',group:'liquid'},
+ {key:'bni_deposito',label:'BNI Deposito',group:'fixed'}, {key:'bni_sbn',label:'SBN Existing',group:'fixed'}, {key:'sr025',label:'SR025 T5',group:'fixed'},
+ {key:'bni_rd',label:'BNI Reksa Dana',group:'market',rate:'5.50% est'}, {key:'mandiri_rd',label:'Mandiri RD',group:'market'}, {key:'mandiri_saham',label:'Mandiri Saham',group:'market'}, {key:'bsi_gold',label:'BSI Gold',group:'market'},
+ {key:'jmo',label:'JMO',group:'retire'}, {key:'bri_9189',label:'BRI-9189',group:'retire'}, {key:'bri_8628',label:'BRI-8628',group:'retire'}
+];
+var GRP_LABELS={liquid:'Liquid',fixed:'Fixed Income',market:'Market-linked',retire:'Retirement'};
+var GRP_COLORS={liquid:'#185fa5',fixed:'#3b6d11',market:'#ba7517',retire:'#73726c'};
 var FB_BUDGET={admin:110000,food:1100000,healthcare:200000,household:200000,installment:9090000,others:100000,shopping:300000,sport:300000,telecom:800000,topup:500000,transport:600000,withdraw:2000000,zakat:0,rizka:1200000,incidental:0};
-var FB_INC={
-  salary:{may:17440701,jun:17440701,jul:17440701,aug:17440701,sep:17440701,oct:17440701},
-  rd_return:{may:454627,jun:531332,jul:608324,aug:666855,sep:856856,oct:878819},
-  deposito_return:{may:540000,jun:540000,jul:540000,aug:540000,sep:0,oct:0},
-  sr025_coupon:{sep:1106250,oct:1106250},
-  sppd:{}, other_income:{}
-};
-var FB_INV={rd:{may:20000000,jun:20000000,jul:20000000,aug:15000000,sep:50000000,oct:5000000},sr025:{sep:250000000},germany_invest:{may:10000000,jun:10000000,jul:10000000,aug:10000000,sep:10000000,oct:10000000}};
 
-// ── STATE ─────────────────────────────────────────────────────
-var S={
-  page:'dashboard',
-  mk:CURRENT_MK,
-  plan:{},income:{},expenses:{},invest:{},portfolio:{},
-  meta:{lastSync:null,lastError:null},
-  settings:{url:'',token:''}
-};
+var S={page:'dashboard',mk:CURRENT_MK,settings:{url:'',token:''},meta:{lastSync:null,lastError:null},plan:{},income:{},expenses:{},invest:{},portfolio:{}};
 
 function load(){
   try{
-    var d=JSON.parse(localStorage.getItem('ptv8')||localStorage.getItem('ptv7')||localStorage.getItem('ptv6')||'{}');
-    S.plan=d.plan||{};S.income=d.income||{};S.expenses=d.expenses||{};S.invest=d.invest||{};S.portfolio=d.portfolio||{};
-    S.settings=d.settings||{url:'',token:''};S.meta=d.meta||{lastSync:null,lastError:null};
-    if(!MONTH_KEYS.includes(S.mk))S.mk=CURRENT_MK;
-  }catch(e){console.warn('Load failed',e);}
+    var old=localStorage.getItem(STORAGE_KEY)||localStorage.getItem('pt_clean_v1')||localStorage.getItem('ptv7')||localStorage.getItem('ptv6')||'{}';
+    var d=JSON.parse(old);
+    S.settings=d.settings||S.settings; S.meta=d.meta||S.meta; S.plan=d.plan||{}; S.income=d.income||{}; S.expenses=d.expenses||{}; S.invest=d.invest||{}; S.portfolio=d.portfolio||{};
+  }catch(e){console.warn(e);}
 }
-function save(){
-  localStorage.setItem('ptv8',JSON.stringify({plan:S.plan,income:S.income,expenses:S.expenses,invest:S.invest,portfolio:S.portfolio,settings:S.settings,meta:S.meta}));
-}
-function connected(){
-  return !!S.settings.url && (hasKeys(S.plan)||hasKeys(S.income)||hasKeys(S.expenses)||hasKeys(S.portfolio)||hasKeys(S.invest));
-}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(S));}
 function hasKeys(o){return o&&Object.keys(o).length>0;}
-
-// ── FORMAT ────────────────────────────────────────────────────
-function fmt(n,opts){
-  opts=opts||{};
-  if(n===null||n===undefined||isNaN(Number(n)))return '—';
-  n=Number(n);
-  if(n===0&&!opts.showZero)return '—';
-  var a=Math.abs(Math.round(n)),s;
-  if(a>=1000000000)s=(a/1000000000).toFixed(2)+'B';
-  else if(a>=1000000)s=(a/1000000).toFixed(1)+'M';
-  else if(a>=1000)s=Math.round(a/1000)+'K';
-  else s=a.toLocaleString('id-ID');
-  return (n<0?'−':'')+'Rp '+s;
-}
-function fmtFull(n){
-  if(n===null||n===undefined||isNaN(Number(n)))return '—';
-  return 'Rp '+Math.round(Math.abs(Number(n))).toLocaleString('id-ID');
-}
-function fmtPct(n){return isFinite(n)?(n>=0?'+':'')+n.toFixed(2)+'%':'—';}
-function fmtDateTime(iso){
-  if(!iso)return 'Never';
-  try{return new Date(iso).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
-  catch(e){return iso;}
-}
-function toast(m){
-  var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');
-  clearTimeout(t._timer);t._timer=setTimeout(function(){t.classList.remove('show');},2600);
-}
-function set(h){document.getElementById('pageContent').innerHTML=h;}
-function notConnectedBanner(){
-  return '<div class="not-connected"><span style="font-size:16px;flex-shrink:0">🔌</span><div><strong>Not connected to Google Sheets.</strong><br>Go to Settings and enter Apps Script URL and token.</div></div>';
-}
-function dataNote(){
-  return '<div class="small-note">Last sync: <strong>'+fmtDateTime(S.meta.lastSync)+'</strong>'+(S.meta.lastError?' · Last error: '+escapeHtml(S.meta.lastError):'')+'</div>';
-}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];});}
-
-// ── DATA ACCESSORS ────────────────────────────────────────────
-function valueAt(obj,mk,k){
-  if(!connected())return null;
-  var v=((obj[mk]||{})[k]);
-  return (v===null||v===undefined||v==='')?null:Number(v)||0;
-}
-function gExp(mk,k){return valueAt(S.expenses,mk,k);}
-function gInc(mk,k){return valueAt(S.income,mk,k);}
-function gInv(mk,k){return valueAt(S.invest,mk,k);}
+function connected(){return !!S.settings.url && (hasKeys(S.plan)||hasKeys(S.income)||hasKeys(S.expenses)||hasKeys(S.portfolio)||hasKeys(S.invest));}
 function num(v){return v===null||v===undefined||isNaN(Number(v))?0:Number(v);}
+function fmt(n,opt){opt=opt||{};if(n===null||n===undefined||isNaN(Number(n)))return '—';n=Number(n);if(n===0&&!opt.showZero)return '—';var a=Math.abs(Math.round(n)),s;if(a>=1e9)s=(a/1e9).toFixed(2)+'B';else if(a>=1e6)s=(a/1e6).toFixed(1)+'M';else if(a>=1e3)s=Math.round(a/1e3)+'K';else s=a.toLocaleString('id-ID');return(n<0?'−':'')+'Rp '+s;}
+function fmtPct(n){return isFinite(n)?(n>=0?'+':'')+n.toFixed(2)+'%':'—';}
+function fmtDate(iso){if(!iso)return 'Never';try{return new Date(iso).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}catch(e){return iso;}}
+function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];});}
 
-function gBudget(k,mk){
-  mk=mk||CURRENT_MK;
-  if(!connected())return null;
-  var fromSheet=((S.plan.expenses||{})[k]||{})[mk];
-  if(fromSheet!==undefined&&fromSheet!==null)return Number(fromSheet)||0;
-  return FB_BUDGET[k]||0;
-}
-function gPlanInc(mk,k){
-  if(!connected())return null;
-  var fromSheet=((S.plan.income||{})[k]||{})[mk];
-  if(fromSheet!==undefined&&fromSheet!==null)return Number(fromSheet)||0;
-  return ((FB_INC[k]||{})[mk]||0);
-}
-function gPlanInv(k,mk){
-  if(!connected())return null;
-  var fromSheet=((S.plan.investments||{})[k]||{})[mk];
-  if(fromSheet!==undefined&&fromSheet!==null)return Number(fromSheet)||0;
-  return ((FB_INV[k]||{})[mk]||0);
-}
-function total(list,fn){return list.reduce(function(s,c){return s+num(fn(c));},0);}
-function totExp(mk){return total(EXPENSE_CATS,function(c){return gExp(mk,c.key);});}
-function totInc(mk){return total(INCOME_CATS,function(c){return gInc(mk,c.key);});}
-function totInv(mk){return total(INVEST_CATS,function(c){return gInv(mk,c.key);});}
-function totBudget(mk){return total(EXPENSE_CATS,function(c){return gBudget(c.key,mk);});}
-function totPlanInc(mk){return total(INCOME_CATS,function(c){return gPlanInc(mk,c.key);});}
-
+function get(obj,mk,k){var v=((obj[mk]||{})[k]);return(v===null||v===undefined||v==='')?null:Number(v)||0;}
+function gExp(mk,k){return get(S.expenses,mk,k);}
+function gInc(mk,k){return get(S.income,mk,k);}
+function gInv(mk,k){return get(S.invest,mk,k);}
+function gBudget(k,mk){mk=mk||CURRENT_MK;var v=((S.plan.expenses||{})[k]||{})[mk];return v!==undefined&&v!==null?Number(v)||0:FB_BUDGET[k]||0;}
+function gPlanInc(mk,k){var v=((S.plan.income||{})[k]||{})[mk];return v!==undefined&&v!==null?Number(v)||0:0;}
+function gPlanInv(k,mk){var v=((S.plan.investments||{})[k]||{})[mk];return v!==undefined&&v!==null?Number(v)||0:0;}
+function sum(cats,fn){return cats.reduce(function(s,c){return s+num(fn(c));},0);}
+function totExp(mk){return sum(EXPENSE_CATS,function(c){return gExp(mk,c.key);});}
+function totInc(mk){return sum(INCOME_CATS,function(c){return gInc(mk,c.key);});}
+function totInv(mk){return sum(INVEST_CATS,function(c){return gInv(mk,c.key);});}
+function totBudget(mk){return sum(EXPENSE_CATS,function(c){return gBudget(c.key,mk);});}
+function totPlanInc(mk){return sum(INCOME_CATS,function(c){return gPlanInc(mk,c.key);});}
 function incidentalExp(mk){return num(gExp(mk,'incidental'));}
-function regularExp(mk){
-  return EXPENSE_CATS.reduce(function(s,c){
-    return c.key==='incidental'?s:s+num(gExp(mk,c.key));
-  },0);
-}
-function regularBudget(mk){
-  return EXPENSE_CATS.reduce(function(s,c){
-    return c.key==='incidental'?s:s+num(gBudget(c.key,mk));
-  },0);
-}
-function regularRemaining(mk){return regularBudget(mk)-regularExp(mk);}
+function regularExp(mk){return EXPENSE_CATS.reduce(function(s,c){return c.key==='incidental'?s:s+num(gExp(mk,c.key));},0);}
+function regularBudget(mk){return EXPENSE_CATS.reduce(function(s,c){return c.key==='incidental'?s:s+num(gBudget(c.key,mk));},0);}
+function estIncome(mk){return INCOME_CATS.reduce(function(s,c){var a=gInc(mk,c.key);return s+num(a!==null?a:gPlanInc(mk,c.key));},0);}
+function estInvestByKey(mk,key){var a=gInv(mk,key);return num(a!==null?a:gPlanInv(key,mk));}
 
-function controlledExpenseCats(){return EXPENSE_CATS.filter(function(c){return c.key!=='incidental';});}
-function totControlledExp(mk){return total(controlledExpenseCats(),function(c){return gExp(mk,c.key);});}
-function totControlledBudget(mk){return total(controlledExpenseCats(),function(c){return gBudget(c.key,mk);});}
-function estIncome(mk){
-  return total(INCOME_CATS,function(c){
-    var actual=gInc(mk,c.key), plan=gPlanInc(mk,c.key);
-    return actual!==null?actual:plan;
-  });
-}
-function estInvestByKey(mk,key){
-  var actual=gInv(mk,key), plan=gPlanInv(key,mk);
-  return num(actual!==null?actual:plan);
-}
-function hasExpData(mk){return connected()&&EXPENSE_CATS.some(function(c){return gExp(mk,c.key)!==null;});}
-function hasMonthData(mk){return connected()&&(INCOME_CATS.some(function(c){return gInc(mk,c.key)!==null;})||EXPENSE_CATS.some(function(c){return gExp(mk,c.key)!==null;}));}
+function pfActual(key,period){var d=S.portfolio[key];if(!d)return null;var v=d[period];return(v===null||v===undefined||v==='')?null:Number(v)||0;}
+function pfBal(key,period){var a=pfActual(key,period);if(a!==null)return a;if(period===CURRENT_MK){var ins=PF.find(function(i){return i.key===key;});return forecast(ins,pfActual(key,LAST_ACTUAL),period);}return 0;}
+function forecast(ins,prev,mk){if(!ins||prev===null||prev===undefined)return 0;if(ins.key==='bni_deposito')return prev;if(ins.key==='bni_rd')return prev+prev*ASSUMPTIONS.rd_expected_return/12+estInvestByKey(mk,'rd');if(ins.key==='sr025')return prev+estInvestByKey(mk,'sr025');if(ins.key==='bni_lifegoals')return prev+estInvestByKey(mk,'germany_invest');if(ins.key==='bni_saving')return prev+estIncome(mk)-totExp(mk)-estInvestByKey(mk,'rd')-estInvestByKey(mk,'germany_invest')-estInvestByKey(mk,'sr025');if(ins.key==='jmo')return prev+ASSUMPTIONS.jmo_monthly_contrib;if(ins.key==='bri_9189')return prev+ASSUMPTIONS.bri_9189_monthly_contrib;if(ins.key==='bri_8628')return prev+ASSUMPTIONS.bri_8628_monthly_contrib;return prev;}
+function totPf(p){return PF.reduce(function(s,i){return s+num(pfBal(i.key,p));},0);}
+function grpTot(g,p){return PF.filter(function(i){return i.group===g;}).reduce(function(s,i){return s+num(pfBal(i.key,p));},0);}
+function emFund(){var liq=num(pfBal('bni_saving',LAST_ACTUAL))+num(pfBal('bsi_ops',LAST_ACTUAL));return regularBudget(CURRENT_MK)>0?liq/regularBudget(CURRENT_MK):0;}
 
-// ── PORTFOLIO AND FORECAST ───────────────────────────────────
-function pfActual(key,period){
-  if(!connected())return null;
-  var d=S.portfolio[key];if(!d)return null;
-  var v=d[period];return(v===null||v===undefined||v==='')?null:Number(v)||0;
-}
-function pfForecast(instr,prev,mk){
-  if(prev===null||prev===undefined)return null;
-  mk=mk||CURRENT_MK;
+function pageEl(){return document.getElementById('pageContent');}
+function subEl(){return document.getElementById('subBar');}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(function(){t.classList.remove('show');},2200);}
+function note(){return connected()?'<div class="small-note">Last sync: <strong>'+fmtDate(S.meta.lastSync)+'</strong>'+(S.meta.lastError?' · Last error: '+esc(S.meta.lastError):'')+'</div>':'';}
+function notConnected(){return '<div class="not-connected"><span>🔌</span><div><strong>Not connected to Google Sheets.</strong><br>Go to Settings and enter Apps Script URL and token.</div></div>';}
+function nav(p){S.page=p;document.querySelectorAll('.nav-item').forEach(function(b){b.classList.toggle('active',b.dataset.page===p);});subEl().innerHTML='';if(p==='dashboard')renderDashboard();if(p==='monthly')renderMonthly();if(p==='portfolio')renderPortfolio();if(p==='settings')renderSettings();}
+function metric(lbl,val,sub,cls){return '<div class="metric"><div class="lbl">'+lbl+'</div><div class="val '+(cls||'')+'">'+val+'</div><div class="sub">'+(sub||'')+'</div></div>';}
 
-  // Deposito value is principal only. Interest is handled as income via deposito_return.
-  if(instr.key==='bni_deposito')return prev;
-
-  // Conservative RD forecast: previous balance earns estimated return; top-up is added separately.
-  if(instr.key==='bni_rd'){
-    var rdTopup=estInvestByKey(mk,'rd');
-    var rdRate=assumption('rd_expected_return',0.055);
-    return prev+prev*rdRate/12+rdTopup;
-  }
-
-  if(instr.key==='sr025')return prev+estInvestByKey(mk,'sr025');
-  if(instr.key==='bni_lifegoals')return prev+estInvestByKey(mk,'germany_invest');
-
-  if(instr.key==='bni_saving'){
-    var rdOut=estInvestByKey(mk,'rd');
-    var lgOut=estInvestByKey(mk,'germany_invest');
-    var srOut=estInvestByKey(mk,'sr025');
-    var inc=estIncome(mk);
-    var exp=totExp(mk); // actual expenses only, including incidental
-    return prev+inc-exp-rdOut-lgOut-srOut;
-  }
-
-  if(instr.key==='jmo')return prev+assumption('jmo_monthly_contrib',202667);
-  if(instr.key==='bri_9189')return prev+assumption('bri_9189_monthly_contrib',202667);
-  if(instr.key==='bri_8628')return prev+assumption('bri_8628_monthly_contrib',202666);
-
-  // Default method for market/manual assets: carry forward previous month.
-  return prev;
-}
-function pfBal(key,period){
-  if(!connected())return 0;
-  var a=pfActual(key,period);if(a!==null)return a;
-  if(period===CURRENT_MK){
-    var ins=PF_INSTRUMENTS.find(function(i){return i.key===key;});
-    if(ins)return pfForecast(ins,pfActual(key,LAST_ACTUAL),period);
-  }
-  return 0;
-}
-function totPf(period){return PF_INSTRUMENTS.reduce(function(s,i){return s+num(pfBal(i.key,period));},0);}
-function grpTot(g,period){return PF_INSTRUMENTS.filter(function(i){return i.group===g;}).reduce(function(s,i){return s+num(pfBal(i.key,period));},0);}
-function blendYield(){
-  if(!connected())return 0;
-  var rates={
-    bni_deposito:assumption('deposito_gross_rate',0.0275)*(1-assumption('deposito_tax_rate',0.20)),
-    bni_rd:assumption('rd_expected_return',0.055),
-    sr025:assumption('sr025_net_rate',0.0531)
-  },n=0,d=0;
-  PF_INSTRUMENTS.forEach(function(i){var b=pfBal(i.key,LAST_ACTUAL)||0;if(rates[i.key]){n+=b*rates[i.key];d+=b;}});
-  return d>0?n/d*100:0;
-}
-function annIncome(){
-  if(!connected())return 0;
-  var rates={
-    bni_deposito:assumption('deposito_gross_rate',0.0275)*(1-assumption('deposito_tax_rate',0.20)),
-    bni_rd:assumption('rd_expected_return',0.055),
-    sr025:assumption('sr025_net_rate',0.0531)
-  };
-  return PF_INSTRUMENTS.reduce(function(s,i){return s+(rates[i.key]||0)*(pfBal(i.key,LAST_ACTUAL)||0);},0);
-}
-function emFund(){
-  if(!connected())return 0;
-  var liq=(pfBal('bni_saving',LAST_ACTUAL)||0)+(pfBal('bsi_ops',LAST_ACTUAL)||0);
-  return totBudget(CURRENT_MK)>0?liq/totBudget(CURRENT_MK):0;
-}
-
-// ── CHARTS ────────────────────────────────────────────────────
-function mkChart(id,cfg){
-  var el=document.getElementById(id);if(!el||typeof Chart==='undefined')return;
-  if(el._ch){el._ch.destroy();el._ch=null;}
-  cfg.options=cfg.options||{};cfg.options.responsive=true;cfg.options.maintainAspectRatio=false;
-  el._ch=new Chart(el,cfg);
-}
-function deepMerge(t,s){
-  Object.keys(s).forEach(function(k){
-    if(s[k]&&typeof s[k]==='object'&&!Array.isArray(s[k])&&t[k]&&typeof t[k]==='object')deepMerge(t[k],s[k]);
-    else t[k]=s[k];
-  });
-  return t;
-}
-function chartOpts(extra){
-  var o={plugins:{legend:{labels:{color:'#888780',font:{size:11},boxWidth:10,boxHeight:10}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fmt(c.raw,{showZero:true});}}}},
-    scales:{x:{ticks:{color:'#888780'},grid:{display:false}},y:{ticks:{color:'#888780',callback:function(v){return'Rp '+(v/1000000000).toFixed(2)+'B';}},grid:{color:'rgba(0,0,0,0.05)'}}}};
-  if(extra)deepMerge(o,extra);
-  return o;
-}
-
-// ── NAVIGATION ────────────────────────────────────────────────
-function nav(page){
-  S.page=page;
-  ['dashboard','monthly','portfolio','settings'].forEach(function(p){
-    var el=document.getElementById('nav-'+p);if(el)el.classList.toggle('active',p===page);
-  });
-  document.getElementById('subBar').innerHTML='';
-  if(page==='dashboard')renderDashboard();
-  else if(page==='monthly')renderMonthly();
-  else if(page==='portfolio')renderPortfolio();
-  else renderSettings();
-}
-
-// ── DASHBOARD ─────────────────────────────────────────────────
 function renderDashboard(){
-  var con=connected(), aprT=totPf(LAST_ACTUAL), curT=totPf(CURRENT_MK), startT=totPf('start');
-  var mom=aprT>0?(curT-aprT)/aprT*100:0, ef=emFund(), ai=annIncome(), ey=blendYield();
-  var curE=totExp(CURRENT_MK),curI=totInc(CURRENT_MK),curV=totInv(CURRENT_MK),net=curI-curE-curV,eb=totBudget(CURRENT_MK);
-  var h='';
-  if(!con)h+=notConnectedBanner(); else h+=dataNote();
-  h+='<div class="section">Portfolio — '+labelFromMk(LAST_ACTUAL)+' actual / '+labelFromMk(CURRENT_MK)+' forecast</div>';
-  h+='<div class="g2"><div class="metric"><div class="lbl">Total ('+labelFromMk(LAST_ACTUAL)+')</div><div class="val">'+fmt(aprT)+'</div><div class="sub">last complete month</div></div>';
-  h+='<div class="metric"><div class="lbl">'+labelFromMk(CURRENT_MK)+' forecast <span class="fc-badge">est.</span></div><div class="val '+(con?'pos':'')+'">'+fmt(curT)+'</div><div class="sub">'+(con?fmtPct(mom)+' vs '+labelFromMk(LAST_ACTUAL):'—')+'</div></div></div>';
-  h+='<div class="g3"><div class="metric"><div class="lbl">YTD growth</div><div class="val '+(con?'pos':'')+'">'+fmt(aprT-startT)+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Blended yield</div><div class="val">'+(con?ey.toFixed(2)+'%':'—')+'</div><div class="sub">net</div></div>';
-  h+='<div class="metric"><div class="lbl">Inv. income/yr</div><div class="val '+(con?'pos':'')+'">'+fmt(ai)+'</div></div></div>';
-  h+='<div class="section">Emergency fund ('+labelFromMk(LAST_ACTUAL)+')</div><div class="card"><div style="padding:12px 14px">';
-  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:13px">'+(con?ef.toFixed(1)+'× months covered':'—')+'</span>';
-  if(con)h+='<span class="badge '+(ef>=6?'b-ok':ef>=3?'b-warn':'b-danger')+'">'+(ef>=6?'Healthy':ef>=3?'Low':'Critical')+'</span>';
-  h+='</div><div class="pbar" style="height:8px"><div class="pfill" style="width:'+(con?Math.min(100,ef/6*100).toFixed(0):0)+'%;background:'+(ef>=6?'#3b6d11':ef>=3?'#ba7517':'#a32d2d')+'"></div></div>';
-  h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>0×</span><span>Target 6×</span></div></div></div>';
-  h+='<div class="section">'+fullLabelFromMk(CURRENT_MK)+' '+TODAY.getFullYear()+' — current month</div>';
-  if(con&&hasMonthData(CURRENT_MK)){
-    h+='<div class="g2"><div class="metric"><div class="lbl">Income <span class="fc-badge">partial</span></div><div class="val pos">'+fmt(curI,{showZero:true})+'</div><div class="sub">plan: '+fmt(totPlanInc(CURRENT_MK),{showZero:true})+'</div></div>';
-    h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(curE>eb?'neg':'')+'">'+fmt(curE,{showZero:true})+'</div><div class="sub">budget: '+fmt(eb,{showZero:true})+'</div></div></div>';
-    h+='<div class="g2"><div class="metric"><div class="lbl">Invested</div><div class="val pos">'+fmt(curV,{showZero:true})+'</div></div>';
-    h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(net<0?'neg':'pos')+'">'+fmt(net,{showZero:true})+'</div><div class="sub">'+(net<0?'from savings':'surplus')+'</div></div></div>';
-  }else{
-    h+='<div class="card"><div style="padding:14px;font-size:13px;color:#888780">'+(con?'No '+labelFromMk(CURRENT_MK)+' data yet. Update Google Sheets and tap ↻ Sync.':'Connect Google Sheets to see data.')+'</div></div>';
-  }
-  h+='<div class="section">Alerts</div><div class="card">';
-  buildAlerts(CURRENT_MK).forEach(function(a){h+='<div class="alert-item"><span>'+aIcon(a.t)+'</span><div class="alert-text">'+a.m+'</div></div>';});
-  h+='</div>';
-  h+='<div class="section">Asset allocation ('+labelFromMk(LAST_ACTUAL)+')</div><div class="card">';
-  Object.keys(GRP_LABELS).forEach(function(g){
-    var amount=grpTot(g,LAST_ACTUAL),pct=aprT>0?amount/aprT*100:0;
-    h+='<div style="padding:8px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">';
-    h+='<span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:'+GRP_COLORS[g]+';display:inline-block"></span>'+GRP_LABELS[g]+'</span>';
-    h+='<span><strong>'+fmt(amount)+'</strong> <span style="color:#888780;font-size:12px">'+(con?pct.toFixed(1):'—')+'%</span></span></div>';
-    h+='<div class="pbar"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+GRP_COLORS[g]+'"></div></div></div>';
-  });
-  h+='</div>';
-  set(h);
+ var h='';if(!connected())h+=notConnected();else h+=note();
+ var last=totPf(LAST_ACTUAL),cur=totPf(CURRENT_MK),mom=last>0?(cur-last)/last*100:0,ef=emFund();
+ h+='<div class="section">Portfolio — '+label(LAST_ACTUAL)+' actual / '+label(CURRENT_MK)+' forecast</div>';
+ h+='<div class="g2">'+metric('Total ('+label(LAST_ACTUAL)+')',fmt(last),'last complete month')+metric(label(CURRENT_MK)+' forecast <span class="fc-badge">est.</span>',fmt(cur),connected()?fmtPct(mom)+' vs '+label(LAST_ACTUAL):'—','pos')+'</div>';
+ h+='<div class="g3">'+metric('YTD growth',fmt(last-pfBal('bni_saving','start')),'','pos')+metric('Emergency',connected()?ef.toFixed(1)+'×':'—','months covered')+metric('Income est.',fmt(estIncome(CURRENT_MK),{showZero:connected()}),'this month','pos')+'</div>';
+ h+='<div class="section">Alerts</div><div class="card">'+alerts().map(function(a){return '<div class="alert-item"><span>'+a.icon+'</span><div class="alert-text">'+a.text+'</div></div>';}).join('')+'</div>';
+ h+='<div class="section">Asset allocation ('+label(LAST_ACTUAL)+')</div><div class="card">';
+ Object.keys(GRP_LABELS).forEach(function(g){var amt=grpTot(g,LAST_ACTUAL),pct=last>0?amt/last*100:0;h+='<div style="padding:8px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>'+GRP_LABELS[g]+'</span><span><strong>'+fmt(amt)+'</strong> <span style="color:#888780;font-size:12px">'+(connected()?pct.toFixed(1):'—')+'%</span></span></div><div class="pbar"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+GRP_COLORS[g]+'"></div></div></div>';});
+ h+='</div>';pageEl().innerHTML=h;
 }
+function alerts(){var a=[];if(!connected())return[{icon:'🔵',text:'Connect Google Sheets in Settings to see alerts.'}];if(CURRENT_MK==='dec')a.push({icon:'🔵',text:'<strong>Year-end reminder.</strong> In early January, archive this tracker and move December closing balances to Start.'});a.push({icon:'🟢',text:'<strong>All clear.</strong> Current month uses actual values where filled and estimates blanks.'});return a;}
 
-// ── MONTHLY PAGE ──────────────────────────────────────────────
 function renderMonthly(){
-  var bar='<div class="mo-scroll">';
-  NAV_MONTHS.forEach(function(mk){bar+='<button class="mo-chip'+(mk===S.mk?' active':'')+'" onclick="selMo(\''+mk+'\')">'+labelFromMk(mk)+'</button>';});
-  bar+='</div>';document.getElementById('subBar').innerHTML=bar;
-  var con=connected(),mk=S.mk,tI=totInc(mk),tE=totExp(mk),tV=totInv(mk),pI=totPlanInc(mk),pE=totBudget(mk),net=tI-tE-tV;
-  var dl=daysLeft(),dim=daysInMonth(),dp=dim-dl+1,amk=actualMK(),isCur=(mk===amk),hasExp=hasExpData(mk);
-  var h=''; if(con)h+=dataNote();
-  h+='<div class="section">'+fullLabelFromMk(mk)+' Summary</div><div class="g2">';
-  h+='<div class="metric"><div class="lbl">Income'+(mk===CURRENT_MK?'<span class="fc-badge">partial</span>':'')+'</div><div class="val '+(tI>0?'pos':'')+'">'+fmt(tI,{showZero:con})+'</div><div class="sub">'+(pI!==null?'plan: '+fmt(pI,{showZero:true}):'—')+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Expenses</div><div class="val '+(tE>pE&&pE>0?'neg':'')+'">'+fmt(tE,{showZero:con})+'</div><div class="sub">'+(pE!==null?'budget: '+fmt(pE,{showZero:true}):'—')+'</div></div></div>';
-  h+='<div class="g2"><div class="metric"><div class="lbl">Invested</div><div class="val pos">'+fmt(tV,{showZero:con})+'</div></div>';
-  h+='<div class="metric"><div class="lbl">Net flow</div><div class="val '+(tI>0?(net<0?'neg':'pos'):'')+'">'+fmt(net,{showZero:con})+'</div><div class="sub">'+(tI>0?(net<0?'from savings':'surplus'):'')+'</div></div></div>';
-  if(con)h+=renderExpenseControl(mk);
-  
-  h+='<div class="section">Daily & weekly spending rate</div>';
-  if(!con)h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">Connect Google Sheets to see spending rate.</div></div>';
-  else if(!isCur)h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">📅 Rate only available for current month.<br><span style="font-size:12px">Switch to <strong>'+labelFromMk(amk)+'</strong>.</span></div></div>';
-  else if(!hasExp)h+='<div class="card"><div style="padding:16px;text-align:center;font-size:13px;color:#888780">No expense data for '+labelFromMk(mk)+' yet.<br><span style="font-size:12px">Update ExpenseActuals sheet and tap ↻ Sync.</span></div></div>';
-  else h+=renderSpendingRate(mk,dl,dim,dp);
-  h+=renderBreakdown('Expense breakdown',EXPENSE_CATS,function(c){return gExp(mk,c.key);},function(c){return gBudget(c.key,mk);},'budget');
-  h+=renderBreakdown('Income breakdown',INCOME_CATS,function(c){return gInc(mk,c.key);},function(c){return gPlanInc(mk,c.key);},'plan');
-  h+=renderInvestments(mk);
-  set(h);
+ var bar='<div class="mo-scroll">';NAV_MONTHS.forEach(function(m){bar+='<button class="mo-chip '+(m===S.mk?'active':'')+'" data-mk="'+m+'">'+label(m)+'</button>';});bar+='</div>';subEl().innerHTML=bar;subEl().querySelectorAll('.mo-chip').forEach(function(b){b.onclick=function(){S.mk=b.dataset.mk;renderMonthly();};});
+ var mk=S.mk,h='';if(!connected())h+=notConnected();else h+=note();
+ var tI=totInc(mk),tE=totExp(mk),tV=totInv(mk),net=estIncome(mk)-tE-estInvestByKey(mk,'rd')-estInvestByKey(mk,'germany_invest')-estInvestByKey(mk,'sr025');
+ h+='<div class="section">'+fullLabel(mk)+' Summary</div><div class="g2">'+metric('Income <span class="fc-badge">partial</span>',fmt(tI,{showZero:connected()}),'est: '+fmt(estIncome(mk),{showZero:connected()}),'pos')+metric('Expenses',fmt(tE,{showZero:connected()}),'regular: '+fmt(regularExp(mk),{showZero:connected()}))+'</div>';
+ h+='<div class="g2">'+metric('Invested',fmt(tV,{showZero:connected()}),'planned/actual','pos')+metric('Net flow',fmt(net,{showZero:connected()}),net<0?'from savings':'surplus',net<0?'neg':'pos')+'</div>';
+ if(connected())h+=expenseControl(mk);
+ h+='<div class="section">Daily & weekly spending rate</div>'+spendingRate(mk);
+ h+=breakdown('Expense breakdown',EXPENSE_CATS,function(c){return gExp(mk,c.key);},function(c){return gBudget(c.key,mk);},'budget');
+ h+=breakdown('Income breakdown',INCOME_CATS,function(c){return gInc(mk,c.key);},function(c){return gPlanInc(mk,c.key);},'plan');
+ h+=investments(mk);pageEl().innerHTML=h;bindCollapses();
 }
+function expenseControl(mk){var total=totExp(mk),reg=regularExp(mk),inc=incidentalExp(mk),bud=regularBudget(mk),rem=bud-reg,pct=bud>0?Math.min(100,reg/bud*100):0,col=reg>bud?'#a32d2d':pct>85?'#ba7517':'#3b6d11';return '<div class="section">Expense control</div><div class="card"><div style="padding:12px 14px"><div class="g2" style="margin-bottom:10px"><div><div class="lbl">Regular expenses</div><div class="val">'+fmt(reg,{showZero:true})+'</div><div class="sub">excluding incidental</div></div><div style="text-align:right"><div class="lbl">Remaining budget</div><div class="val" style="color:'+col+'">'+fmt(rem,{showZero:true})+'</div><div class="sub">budget: '+fmt(bud,{showZero:true})+'</div></div></div><div class="pbar" style="height:7px"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:'+col+'"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Regular spent: '+fmt(reg,{showZero:true})+'</span><span>'+pct.toFixed(0)+'% used</span></div></div><div class="row"><span class="row-label">Incidental expenses</span><div><div class="row-val warn-c">'+fmt(inc,{showZero:true})+'</div><div class="row-sub">non-recurring</div></div></div><div class="row"><span class="row-label">Total expenses</span><div><div class="row-val">'+fmt(total,{showZero:true})+'</div><div class="row-sub">regular + incidental</div></div></div></div>';}
+function spendingRate(mk){var left=dleft(),spent=0,bud=0;RATE_CATS.forEach(function(k){spent+=num(gExp(mk,k));bud+=num(gBudget(k,mk));});var rem=Math.max(0,bud-spent),daily=left>0?rem/left:0,weekly=daily*7,pct=bud>0?Math.min(100,spent/bud*100):0;return '<div style="font-size:12px;color:#888780;margin-bottom:8px">'+left+' days left · '+(dim()-left+1)+' of '+dim()+' days gone</div><div class="card"><div style="padding:12px 14px"><div style="font-size:13px;font-weight:700;margin-bottom:4px">Controllable categories</div><div style="font-size:11px;color:#888780;margin-bottom:10px">Daily-use categories only; excludes incidental and fixed bills.</div><div style="display:flex;gap:8px;margin-bottom:10px"><div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val">'+fmt(daily,{showZero:true})+'</div><div class="rb-unit">/day</div></div><div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val">'+fmt(weekly,{showZero:true})+'</div><div class="rb-unit">/week</div></div></div><div class="pbar" style="height:7px"><div class="pfill" style="width:'+pct.toFixed(0)+'%;background:#3b6d11"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Spent: '+fmt(spent,{showZero:true})+'</span><span>Remaining: '+fmt(rem,{showZero:true})+'</span></div></div></div>';}
+function collapse(title,body,id){return '<div class="section">'+title+'</div><div class="card"><button class="row collapse-head" data-target="'+id+'" style="width:100%;background:#fff"><span style="font-size:13px;font-weight:700">'+title+'</span><span id="'+id+'-icon" style="color:#185fa5">▾</span></button><div id="'+id+'" style="display:none">'+body+'</div></div>';}
+function breakdown(title,cats,act,plan,labelText){var body='';cats.forEach(function(c){var a=act(c),p=plan(c);if(a===null&&p===null)return;var av=num(a),pv=num(p),over=labelText==='budget'&&pv>0&&av>pv,df=av-pv;body+='<div class="row"><span class="row-label" style="'+(over?'color:#a32d2d':'')+'">'+c.label+(over?' ▲':'')+'</span><div><div class="row-val '+(over?'neg':'')+'">'+fmt(av,{showZero:a!==null})+'</div><div class="row-sub">'+(a!==null?(df>=0?'+':'')+fmt(df,{showZero:true})+' vs '+labelText:labelText+': '+fmt(pv,{showZero:true}))+'</div></div></div>';});if(!body)body='<div style="padding:12px 14px;font-size:13px;color:#888780">No data yet.</div>';return collapse(title,body,title.toLowerCase().replace(/\s+/g,'-'));}
+function investments(mk){var h='<div class="section">Investments</div><div class="card">';INVEST_CATS.forEach(function(c){var a=gInv(mk,c.key),p=gPlanInv(c.key,mk);if(a===null&&p===0)return;h+='<div class="row"><span class="row-label">'+c.label+'</span><div><div class="row-val pos">'+fmt(num(a),{showZero:a!==null})+'</div><div class="row-sub">plan: '+fmt(p,{showZero:true})+'</div></div></div>';});return h+'</div>';}
+function bindCollapses(){document.querySelectorAll('.collapse-head').forEach(function(b){b.onclick=function(){var id=b.dataset.target,el=document.getElementById(id),ic=document.getElementById(id+'-icon'),open=el.style.display==='none';el.style.display=open?'block':'none';ic.textContent=open?'▴':'▾';};});}
 
-function renderExpenseControl(mk){
-  var total=totExp(mk),regular=regularExp(mk),inc=incidentalExp(mk),budget=regularBudget(mk),remain=regularRemaining(mk);
-  var pct=budget>0?Math.min(100,regular/budget*100):0;
-  var col=regular>budget&&budget>0?'#a32d2d':pct>85?'#ba7517':'#3b6d11';
-  var h='<div class="section">Expense control</div>';
-  h+='<div class="card">';
-  h+='<div style="padding:12px 14px">';
-  h+='<div class="g2" style="margin-bottom:10px">';
-  h+='<div><div class="lbl" style="font-size:11px;color:#888780;margin-bottom:3px">Regular expenses</div><div class="val" style="font-size:18px;font-weight:650">'+fmt(regular,{showZero:true})+'</div><div class="sub" style="font-size:11px;color:#888780;margin-top:2px">excluding incidental</div></div>';
-  h+='<div style="text-align:right"><div class="lbl" style="font-size:11px;color:#888780;margin-bottom:3px">Remaining budget</div><div class="val" style="font-size:18px;font-weight:650;color:'+col+'">'+fmt(remain,{showZero:true})+'</div><div class="sub" style="font-size:11px;color:#888780;margin-top:2px">budget: '+fmt(budget,{showZero:true})+'</div></div>';
-  h+='</div>';
-  h+='<div class="pbar" style="height:7px"><div class="pfill" style="width:'+Math.min(100,pct).toFixed(0)+'%;background:'+col+'"></div></div>';
-  h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Regular spent: '+fmt(regular,{showZero:true})+'</span><span>'+pct.toFixed(0)+'% used</span></div>';
-  h+='</div>';
-  h+='<div class="row"><span class="row-label">Incidental expenses</span><div><div class="row-val warn-c">'+fmt(inc,{showZero:true})+'</div><div class="row-sub">non-recurring</div></div></div>';
-  h+='<div class="row"><span class="row-label">Total expenses</span><div><div class="row-val">'+fmt(total,{showZero:true})+'</div><div class="row-sub">regular + incidental</div></div></div>';
-  h+='</div>';
-  return h;
-}
+function historyPeriods(){var arr=['start'];var idx=MONTH_KEYS.indexOf(LAST_ACTUAL);for(var i=0;i<=idx;i++)arr.push(MONTH_KEYS[i]);return arr;}
+function renderPortfolio(){var hist=historyPeriods(),vals=hist.map(function(p){return totPf(p);}),max=Math.max.apply(null,vals.concat([totPf(CURRENT_MK),1]));var h='';if(!connected())h+=notConnected();else h+=note();h+='<div class="section">Key metrics</div><div class="g2">'+metric('Portfolio ('+label(LAST_ACTUAL)+')',fmt(totPf(LAST_ACTUAL)),'last complete month')+metric(label(CURRENT_MK)+' forecast <span class="fc-badge">est.</span>',fmt(totPf(CURRENT_MK)),totPf(LAST_ACTUAL)?fmtPct((totPf(CURRENT_MK)-totPf(LAST_ACTUAL))/totPf(LAST_ACTUAL)*100)+' vs '+label(LAST_ACTUAL):'—','pos')+'</div>';h+='<div class="section">Growth over time</div><div class="card"><div class="chart-simple">';hist.concat([CURRENT_MK]).forEach(function(p,i){var v=totPf(p);h+='<div class="bar '+(i===hist.length?'est':'')+'" style="height:'+Math.max(8,v/max*120)+'px"></div>';});h+='</div><div class="chart-labels">'+hist.concat([CURRENT_MK]).map(function(p){return '<span>'+(p==='start'?'Start':label(p))+'</span>';}).join('')+'</div></div><div class="section">Holdings</div><div class="card">';var group='';PF.forEach(function(i){if(i.group!==group){h+='<div class="pf-grp">'+GRP_LABELS[i.group]+'</div>';group=i.group;}var ab=pfBal(i.key,LAST_ACTUAL),mb=pfBal(i.key,CURRENT_MK),df=mb-ab,isFC=pfActual(i.key,CURRENT_MK)===null;h+='<div class="row"><div><div style="font-size:13px">'+i.label+'</div>'+(i.rate?'<div style="font-size:11px;color:#888780">'+i.rate+'</div>':'')+'</div><div><div class="row-val">'+fmt(mb)+(isFC&&mb>0?'<span class="fc-badge">est.</span>':'')+'</div><div class="row-sub '+(df>=0?'pos':'neg')+'">'+(df>=0?'+':'')+fmt(df)+' vs '+label(LAST_ACTUAL)+'</div></div></div>';});h+='</div>';pageEl().innerHTML=h;}
 
-function renderSpendingRate(mk,dl,dim,dp){
-  var h='<div style="font-size:12px;color:#888780;margin-bottom:8px">'+dl+' days left · '+dp+' of '+dim+' days gone</div>';
-  var ovR=0,ovB=0;
-  RATE_CATS.forEach(function(k){ovB+=num(gBudget(k,mk));ovR+=Math.max(0,num(gBudget(k,mk))-num(gExp(mk,k)));});
-  var ovD=dl>0?ovR/dl:0,ovW=ovD*7,ovPct=ovB>0?(ovB-ovR)/ovB*100:0,ovC=ovPct>90?'#a32d2d':ovPct>70?'#ba7517':'#3b6d11';
-  h+='<div class="card"><div style="padding:12px 14px"><div style="font-size:13px;font-weight:600;margin-bottom:10px">Controllable categories</div><div style="font-size:11px;color:#888780;margin-top:-6px;margin-bottom:10px">Daily-use categories only; excludes incidental and fixed bills.</div>';
-  h+='<div style="display:flex;gap:8px;margin-bottom:10px"><div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val" style="color:'+ovC+'">'+fmt(ovD,{showZero:true})+'</div><div class="rb-unit">/day</div></div>';
-  h+='<div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val" style="color:'+ovC+'">'+fmt(ovW,{showZero:true})+'</div><div class="rb-unit">/week</div></div></div>';
-  h+='<div class="pbar" style="height:7px"><div class="pfill" style="width:'+Math.min(100,ovPct).toFixed(0)+'%;background:'+ovC+'"></div></div>';
-  h+='<div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Spent: '+fmt(ovB-ovR,{showZero:true})+'</span><span>Remaining: '+fmt(ovR,{showZero:true})+'</span></div></div></div>';
-  RATE_CATS.forEach(function(k){
-    var cat=EXPENSE_CATS.find(function(c){return c.key===k;}),bud=num(gBudget(k,mk)),spent=num(gExp(mk,k)),rem=bud-spent,over=rem<0,daily=dl>0&&!over?rem/dl:0,weekly=daily*7,pct=bud>0?Math.min(100,spent/bud*100):0,bc=over?'#a32d2d':pct>85?'#ba7517':'#3b6d11';
-    h+='<div class="card"><div style="padding:11px 14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:13px;font-weight:600">'+cat.label+'</span><span class="badge '+(over?'b-danger':pct>85?'b-warn':'b-ok')+'">'+(over?'Over budget':pct.toFixed(0)+'% used')+'</span></div>';
-    if(!over)h+='<div style="display:flex;gap:8px;margin-bottom:10px"><div class="rate-box"><div class="rb-lbl">Daily</div><div class="rb-val">'+fmt(daily,{showZero:true})+'</div><div class="rb-unit">/day</div></div><div class="rate-box"><div class="rb-lbl">Weekly</div><div class="rb-val">'+fmt(weekly,{showZero:true})+'</div><div class="rb-unit">/week</div></div><div class="rate-box"><div class="rb-lbl">Left</div><div class="rb-val">'+fmt(rem,{showZero:true})+'</div><div class="rb-unit">of '+fmt(bud,{showZero:true})+'</div></div></div>';
-    else h+='<div style="background:#fcebeb;border-radius:7px;padding:8px 10px;font-size:12px;color:#a32d2d;margin-bottom:10px">Over by <strong>'+fmt(Math.abs(rem),{showZero:true})+'</strong></div>';
-    h+='<div class="pbar"><div class="pfill" style="width:'+Math.min(100,pct).toFixed(0)+'%;background:'+bc+'"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;color:#888780;margin-top:3px"><span>Spent: '+fmt(spent,{showZero:true})+'</span><span>Budget: '+fmt(bud,{showZero:true})+'</span></div></div></div>';
-  });
-  return h;
-}
+function renderSettings(){subEl().innerHTML='';var h='<div class="section">Google Sheets connection</div><div class="card"><div class="settings-field"><label>Apps Script URL</label><input id="url" type="url" value="'+esc(S.settings.url)+'" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="settings-field"><label>Secret token</label><input id="token" type="text" value="'+esc(S.settings.token)+'" placeholder="your-secret-token"></div><div style="padding:10px 14px"><button class="primary-btn" id="saveSettings">Save settings</button></div></div><div class="section">Sync</div><div class="card"><div class="row"><span class="row-label">Sync all data</span><button class="secondary-btn" id="syncSettings">↻ Sync all</button></div><div class="row"><span class="row-label">Last sync</span><span>'+fmtDate(S.meta.lastSync)+'</span></div><div class="row"><span class="row-label">Connected</span><span class="badge '+(connected()?'b-ok':'b-danger')+'">'+(connected()?'Yes':'No')+'</span></div></div><div class="section">About</div><div class="card"><div class="row"><span class="row-label">Version</span><span>OS v5 Final</span></div><div class="row"><span class="row-label">Current month</span><span>'+fullLabel(CURRENT_MK)+' '+TODAY.getFullYear()+'</span></div></div>';pageEl().innerHTML=h;document.getElementById('saveSettings').onclick=function(){S.settings.url=document.getElementById('url').value.trim();S.settings.token=document.getElementById('token').value.trim();save();toast('Settings saved ✓');};document.getElementById('syncSettings').onclick=syncAll;}
 
-function toggleCollapse(id){
-  var body=document.getElementById(id+'-body');
-  var icon=document.getElementById(id+'-icon');
-  if(!body||!icon)return;
-  var open=body.style.display==='none';
-  body.style.display=open?'block':'none';
-  icon.textContent=open?'▴':'▾';
-}
-function collapsibleCard(id,title,bodyHtml,defaultOpen){
-  return '<div class="section">'+title+'</div>'
-    +'<div class="card">'
-    +'<div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleCollapse(\\''+id+'\\')">'
-    +'<span style="font-size:13px;font-weight:650">'+title+'</span>'
-    +'<span id="'+id+'-icon" style="font-size:12px;color:#185fa5">'+(defaultOpen?'▴':'▾')+'</span>'
-    +'</div>'
-    +'<div id="'+id+'-body" style="display:'+(defaultOpen?'block':'none')+'">'
-    +bodyHtml
-    +'</div>'
-    +'</div>';
-}
+function api(action,payload){if(!S.settings.url)return Promise.reject(new Error('No Apps Script URL. Open Settings first.'));var body=JSON.stringify(Object.assign({action:action,token:S.settings.token},payload||{}));return fetch(S.settings.url,{method:'POST',body:body,headers:{'Content-Type':'text/plain;charset=utf-8'},cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status+'. Check Apps Script deployment.');return r.text();}).then(function(txt){try{return JSON.parse(txt);}catch(e){throw new Error('Backend did not return valid JSON.');}}).then(function(j){if(!j.ok)throw new Error(j.error||'Unknown backend error');return j;});}
+function syncAll(){if(!S.settings.url){toast('⚠ Set Script URL in Settings');nav('settings');return;}document.getElementById('syncBtn').textContent='↻ Syncing…';api('getAll').then(function(r){['plan','portfolio','income','expenses','invest'].forEach(function(k){if(!r[k]||typeof r[k]!=='object')throw new Error('Invalid response: missing '+k);});S.plan=r.plan||{};S.income=r.income||{};S.expenses=r.expenses||{};S.invest=r.invest||{};S.portfolio=r.portfolio||{};S.meta.lastSync=r.lastSync||new Date().toISOString();S.meta.lastError=null;save();toast('Synced ✓');document.getElementById('syncBtn').textContent='↻ Sync';nav(S.page);}).catch(function(e){S.meta.lastError=e.message;save();toast('Error: '+e.message);document.getElementById('syncBtn').textContent='↻ Sync';nav(S.page);});}
 
-function renderBreakdown(title,cats,actualFn,planFn,label){
-  var body='',any=false;
-  cats.forEach(function(c){
-    var a=actualFn(c),p=planFn(c);
-    if(a===null&&p===null)return;
-    any=true;
-    var av=num(a),pv=num(p),over=label==='budget'&&pv>0&&av>pv,df=av-pv;
-    body+='<div class="row"><span class="row-label" style="'+(over?'color:#a32d2d':'')+'">'+c.label+(over?' ▲':'')+'</span><div>';
-    body+='<div class="row-val '+(over?'neg':av>0&&label==='plan'?'pos':'')+'">'+fmt(av,{showZero:a!==null})+'</div>';
-    if(p!==null)body+='<div class="row-sub" style="color:'+(over?'#a32d2d':label==='budget'&&pv-av>pv*.1?'#3b6d11':'#888780')+'">'+(a!==null?(df>=0?'+':'')+fmt(df,{showZero:true})+' vs '+label:label+': '+fmt(pv,{showZero:true}))+'</div>';
-    body+='</div></div>';
-  });
-  if(!any)body+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(connected()?'No data yet.':'Connect Google Sheets to see data.')+'</div>';
-  var id=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-  return collapsibleCard(id,title,body,false);
-}
-function renderInvestments(mk){
-  var h='<div class="section">Investments</div><div class="card">',any=false;
-  INVEST_CATS.forEach(function(c){
-    var a=gInv(mk,c.key),p=gPlanInv(c.key,mk);if(a===null&&p===null)return;any=true;
-    var av=num(a),pv=num(p),pct=pv>0?Math.min(100,Math.round(av/pv*100)):0,col=pct>=100?'#3b6d11':pct>0?'#ba7517':'#d3d1c7';
-    h+='<div style="padding:9px 14px;border-bottom:.5px solid #f1efe8"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span class="row-label">'+c.label+'</span><div><div class="row-val '+(av>=pv&&av>0?'pos':'')+'">'+fmt(av,{showZero:a!==null})+'</div><div class="row-sub">plan: '+fmt(pv,{showZero:true})+'</div></div></div>';
-    if(pv>0)h+='<div class="pbar"><div class="pfill" style="width:'+pct+'%;background:'+col+'"></div></div>';h+='</div>';
-  });
-  if(!any)h+='<div style="padding:12px 14px;font-size:13px;color:#888780">'+(connected()?'No investment data yet.':'Connect Google Sheets to see data.')+'</div>';
-  return h+'</div>';
-}
-function selMo(mk){S.mk=mk;renderMonthly();}
-
-// ── PORTFOLIO PAGE ────────────────────────────────────────────
-function renderPortfolio(){
-  var con=connected(), aprT=totPf(LAST_ACTUAL),curT=totPf(CURRENT_MK),startT=totPf('start'),mom=aprT>0?(curT-aprT)/aprT*100:0;
-  var histPeriods=['start']; for(var i=0;i<=MONTH_KEYS.indexOf(LAST_ACTUAL);i++)histPeriods.push(MONTH_KEYS[i]);
-  var histLabels=histPeriods.map(function(p){return p==='start'?'Start':labelFromMk(p);});
-  var h=''; if(!con)h+=notConnectedBanner(); else h+=dataNote();
-  h+='<div class="section">Key metrics</div><div class="g2"><div class="metric"><div class="lbl">Portfolio ('+labelFromMk(LAST_ACTUAL)+')</div><div class="val">'+fmt(aprT)+'</div><div class="sub">last complete month</div></div>';
-  h+='<div class="metric"><div class="lbl">'+labelFromMk(CURRENT_MK)+' forecast <span class="fc-badge">est.</span></div><div class="val '+(con?'pos':'')+'">'+fmt(curT)+'</div><div class="sub">'+(con?fmtPct(mom)+' vs '+labelFromMk(LAST_ACTUAL):'—')+'</div></div></div>';
-  h+='<div class="g3"><div class="metric"><div class="lbl">YTD growth</div><div class="val '+(con?'pos':'')+'">'+fmt(aprT-startT)+'</div></div><div class="metric"><div class="lbl">Blended yield</div><div class="val">'+(con?blendYield().toFixed(2)+'%':'—')+'</div><div class="sub">net</div></div><div class="metric"><div class="lbl">Inv. income/yr</div><div class="val '+(con?'pos':'')+'">'+fmt(annIncome())+'</div></div></div>';
-  // Month-on-month growth table — built dynamically from histPeriods
-  h+='<div class="section">Month-on-month growth</div><div class="card">';
-  for(var pi=0;pi<histPeriods.length-1;pi++){
-    var pp=histPeriods[pi],cp=histPeriods[pi+1];
-    var ppV=totPf(pp),cpV=totPf(cp),chgM=cpV-ppV,pctM=ppV>0?chgM/ppV*100:0;
-    var momLbl=(pp==='start'?'Start':labelFromMk(pp))+' → '+labelFromMk(cp);
-    h+='<div class="row"><span class="row-label">'+momLbl+'</span>';
-    h+='<div style="text-align:right"><div class="row-val '+(chgM>=0?'pos':'neg')+'">'+(con?(chgM>=0?'+':'')+fmt(chgM):'—')+'</div>';
-    h+='<div class="row-sub" style="color:'+(pctM>=0?'#3b6d11':'#a32d2d')+'">'+(con?fmtPct(pctM):'—')+'</div></div></div>';
-  }
-  var chgF=curT-aprT,pctF=aprT>0?chgF/aprT*100:0;
-  h+='<div class="row"><span class="row-label">'+labelFromMk(LAST_ACTUAL)+' → '+labelFromMk(CURRENT_MK)+' <span class="fc-badge">est.</span></span>';
-  h+='<div style="text-align:right"><div class="row-val '+(chgF>=0?'pos':'neg')+'">'+(con?(chgF>=0?'+':'')+fmt(chgF)+'<span class="fc-badge">est.</span>':'—')+'</div>';
-  h+='<div class="row-sub" style="color:'+(pctF>=0?'#3b6d11':'#a32d2d')+'">'+(con?fmtPct(pctF):'—')+'</div></div></div>';
-  h+='</div>';
-  h+='<div class="section">Growth over time</div><div class="card" style="padding:14px"><div class="chart-box"><canvas id="gc"></canvas></div></div>';
-  h+='<div class="section">Holdings — '+labelFromMk(LAST_ACTUAL)+' actual / '+labelFromMk(CURRENT_MK)+' est.</div><div class="card">';
-  var cg='';PF_INSTRUMENTS.forEach(function(i){
-    if(i.group!==cg){h+='<div class="pf-grp">'+GRP_LABELS[i.group]+'</div>';cg=i.group;}
-    var ab=pfBal(i.key,LAST_ACTUAL)||0,mb=pfBal(i.key,CURRENT_MK)||0,isFC=pfActual(i.key,CURRENT_MK)===null,df=mb-ab;
-    h+='<div class="row"><div><div style="font-size:13px">'+i.label+'</div>'+(i.rate?'<div style="font-size:11px;color:#888780">'+i.rate+'</div>':'')+'</div><div style="text-align:right"><div class="row-val">'+fmt(mb)+(isFC&&mb>0?'<span class="fc-badge">est.</span>':'')+'</div><div class="row-sub" style="color:'+(df>0?'#3b6d11':df<0?'#a32d2d':'#888780')+'">'+(df!==0&&con?(df>0?'+':'')+fmt(df)+' vs '+labelFromMk(LAST_ACTUAL):labelFromMk(LAST_ACTUAL)+': '+fmt(ab))+'</div></div></div>';
-  });
-  var td=curT-aprT;h+='<div class="row" style="border-top:.5px solid #e0ddd4"><span style="font-weight:600">Total</span><div><div class="row-val">'+fmt(curT)+(con?'<span class="fc-badge">est.</span>':'')+'</div><div class="row-sub '+(td>=0?'pos':'neg')+'">'+(con?(td>=0?'+':'')+fmt(td)+' vs '+labelFromMk(LAST_ACTUAL):'—')+'</div></div></div></div>';
-  h+='<div class="section">Balance history — by group</div><div class="card" style="padding:14px;margin-bottom:10px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">Total portfolio (stacked)</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;font-size:11px">';
-  Object.keys(GRP_LABELS).forEach(function(g){h+='<span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:'+GRP_COLORS[g]+';display:inline-block"></span>'+GRP_LABELS[g]+'</span>';});
-  h+='</div><div class="chart-box"><canvas id="hbar"></canvas></div></div><div class="card" style="padding:14px;margin-bottom:10px"><div style="font-size:13px;font-weight:600;margin-bottom:10px">Group trends (line)</div><div class="chart-box"><canvas id="hline"></canvas></div></div>';
-  h+='<div class="card"><div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTable()"><span style="font-size:13px;font-weight:600">Detailed numbers</span><span id="tbl-toggle" style="font-size:12px;color:#185fa5">Show ▾</span></div><div id="tbl-wrap" style="display:none;overflow-x:auto;padding:0 0 10px"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:360px"><thead><tr><th style="text-align:left;padding:6px 14px;color:#888780;font-weight:600;border-bottom:.5px solid #e0ddd4">Instrument</th>';
-  histLabels.forEach(function(l){h+='<th style="text-align:right;padding:6px 8px;color:#888780;font-weight:600;border-bottom:.5px solid #e0ddd4">'+l+'</th>';});
-  h+='</tr></thead><tbody>';
-  PF_INSTRUMENTS.forEach(function(i){h+='<tr><td style="padding:4px 14px;color:#5f5e5a;white-space:nowrap">'+i.label+'</td>';histPeriods.forEach(function(p){h+='<td style="text-align:right;padding:4px 8px">'+fmt(pfBal(i.key,p))+'</td>';});h+='</tr>';});
-  h+='<tr style="font-weight:600;border-top:.5px solid #e0ddd4"><td style="padding:6px 14px">Total</td>';histPeriods.forEach(function(p){h+='<td style="text-align:right;padding:6px 8px">'+fmt(totPf(p))+'</td>';});h+='</tr></tbody></table></div></div>';
-  set(h);
-  setTimeout(function(){
-    var gp=Object.keys(GRP_LABELS),lineActual=histPeriods.map(function(p){return totPf(p);});
-    mkChart('gc',{type:'line',data:{labels:histLabels.concat([labelFromMk(CURRENT_MK)+' (est.)']),datasets:[
-      {label:'Actual',data:lineActual.concat([null]),borderColor:'#185fa5',backgroundColor:'rgba(24,95,165,0.07)',fill:true,tension:.3,pointRadius:4,borderWidth:2,spanGaps:false},
-      {label:'Forecast',data:Array(histPeriods.length-1).fill(null).concat([totPf(LAST_ACTUAL),totPf(CURRENT_MK)]),borderColor:'#ba7517',backgroundColor:'transparent',borderDash:[6,4],tension:.3,pointRadius:4,borderWidth:2,spanGaps:false}
-    ]},options:chartOpts()});
-    mkChart('hbar',{type:'bar',data:{labels:histLabels,datasets:gp.map(function(g){return{label:GRP_LABELS[g],data:histPeriods.map(function(p){return grpTot(g,p);}),backgroundColor:GRP_COLORS[g],borderWidth:0};})},options:chartOpts({plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+fmt(c.raw,{showZero:true});}}}},scales:{x:{stacked:true,ticks:{color:'#888780'},grid:{display:false}},y:{stacked:true,ticks:{color:'#888780',callback:function(v){return'Rp '+(v/1000000000).toFixed(2)+'B';}},grid:{color:'rgba(0,0,0,.05)'}}}})});
-    mkChart('hline',{type:'line',data:{labels:histLabels,datasets:gp.map(function(g){return{label:GRP_LABELS[g],data:histPeriods.map(function(p){return grpTot(g,p);}),borderColor:GRP_COLORS[g],backgroundColor:'transparent',tension:.3,pointRadius:3,borderWidth:2,pointBackgroundColor:GRP_COLORS[g]};})},options:chartOpts()});
-  },100);
-}
-function toggleTable(){var w=document.getElementById('tbl-wrap'),t=document.getElementById('tbl-toggle');if(!w||!t)return;var open=w.style.display==='none';w.style.display=open?'block':'none';t.textContent=open?'Hide ▴':'Show ▾';}
-
-// ── SETTINGS ──────────────────────────────────────────────────
-function renderSettings(){
-  var h='<div class="section">Google Sheets connection</div><div class="card"><div class="settings-field"><label>Apps Script URL</label><input type="url" id="cfg_url" value="'+escapeHtml(S.settings.url)+'" placeholder="https://script.google.com/macros/s/.../exec"></div><div class="settings-field"><label>Secret token</label><input type="text" id="cfg_tok" value="'+escapeHtml(S.settings.token)+'" placeholder="your-secret-token"></div><div style="padding:10px 14px"><button onclick="saveCfg()" class="primary-btn">Save settings</button></div></div>';
-  h+='<div class="section">Sync</div><div class="card"><div class="row"><span class="row-label">Sync all data</span><button onclick="syncAll()" class="secondary-btn">↻ Sync all</button></div><div class="row"><span class="row-label">Portfolio only</span><button onclick="syncPf()" class="secondary-btn">Pull</button></div><div class="row"><span class="row-label">Last sync</span><span>'+fmtDateTime(S.meta.lastSync)+'</span></div></div>';
-  h+='<div class="section">About</div><div class="card"><div class="row"><span class="row-label">Version</span><span>Clean v2 — No Offline</span></div><div class="row"><span class="row-label">Current month</span><span>'+fullLabelFromMk(CURRENT_MK)+' '+TODAY.getFullYear()+'</span></div><div class="row"><span class="row-label">Last complete</span><span>'+fullLabelFromMk(LAST_ACTUAL)+' '+TODAY.getFullYear()+'</span></div><div class="row"><span class="row-label">Data source</span><span>Google Sheets</span></div><div class="row"><span class="row-label">Connected</span><span class="badge '+(connected()?'b-ok':'b-danger')+'">'+(connected()?'Yes':'No')+'</span></div></div>';
-  h+='<div class="section">Note</div><div class="card"><div class="small-note">This version does not use a service worker, so it avoids browser cache issues. It still works well as a mobile web app through GitHub Pages.</div></div>';
-  set(h);
-}
-function saveCfg(){S.settings.url=document.getElementById('cfg_url').value.trim();S.settings.token=document.getElementById('cfg_tok').value.trim();save();toast('Settings saved ✓');}
-
-// ── ALERTS ────────────────────────────────────────────────────
-function buildAlerts(mk){
-  var a=[],tE=totControlledExp(mk),pE=totControlledBudget(mk);
-  if(!connected())return[{t:'info',m:'Connect Google Sheets in Settings to see alerts.'}];
-  if(tE>0&&tE>pE)a.push({t:'danger',m:'<strong>Regular expenses over budget by '+fmtFull(tE-pE)+'</strong> this month.'});
-  controlledExpenseCats().forEach(function(c){var act=num(gExp(mk,c.key)),bud=num(gBudget(c.key,mk));if(bud>0&&act>bud*1.15)a.push({t:'warn',m:'<strong>'+c.label+'</strong> over budget by '+fmtFull(act-bud)+'.'});});
-  if(num(gExp(mk,'incidental'))>0)a.push({t:'info',m:'<strong>Incidental expense recorded:</strong> '+fmtFull(gExp(mk,'incidental'))+'. This is included in netflow but excluded from daily spending rate.'});
-  if(gInv(mk,'sr025')===null && num(gPlanInv('sr025',mk))>0)a.push({t:'warn',m:'<strong>SR025 planned but not recorded</strong> for '+labelFromMk(mk)+'.'});
-  if(mk==='dec')a.push({t:'info',m:'<strong>Year-end reminder.</strong> In early January, archive this tracker, copy December closing balances into Start, then clear monthly actual columns.'});
-  if(!a.length)a.push({t:'ok',m:'<strong>All clear.</strong> Update Google Sheets and sync to see latest.'});
-  return a;
-}
-function aIcon(t){return t==='danger'?'🔴':t==='warn'?'🟡':t==='ok'?'🟢':'🔵';}
-
-// ── API AND VALIDATION ────────────────────────────────────────
-function api(action,payload){
-  var url=S.settings.url;if(!url)return Promise.reject(new Error('No Apps Script URL. Open Settings first.'));
-  var body=JSON.stringify(Object.assign({action:action,token:S.settings.token},payload||{}));
-  return fetch(url,{method:'POST',body:body,headers:{'Content-Type':'text/plain;charset=utf-8'},cache:'no-store'})
-    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status+'. Check Apps Script deployment.');return r.text();})
-    .then(function(txt){try{return JSON.parse(txt);}catch(e){throw new Error('Backend did not return valid JSON. Check Apps Script permissions/deployment.');}})
-    .then(function(j){if(!j.ok)throw new Error(j.error||'Unknown backend error');return j;});
-}
-function validateAll(r){
-  var required=['plan','portfolio','income','expenses','invest'];
-  required.forEach(function(k){if(!r[k]||typeof r[k]!=='object')throw new Error('Invalid response: missing '+k);});
-  PF_INSTRUMENTS.forEach(function(i){if(!r.portfolio[i.key])console.warn('Portfolio key missing:',i.key);});
-  return true;
-}
-function syncAll(){
-  if(!S.settings.url){toast('⚠ Set Script URL in Settings');nav('settings');return;}
-  var btn=document.getElementById('syncBtn');if(btn)btn.textContent='↻ Syncing…';
-  api('getAll').then(function(r){
-    validateAll(r);
-    S.plan=r.plan||{};S.income=r.income||{};S.expenses=r.expenses||{};S.invest=r.invest||{};S.portfolio=r.portfolio||{};
-    S.meta.lastSync=r.lastSync||new Date().toISOString();S.meta.lastError=null;
-    save();toast('Synced ✓');if(btn)btn.textContent='↻ Sync';nav(S.page);
-  }).catch(function(e){
-    S.meta.lastError=e.message;save();toast('Error: '+e.message);if(btn)btn.textContent='↻ Sync';nav(S.page);
-  });
-}
-function syncPf(){
-  api('getPortfolio').then(function(r){
-    if(!r.portfolio||typeof r.portfolio!=='object')throw new Error('Invalid portfolio response.');
-    S.portfolio=r.portfolio;S.meta.lastSync=r.lastSync||new Date().toISOString();S.meta.lastError=null;save();toast('Portfolio loaded ✓');nav(S.page);
-  }).catch(function(e){S.meta.lastError=e.message;save();toast('Error: '+e.message);});
-}
-
-// ── INIT ──────────────────────────────────────────────────────
+document.querySelectorAll('.nav-item').forEach(function(b){b.addEventListener('click',function(){nav(b.dataset.page);});});
+document.getElementById('syncBtn').onclick=syncAll;
 load();
-nav('dashboard');
+nav(S.page||'dashboard');
 if(S.settings.url)syncAll();
+
+})();
 </script>
 </body>
 </html>
